@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn {
+    @apply text-black font-bold bg-secondary px-16 py-5 border-2 border-black hover:bg-white hover:border-secondary hover:border-2 font-body;
+}
+
+.category__card {
+    text-align: center;
+  }
+  
+  .category__card img {
+    max-width: 140px;
+    margin: auto;
+    margin-bottom: 1rem;
+    border: 10px solid #D4E4FE;
+    border-radius: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .category__grid {
+    margin: 2.5rem auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2rem;
+  }
