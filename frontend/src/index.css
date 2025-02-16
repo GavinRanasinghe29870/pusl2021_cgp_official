@@ -25,3 +25,16 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 2rem;
   }
+
+  .parallelogram-bg {
+    display: inline-block;
+    border-radius: 8px;
+    background-color: #0D1271; /* Adjust the color as needed */
+    padding: 0.01rem 0.2rem;
+    color: #F5E12F;
+    margin-left: 5px; /* Adjust the text color as needed */
+}
+
+  .logo-txt {
+    transform: skew(-20deg);
+  }
