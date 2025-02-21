@@ -5,12 +5,12 @@ import ProductList from "./components/sportPeople/ProductList";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<ProductList/>} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
