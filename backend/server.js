@@ -7,6 +7,7 @@ const app = express();
 require("dotenv").config();
 
 const authRoutes = require('./routes/sportPeople/authRoutes')
+const productRoutes = require("./routes/sportPeople/productRoutes"); 
 
 const PORT = process.env.PORT || 8070;
 
@@ -29,6 +30,7 @@ connection.once("open", ()=> {
 
 //Link Signin Authentication Routes
 app.use('/api/auth',require("./routes/sportPeople/authRoutes"));
+app.use('/api/products', productRoutes);
 
 app.listen(PORT, ()=> {
     console.log(`Server is up and running on port: ${PORT}`)
