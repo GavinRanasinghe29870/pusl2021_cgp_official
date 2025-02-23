@@ -1,5 +1,5 @@
 const express = require("express");
-const Product = require(".../models/sportPeople/Products");
+const Product = require("../../models/sportPeople/Product");
 const router = express.Router();
 
 //Get all Products in loading
