@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import Footer from './Footer';
 
 const Home = (props) => {
   const categories = [
@@ -63,16 +64,16 @@ const Home = (props) => {
       <div className='pb-14'>
         <div className='relative'>
           <img src='/Site Banner.jpg' alt='home' className='w-full object-cover h-[55rem] bg-blend-darken brightness-50' />
-          <div className='absolute px-[20rem] top-0 left-0 w-full h-full flex flex-col justify-center items-center text-white'>
+          <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center text-white px-4'>
             <h1 className='font-header text-header-01 font-bold'>Join Us and You’ll Never Have to Play Alone.</h1>
-            <p className='mt-4 pb-[25px] text-center font-header text-header-04 font-bold w-[70%]'>Bring your community together with the ultimate all-in-one sports web application. Connect, socialize, and access a variety of sports facilities-all in one place. Trusted by 500+ sports clubs in Sri Lanka.</p>
+            <p className='mt-4 pb-[25px] text-center font-header text-header-04 font-bold w-[80%] xl:w-[50%] '>Bring your community together with the ultimate all-in-one sports web application. Connect, socialize, and access a variety of sports facilities-all in one place. Trusted by 500+ sports clubs in Sri Lanka.</p>
             <button className='btn'>About</button>
           </div>
         </div>
       </div>
 
       {/* Shop Item Slider */}
-      <div className='px-8'>
+      <div className='px-4 lg:px-8'>
         <Carousel
           showDots={false}
           responsive={shopitemslider}
@@ -82,20 +83,19 @@ const Home = (props) => {
           customTransition="all 1s ease-in-out"
           transitionDuration={2000}
           containerClass="carousel-container"
-          removeArrowOnDeviceType={["tablet", "mobile"]}
         >
-          <div><img src='/Cricket.png' className='w-full h-80 object-cover' /></div>
-          <div><img src='/swimming.jpeg' className='w-full h-80 object-cover' /></div>
-          <div><img src='/netBall.jpg' className='w-full h-80 object-cover' /></div>
-          <div><img src='/chess.jpg' className='w-full h-80 object-cover' /></div>
-          <div><img src='/football.jpg' className='w-full h-80 object-cover' /></div>
-          <div><img src='/Tennis.jpg' className='w-full h-80 object-cover' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/netBall.jpg' className='w-full h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/chess.jpg' className='w-full h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/football.jpg' className='w-full h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Tennis.jpg' className='w-full h-80 object-cover carousel-image' /></div>
         </Carousel>
       </div>
 
       {/* Categories Section */}
       <div>
-        <h4 className='text-center font-header text-header-02 font-bold pt-[3.5rem]'>Sports Categories</h4>
+        <h4 className='text-center font-header text-header-02 font-bold pt-[3.5rem]'>Sports <span className='text-primary'>Categories</span></h4>
         <div className='container category__grid place-items-center'>
           {
             categories.map(category => (
@@ -118,7 +118,7 @@ const Home = (props) => {
 
       {/* Ad Slider */}
       <div className='pt-[4.5rem] pb-[2.5rem]'>
-        <h4 className='text-center font-header text-header-02 font-bold'>Latest News & Events</h4>
+        <h4 className='text-center font-header text-header-02 font-bold'>Latest <span className='text-primary'>News & Events</span></h4>
         <h6 className='text-center font-body'>See the lates news,events and happenings at clubs</h6>
       </div>
       <div className='container'>
@@ -131,28 +131,27 @@ const Home = (props) => {
           customTransition="all 1s ease-in-out"
           transitionDuration={2000}
           containerClass="carousel-container"
-          removeArrowOnDeviceType={["tablet", "mobile"]}
         >
-          <div><img src='/Cricket.png' className='w-full h-[21.8rem] object-cover' /></div>
-          <div><img src='/swimming.jpeg' className='w-full h-[21.8rem] object-cover' /></div>
-          <div><img src='/netBall.jpg' className='w-full h-[21.8rem] object-cover' /></div>
-          <div><img src='/chess.jpg' className='w-full h-[21.8rem] object-cover' /></div>
-          <div><img src='/football.jpg' className='w-full h-[21.8rem] object-cover' /></div>
-          <div><img src='/Tennis.jpg' className='w-full h-[21.8rem] object-cover' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/netBall.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/chess.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/football.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Tennis.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
         </Carousel>
       </div>
 
       {/* About Sports */}
-      <div className='pb-14 pt-[7rem]'>
+      <div className='pb-[150px] pt-[7rem]'>
         <div className='container bg-[#fafcff] rounded-md shadow-lg'>
           <div className='pt-[4.5rem] pb-[2.5rem]'>
-            <h4 className='text-center font-header text-header-02 font-bold'>About Sports</h4>
+            <h4 className='text-center font-header text-header-02 font-bold'>About <span className='text-primary'>Sports</span></h4>
             <h6 className='text-center font-body'>Learn more about the sports you love</h6>
           </div>
-          <div className='container mt-[-5.5rem]'>
-            <div className="grid grid-cols-2 grid-rows-1 gap-20 flex-col justify-center items-center">
+          <div className='container mt-0 lg:mt-[-5.5rem]'>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 justify-center items-center">
               <div>
-                <img src='/About Sports.png' className='w-full h-[40rem] object-cover' />
+                <img src='/About Sports.png' className='w-full h-[100%] md:h-[40rem] object-cover' />
               </div>
               <div >
                 <p className='font-body font-bold text-gray-600'>
@@ -166,7 +165,7 @@ const Home = (props) => {
           </div>
         </div>
       </div>
-
+      <Footer />
     </div>
   )
 }
