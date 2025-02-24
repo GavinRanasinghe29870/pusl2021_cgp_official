@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "lucide-react": "^0.475.0"
+  },
+  "name": "pusl2021_cgp_official",
+  "version": "1.0.0",
+  "description": "All in one sport web application which facilitates users to gather socially within their area and many other sport facilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && npm start",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GavinRanasinghe29870/pusl2021_cgp_official.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GavinRanasinghe29870/pusl2021_cgp_official/issues"
+  },
+  "homepage": "https://github.com/GavinRanasinghe29870/pusl2021_cgp_official#readme"
+}

@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"
   ],
   theme: {
     extend: {
@@ -31,13 +31,13 @@ module.exports = {
         'body': ['Poppins', 'sans-serif'],
       },
       fontSize: {
-        'header-01': '4rem',
-        'header-02': '2rem',
-        'header-03': '1.5rem',
-        'header-04': '1.3rem',
-        'header-05': '1.1rem',
-        'header-06': '1rem',
-        'body': '1rem',
+        'header-01': '54px',
+        'header-02': '32px',
+        'header-03': '24px',
+        'header-04': '21px',
+        'header-05': '18px',
+        'header-06': '16px',
+        'body': '16px',
       },
     },
   },
