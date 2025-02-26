@@ -10,7 +10,7 @@ const Footer = () => {
   const today = new Date();
   return (
     <footer className="bg-primary-light text-gray-700 py-12 md:py-24">
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-12 gap-8">
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 xl:gap-0">
         <div className='col-span-12 lg:col-span-3 xl:col-span-3 content-center'>
           <div className='text-xl lg:text-3xl flex gap-2 font-bold py-4'>
             <a href='#' className='text-primary logo-txt'><span className='underline'>SPORT</span><span className='parallelogram-bg'>NEST</span></a>
@@ -74,14 +74,14 @@ const Footer = () => {
         <hr className="container my-10 border-t-1 border-black border-opacity-5" />
       </div>
 
-      <div className="container mx-auto mt-10 flex flex-col md:flex-row justify-between items-center font-body">
+      <div className="container mx-auto mt-10 flex flex-col md:flex-row justify-between items-center font-body gap-5">
         <p>&copy; {today.getFullYear()} Sport Nest. All rights reserved</p>
         <p>A Product of <span className="font-bold">LOGO</span></p>
         <div className="flex space-x-4">
-          <a href="#" className="hover:text-primary"><FaLinkedinIn /></a>
-          <a href="#" className="hover:text-primary"><FaFacebookF /></a>
-          <a href="#" className="hover:text-primary"><FaXTwitter /></a>
-          <a href="#" className="hover:text-primary"><FaInstagram /></a>
+          <a href="#" className="text-primary border border-primary border-opacity-20 rounded-full p-2"><FaLinkedinIn /></a>
+          <a href="#" className="text-primary border border-primary border-opacity-20 rounded-full p-2"><FaFacebookF /></a>
+          <a href="#" className="text-primary border border-primary border-opacity-20 rounded-full p-2"><FaXTwitter /></a>
+          <a href="#" className="text-primary border border-primary border-opacity-20 rounded-full p-2"><FaInstagram /></a>
         </div>
       </div>
     </footer>
