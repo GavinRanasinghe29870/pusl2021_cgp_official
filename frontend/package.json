@@ -7,6 +7,7 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "axios": "^1.7.9",
     "framer-motion": "^12.4.2",
     "react": "^19.0.0",
@@ -15,6 +16,11 @@
     "react-multi-carousel": "^2.8.5",
     "react-router-dom": "^7.1.5",
     "react-scripts": "5.0.1",
+=======
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "^3.0.1",
+>>>>>>> Stashed changes
 =======
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -48,9 +54,12 @@
   },
   "devDependencies": {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "ajv": "^7.2.4",
     "tailwindcss": "^3.4.17"
 =======
+=======
+>>>>>>> Stashed changes
     "@tailwindcss/postcss": "^4.0.6",
     "ajv": "^7.2.4"
 >>>>>>> Stashed changes
