@@ -1,11 +1,11 @@
 import React from 'react'
 import '../../App.css';
-import Navbar from './Navbar';
+import Navbar from '../../components/sportPeople/Navbar';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import Footer from './Footer';
+import Footer from '../../components/sportPeople/Footer';
 
 const Home = (props) => {
   const categories = [
