@@ -7,6 +7,7 @@ import Signin from './components/sportPeople/Signin';
 import Signup from './components/sportPeople/Signup';
 import DonationRequestForm from './components/clubs/donationReq';
 import 'react-multi-carousel/lib/styles.css';
+import InsertProduct from './pages/admin/InsertProductPage';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/Signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
         < Route path="/donationReq" element={<DonationRequestForm/>}/>
+        <Route path="/addProduct" element={<InsertProduct />} />
       </Routes>
     </Router>
   );
