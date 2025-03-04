@@ -6,6 +6,7 @@ import ProductManage from './components/admin/ProductManage';
 import Signin from './components/sportPeople/Signin';
 import DonationRequestForm from './components/clubs/donationReq';
 import 'react-multi-carousel/lib/styles.css';
+import InsertProduct from './pages/admin/InsertProductPage';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={<Signin />} />
         < Route path="/donationReq" element={<DonationRequestForm/>}/>
+        <Route path="/addProduct" element={<InsertProduct />} />
       </Routes>
     </Router>
   );

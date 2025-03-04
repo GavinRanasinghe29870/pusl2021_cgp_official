@@ -24,4 +24,15 @@ router.get("/category/:category", async (req, res) => {
     }
 });
 
+//Insert Product
+router.post("/add", async(req, res) => {
+    try{
+        const newProduct = new Product(req.body);
+        const savedProduct = await newProduct.save();
+        res.status(201).json(savedProduct);
+    } catch(error){
+        res.status(400).json({message: error.message});
+    }
+});
+
 module.exports = router;
