@@ -10,6 +10,7 @@ import "react-multi-carousel/lib/styles.css";
 import InsertProduct from "./pages/admin/InsertProductPage";
 import AdminHome from "./pages/admin/AdminHome";
 import ClubHome from "./components/clubs/ClubHome";
+import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
+        <Route path="editprofile" element={<PersonPortfolio/>} />
       </Routes>
     </Router>
   );
