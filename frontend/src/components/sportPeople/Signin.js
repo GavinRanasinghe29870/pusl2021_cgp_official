@@ -51,106 +51,116 @@ const Signin = () => {
     
     }
       return (
-        <div
-        className="min-h-screen flex justify-center items-center bg-cover bg-center relative"
-        style={{ backgroundImage: "url('/signin.jpg')" }} >
+        <div className="bg-blue-100 flex items-center justify-center min-h-screen">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
+        <h1 className="text-center text-2xl font-bold mb-8">Sign In</h1>
+        <div className="flex md:flex-row">
+          {/* Logo Section */}
+          <div className="flex-1 flex items-center justify-center">
+            <img src="/logo512.png" alt="logo" className="h-16 w-16" />
+          </div>
 
-       
+    
+            {/* Divider */}
+          <div className="w-px bg-blue-200 mx-8"></div>
 
-        {/* Centered Sign-in Container */}
-        <div className="relative flex w-[700px] bg-white bg-opacity-30 background-color (255,255,255,0.9) background-filter blur(10px) border-radius 1rem p-6 rounded-xl shadow-lg">
+{/* Sign-in Form */}
+<div className="flex-1">
+  <form onSubmit={handleSubmit}>
+    {/* Role Dropdown */}
+    <div className="mb-4">
+      <select
+        name="role"
+        className="block w-full bg-blue-900 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-blue-800"
+        value={role}
+        onChange={handleChange}>
+        
+        <option value="SportPeople">Sports People</option>
+                  <option value="Clubs">Clubs</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
 
-     {/* Left Side - Logo Section */}
-     <div className="hidden md:flex w-1/2 justify-center items-center bg-gray-100 bg-opacity-65 p-6 rounded-l-l ">
-          <img src="/logo192.png" alt="Logo" className="w-32 h-32 object-cover border border-gray-300 rounded-md" /> {/* Replace with actual logo */}
-        </div>
-    
-         {/* Right Side - Sign-in Form */}
-        <div className="w-full md:w-1/2 flex justify-center items-center p-8">
-          <div className="w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-center text-black-700">Sign In</h2>
-    
-            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-              {/* Role Dropdown */}
-              <select
-                name="role"
-                className="w-full p-3 bg-gray-200 rounded-md outline-none cursor-pointer"
-                value={role}
-                onChange={handleChange}
-              >
-                <option value="SportPeople">Sports People</option>
-                <option value="Clubs">Clubs</option>
-                <option value="Admin">Admin</option>
-              </select>
-    
               {/* Username Input */}
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                className="w-full p-3 bg-gray-100 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
-                value={username}
-                onChange={handleChange}
-                required
-              />
-    
-              {/* Password Input */}
-              <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Password"
-                className="w-full p-3 bg-gray-100 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
-                value={password}
-                onChange={handleChange}
-                required
-              />
+              <div className="mb-4">
+                <label className="block text-gray-700">Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Username"
+                  className="w-full px-4 py-2 border rounded bg-blue-100"
+                  value={username}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
+             {/* Password Input */}
+             <div className="mb-4 relative">
+                <label className="block text-gray-700">Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  className="w-full px-4 py-2 border rounded bg-blue-100"
+                  value={password}
+                  onChange={handleChange}
+                  required
+                />
+              
               {/* Toggle Eye Icon */}
-              <button
-                  type="button"
-                  className="absolute right-3 top-3 text-gray-600"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
+              <button type="button" className="absolute right-3 top-10 text-gray-600" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
     
               {/* Forgot Password */}
-              <div className="text-right font-semibold text-sm">
-                <a href="forgotPassword" className="text-black-600 hover:text-gray-800">
+              <div className="mb-4 text-right font-semibold">
+                <a href="forgotPassword" className="text-blue-900 font-bold hover:text-gray-800">
                   Forgot Password?
                 </a>
               </div>
     
               {/* Sign In Button */}
-              <button
-                type="submit"
-                className="w-full bg-[#0D1271] text-white font-bold p-3 rounded-md hover:bg-[#141a88] transition duration-300"
-              >
-                Sign In
-              </button>
+              <div className="mb-4">
+                <button
+                  type="submit"
+                  className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88] transition duration-300"
+                  disabled={loading}
+                >
+                  {loading ? "Signing in..." : "Sign In"}
+                </button>
+              </div>
             </form>
+            
     
             {/* Social Sign In */}
-            <div className="text-center font-semibold text-sm mt-4">Or Sign in using</div>
-            <div className="flex justify-center gap-4 mt-2">
-              <FaGoogle className="text-red-500 text-2xl cursor-pointer" />
-              <FaFacebook className="text-blue-500 text-2xl cursor-pointer" />
-              <FaLinkedin className="text-blue-700 text-2xl cursor-pointer" />
+            <div className="text-center mb-4">
+              <span className="text-gray-700">Or Sign in using</span>
+            <div className="flex justify-center space-x-4 mt-2">
+              <FaGoogle className="text-2xl text-blue-700 cursor-pointer" />
+              <FaFacebook className="text-2xl text-blue-700 cursor-pointer" />
+              <FaLinkedin className="text-2xl text-blue-700 cursor-pointer" />
+            </div>
             </div>
     
             {/* Sign Up Link */}
-            <p className="text-center font-semibold text-sm mt-4 text-black-600">
-              New Member?{" "}
-              <a href="signup" className="text-blue-700  font-semibold hover:underline">
-                Sign Up
+            <div className="text-center">
+            <span className="text-gray-700">New Member?{" "}
+              <a href="signup" className="text-blue-900  font-bold hover:underline">Sign Up
               </a>
-            </p>
+            </span>
+            </div>
+            </div>
+            </div>
+            </div>
           </div>
-        </div>
-        </div>
-        </div>
+          
+    
+
+        
+       
+
       
       )
 }
