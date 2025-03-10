@@ -1,55 +1,53 @@
-import { useState } from "react"
-//import axios from "axios"
+import React, { useState } from 'react'; // Add useState to the import//import axios from "axios"
 import { FaGoogle,FaFacebook,FaLinkedin } from 'react-icons/fa'
 import { Eye, EyeOff } from "lucide-react"; // Import eye icons
+import axios from 'axios';
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
+const SignIn = () => {
+  const [formData, setFormData] = useState({
+      username: "",
+      password: "",
+      sportLevel: "", 
+  });
 
-const Signin = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [role, setRole] = useState('SportPeople')
-    const [showPassword, setShowPassword] = useState(false)
-    const [loading, setLoading] = useState(false)
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-      const { name, value } = e.target
-      if (name === "username") setUsername(value)
-      if (name === "password") setPassword(value)
-      if (name === "role") setRole(value)
-    }
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setLoading(true)
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+ 
 
-        console.log("Submitted:",{username,password,role})
+  const handleChange = (e) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-        try {
-          const response = await fetch("http://localhost:5000/api/auth/signin",{
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password, role }),
-          })
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-          const data = await response.json()
-          console.log("Response:",data)
-
-          if(response.ok) {
-            localStorage.setItem("token",data.token)
-            alert("Signin Successful!")
-            //Redirect to dashboard if needed
-            //navigate("/dashboard")
-          }
-          else
-          {
-            alert(data.message || "Signin Failed!")
-          }
-        } 
-        catch (error) {
-          console.error("Signin Error:",error);
+    try {
+        console.log("Sending request with:", formData);
+        const response = await axios.post("http://localhost:5000/api/auth/signin", formData, {
+            headers: { "Content-Type": "application/json" }
+        });
+        localStorage.setItem("token", response.data.token);
+        alert("Sign In Successful!");
+        console.log("Sign in success:", response.data);
+        navigate("/")
+    } catch (err) {
+        console.error("Sign in error:", err);
+        if (err.response) {
+            setError(err.response.data.message || "Sign in failed");
+        } else {
+            setError("Network error. Please try again.");
         }
-      setLoading(false)
-    
+    } finally {
+        setLoading(false);
     }
+};
+
       return (
         <div className="bg-blue-100 flex items-center justify-center min-h-screen">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
@@ -70,11 +68,12 @@ const Signin = () => {
     {/* Role Dropdown */}
     <div className="mb-4">
       <select
-        name="role"
+        name="sportLevel"
         className="block w-full bg-blue-900 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-blue-800"
-        value={role}
+        value={formData.sportLevel}
         onChange={handleChange}>
         
+        <option value="" disabled>Select Sport Level</option>
         <option value="SportPeople">Sports People</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
@@ -89,7 +88,7 @@ const Signin = () => {
                   name="username"
                   placeholder="Username"
                   className="w-full px-4 py-2 border rounded bg-blue-100"
-                  value={username}
+                  value={formData.username}
                   onChange={handleChange}
                   required
                 />
@@ -103,7 +102,7 @@ const Signin = () => {
                   name="password"
                   placeholder="Password"
                   className="w-full px-4 py-2 border rounded bg-blue-100"
-                  value={password}
+                  value={formData.password}
                   onChange={handleChange}
                   required
                 />
@@ -165,10 +164,5 @@ const Signin = () => {
       )
 }
   
-    
-    
-  
-    
 
-
-export default Signin
+export default SignIn
