@@ -22,12 +22,13 @@ function App() {
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/Signup" element={<Signup />} />
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
         <Route path="editprofile" element={<PersonPortfolio/>} />
+
       </Routes>
     </Router>
   );
