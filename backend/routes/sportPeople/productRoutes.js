@@ -4,34 +4,35 @@ const router = express.Router();
 
 //Get all Products in loading
 router.get("/", async (req, res) => {
-    try{
+    try {
         const products = await Product.find();
         res.json(products);
 
     }
-    catch(err){
-        res.status(500).json({message: err.message});
+    catch (err) {
+        res.status(500).json({ message: err.message });
     }
 });
 
 //Get Products by Category
-router.get("/category/:category", async (req, res) => {
-    try{
-        const products = await Product.find({ category: req.params.category});
+router.get("/:category", async (req, res) => {
+    try {
+        const category = req.params.category;
+        const products = await Product.find({ pd_category:category });
         res.json(products);
-    }catch(err) {
-        res.status(500).json({message: err.message});
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 });
 
 //Insert Product
-router.post("/add", async(req, res) => {
-    try{
+router.post("/add", async (req, res) => {
+    try {
         const newProduct = new Product(req.body);
         const savedProduct = await newProduct.save();
         res.status(201).json(savedProduct);
-    } catch(error){
-        res.status(400).json({message: error.message});
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 });
 
