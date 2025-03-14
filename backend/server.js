@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
+
 //Load environment variables
 dotenv.config();
 
@@ -30,6 +31,9 @@ connection.once("open", ()=> {
 const authRoutes = require("./routes/sportPeople/authRoutes")
 const productRoutes = require("./routes/sportPeople/productRoutes"); 
 
+const donationRoutes = require("./routes/sportPeople/donationRoutes");
+const memberRoutes = require("./routes/clubs/memberRoutes");
+
 const jwt = require('jsonwebtoken')
 
 const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, { expiresIn: "1h" })
@@ -37,13 +41,24 @@ const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, { expiresIn:
 console.log("Generated Token:",token)
 
 
+app.post('/api/donation', (req, res) => {
+    console.log('Received donation request:', req.body); // Log the request body
+    // Process the donation data here...
+    res.send('Donation received!');
+  });
+
+  // Serve static files (for uploaded images)
+app.use('/public/uploads', express.static('uploads'));
+
+
 //Link Signin Authentication Routes
 app.use('/api/auth', authRoutes);
+
 app.use('/api/products', productRoutes);
+app.use("/api/donation", donationRoutes);
+app.use("/api/req", memberRoutes);
+
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
-
-
-
