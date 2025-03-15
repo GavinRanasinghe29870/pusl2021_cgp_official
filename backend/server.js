@@ -2,16 +2,24 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
 
 //Load environment variables
 dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 8070;
 
-app.use(cors());
-app.use(express.json())
+app.use(express.json());
+app.use(cors(
+    {
+        origin: "http://localhost:3000",
+        credentials: true,
+    }
+));
+app.use(express.urlencoded({ extended: true}));
+app.use(cookieParser());
 
+const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGODB_URL;
 mongoose.connect(URL, {
     // useCreateIndex: true,
@@ -26,21 +34,41 @@ connection.once("open", ()=> {
 
 const authRoutes = require("./routes/sportPeople/authRoutes")
 const productRoutes = require("./routes/sportPeople/productRoutes"); 
+const auth = require("./routes/admin/auth");
+const messageRoutes = require("./routes/clubs/messageRoutes.js");
+const donationRoutes = require("./routes/sportPeople/donationRoutes");
+const memberRoutes = require("./routes/clubs/memberRoutes");
 
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, { expiresIn: "1h" })
 
 console.log("Generated Token:",token)
 
 
+app.post('/api/donation', (req, res) => {
+    console.log('Received donation request:', req.body); // Log the request body
+    // Process the donation data here...
+    res.send('Donation received!');
+  });
+
+  // Serve static files (for uploaded images)
+app.use('/public/uploads', express.static('uploads'));
+
+
 //Link Signin Authentication Routes
 app.use('/api/auth', authRoutes);
+
+app.use('/api/admin', auth);
+
+
+
 app.use('/api/products', productRoutes);
+app.use("/api/donation", donationRoutes);
+app.use("/api/req", memberRoutes);
+app.use("/api/message", messageRoutes);
+
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
-
-
-
