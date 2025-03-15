@@ -20,7 +20,9 @@ import AdminSignin from './components/admin/AdminSignin';
 import RequestedMembers from "./components/clubs/ReqMemberView";
 
 
-import SingleProduct from './components/sportPeople/Singleproduct';
+import Singleproduct from './components/sportPeople/SingleProd';
+import RegistrationApproval from './components/clubs/RegistrationApproval';
+import DonorPortfolio from './components/sportPeople/Donorportfolio';
 
 
 
@@ -43,8 +45,10 @@ function App() {
         <Route path="editprofile" element={<PersonPortfolio/>} />
         <Route path="/RMview"element={<RequestedMembers/>}/>
 
-        <Route path='/singleproduct' element={<SingleProduct />} />
+        <Route path="/product/:id" element={<Singleproduct />} />
 
+        <Route path="/registrationApproval" element={<RegistrationApproval/>} />
+        <Route path="/Donorportfolio" element={<DonorPortfolio/>} />
       </Routes>
     </Router>
   );
