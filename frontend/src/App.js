@@ -1,4 +1,5 @@
 
+
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/sportPeople/Home";
@@ -19,6 +20,9 @@ import AdminSignin from './components/admin/AdminSignin';
 import RequestedMembers from "./components/clubs/ReqMemberView";
 
 
+import SingleProduct from './components/sportPeople/Singleproduct';
+
+
 
 function App() {
   return (
@@ -28,6 +32,7 @@ function App() {
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={<Signin />} />
+
         <Route path="/Signup" element={<Signup />} />
         <Route path="/admin/signin" element={ <AdminSignin />} />
 
@@ -37,6 +42,8 @@ function App() {
         <Route path="/club/home" element={<ClubHome />} />
         <Route path="editprofile" element={<PersonPortfolio/>} />
         <Route path="/RMview"element={<RequestedMembers/>}/>
+
+        <Route path='/singleproduct' element={<SingleProduct />} />
 
       </Routes>
     </Router>
