@@ -40,7 +40,6 @@ const donationRoutes = require("./routes/sportPeople/donationRoutes");
 const memberRoutes = require("./routes/clubs/memberRoutes");
 
 const jwt = require('jsonwebtoken');
-const cookieParser = require("cookie-parser");
 
 const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, { expiresIn: "1h" })
 
