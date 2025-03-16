@@ -9,6 +9,9 @@ import Signup from './components/sportPeople/Signup';
 import DonationRequestForm from './components/clubs/donationReq';
 import 'react-multi-carousel/lib/styles.css';
 import InsertProduct from './pages/admin/InsertProductPage';
+import RegisteredClub from './components/sportPeople/RegisteredClub';
+import Sport from './components/sportPeople/Sport';
+
 
 import "./App.css";
 
@@ -24,8 +27,10 @@ function App() {
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
-        < Route path="/donationReq" element={<DonationRequestForm/>}/>
+        <Route path="/donationReq" element={<DonationRequestForm/>}/>
         <Route path="/addProduct" element={<InsertProduct />} />
+        <Route path="/registeredClub" element={<RegisteredClub/>}/>
+        <Route path="/sport" element={<Sport />} />
       </Routes>
     </Router>
 

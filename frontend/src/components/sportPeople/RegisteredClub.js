@@ -1,5 +1,5 @@
 import React from "react";
-import ClubList from "../../ClubList/ClubList";
+import ClubList from "../ClubList/ClubList";
 
 const RegisteredClubs = () => {
   const registeredClubs = [
