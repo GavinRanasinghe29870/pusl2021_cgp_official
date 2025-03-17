@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/sportPeople/Navbar";
 import Footer from "./components/sportPeople/Footer";
@@ -29,19 +29,25 @@ import ClubChat from "./pages/clubs/ClubChat";
 
 function App() {
 
-  const { authUser, checkAuth , onlineUsers } = useAuthStore()
+  const { authUser, checkAuth, onlineUsers } = useAuthStore()
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-  
-  console.log({onlineUsers});
-  
+
+  console.log({ onlineUsers });
+
   useEffect(() => {
     checkAuth().finally(() => setLoading(false));
   }, [checkAuth]);
-  
+
   if (loading) {
-    return <div>Loading...</div>;
- }
+    return (
+      <div className='flex flex-1 items-center justify-center'>
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+          role="status">
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -50,22 +56,22 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
-        <Route path="/Signin" element={ !authUser ? <Signin /> : <Navigate to="/" />} />
-        <Route path="/Signup" element={ !authUser ? <Signup /> : <Navigate to="/" />} />
-        <Route path="/admin/signin" element={ <AdminSignin />} />
+        <Route path="/Signin" element={!authUser ? <Signin /> : <Navigate to="/" />} />
+        <Route path="/Signup" element={!authUser ? <Signup /> : <Navigate to="/" />} />
+        <Route path="/admin/signin" element={<AdminSignin />} />
 
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
-        <Route path="editprofile" element={<PersonPortfolio/>} />
-        <Route path="/RMview"element={<RequestedMembers/>}/>
+        <Route path="editprofile" element={<PersonPortfolio />} />
+        <Route path="/RMview" element={<RequestedMembers />} />
 
         <Route path="/product/:id" element={<Singleproduct />} />
 
-        <Route path="/registrationApproval" element={<RegistrationApproval/>} />
-        <Route path="/Donorportfolio" element={<DonorPortfolio/>} />
-        <Route path="/club/chat" element={ authUser ? <ClubChat /> : <Navigate to="/Signin" /> } />
+        <Route path="/registrationApproval" element={<RegistrationApproval />} />
+        <Route path="/Donorportfolio" element={<DonorPortfolio />} />
+        <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />
       </Routes>
       {location.pathname !== "/club/chat" && <Footer />}
     </div>

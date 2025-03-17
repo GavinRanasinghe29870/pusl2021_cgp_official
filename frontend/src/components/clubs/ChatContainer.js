@@ -1,9 +1,10 @@
-import React from 'react'
+import React from 'react';
 import { useChatStore } from '../../store/useChatStore';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, X, Paperclip, Smile, SendHorizonal } from "lucide-react";
 import { useAuthStore } from '../../store/useAuthStore';
 import { formatMessageTime } from '../../lib/utils';
+import EmojiPicker from './EmojiPicker';
 
 const ChatContainer = () => {
     const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages } = useChatStore();
@@ -13,7 +14,7 @@ const ChatContainer = () => {
     const fileInputRef = useRef(null);
     const { authUser } = useAuthStore();
     const messageEndRef = useRef(null);
-    const {onlineUsers} = useAuthStore();
+    const { onlineUsers } = useAuthStore();
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -52,13 +53,17 @@ const ChatContainer = () => {
         }
     };
 
+    const handleEmojiSelect = (emoji) => {
+        setText((prevText) => prevText + emoji.native);
+    };
+
     useEffect(() => {
         getMessages(selectedUser._id);
 
         subscribeToMessages();
         return () => unsubscribeFromMessages();
 
-    }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages ])
+    }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages])
 
     useEffect(() => {
         if (messageEndRef.current && messages) {
@@ -66,7 +71,15 @@ const ChatContainer = () => {
         }
     }, [messages]);
 
-    if (isMessagesLoading) return <div>Loading...</div>
+    if (isMessagesLoading) {
+        return (
+            <div className='flex flex-1 items-center justify-center'>
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                    role="status">
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className='flex-1 flex flex-col overflow-auto'>
@@ -159,18 +172,13 @@ const ChatContainer = () => {
                 )}
                 <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                     <div className="flex-1 flex gap-4">
+                        <EmojiPicker onEmojiSelect={handleEmojiSelect} />
                         <button
                             type="button"
                             className={`flex btn-circle`}
                             onClick={() => fileInputRef.current?.click()}
                         >
                             <Paperclip size={20} />
-                        </button>
-                        <button
-                            type="button"
-                            className={`flex btn-circle`}
-                        >
-                            <Smile size={20} />
                         </button>
                         <input
                             type="text"
@@ -200,4 +208,4 @@ const ChatContainer = () => {
     )
 }
 
-export default ChatContainer
+export default ChatContainer;
