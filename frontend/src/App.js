@@ -1,14 +1,14 @@
-
-
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {useState, useEffect} from "react";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import Navbar from "./components/sportPeople/Navbar";
+import Footer from "./components/sportPeople/Footer";
+import { useAuthStore } from "./store/useAuthStore.js";
 import Home from "./pages/sportPeople/Home";
 import ProductList from "./pages/clubs/ProductList";
 import ProductManage from './pages/admin/ProductManage';
 import Signin from "./components/sportPeople/Signin";
 import Signup from "./components/sportPeople/Signup";
 import DonationRequestForm from "./components/sportPeople/donation";
-import "react-multi-carousel/lib/styles.css";
 import InsertProduct from './components/admin/InsertProduct';
 import AdminHome from "./pages/admin/AdminHome";
 import ClubHome from "./components/clubs/ClubHome";
@@ -23,19 +23,35 @@ import RequestedMembers from "./components/clubs/ReqMemberView";
 import Singleproduct from './components/sportPeople/SingleProd';
 import RegistrationApproval from './components/clubs/RegistrationApproval';
 import DonorPortfolio from './components/sportPeople/Donorportfolio';
+import ClubChat from "./pages/clubs/ClubChat";
 
 
 
 function App() {
+
+  const { authUser, checkAuth , onlineUsers } = useAuthStore()
+  const location = useLocation();
+  const [loading, setLoading] = useState(true);
+  
+  console.log({onlineUsers});
+  
+  useEffect(() => {
+    checkAuth().finally(() => setLoading(false));
+  }, [checkAuth]);
+  
+  if (loading) {
+    return <div>Loading...</div>;
+ }
+
   return (
-    <Router>
+    <div>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
-        <Route path="/Signin" element={<Signin />} />
-
-        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Signin" element={ !authUser ? <Signin /> : <Navigate to="/" />} />
+        <Route path="/Signup" element={ !authUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/admin/signin" element={ <AdminSignin />} />
 
         <Route path="/donationReq" element={<DonationRequestForm />} />
@@ -49,8 +65,10 @@ function App() {
 
         <Route path="/registrationApproval" element={<RegistrationApproval/>} />
         <Route path="/Donorportfolio" element={<DonorPortfolio/>} />
+        <Route path="/club/chat" element={ authUser ? <ClubChat /> : <Navigate to="/Signin" /> } />
       </Routes>
-    </Router>
+      {location.pathname !== "/club/chat" && <Footer />}
+    </div>
   );
 }
 
