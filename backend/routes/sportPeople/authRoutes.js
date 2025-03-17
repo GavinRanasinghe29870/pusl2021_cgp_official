@@ -6,6 +6,7 @@ const router = express.Router()
 const { generateToken } = require("../../lib/utils.js");
 
 const allowedRoles = ["SportPeople", "Admin", "Clubs"];
+const { protectRoute } = require("../../middleware/authMiddleware.js");
 
 //User Sign-Up Route
 router.post("/signup", async (req, res) => {
@@ -121,6 +122,17 @@ router.post('/signin', async (req, res) => {
     console.error("Sign-in Error:", error);
     res.status(500).json({ error: "Server error" });  } 
 })
+
+const checkAuth = async (req, res) => {
+    try {
+        res.status(200).json(req.user);
+    } catch (error) {
+        console.log("Error in checkAuth controller", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+router.get("/check", protectRoute, checkAuth);
 
 
 module.exports = router;
