@@ -33,11 +33,12 @@ connection.once("open", ()=> {
 })
 
 const authRoutes = require("./routes/sportPeople/authRoutes")
-const productRoutes = require("./routes/sportPeople/productRoutes"); 
+const productRoutes = require("./routes/sportPeople/productRoutes");
 const auth = require("./routes/admin/auth");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
 const donationRoutes = require("./routes/sportPeople/donationRoutes");
 const memberRoutes = require("./routes/clubs/memberRoutes");
+const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes"); 
 
 const jwt = require('jsonwebtoken');
 
@@ -68,6 +69,15 @@ app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
 app.use("/api/message", messageRoutes);
 
+app.use('/api/singleproduct', SingleProductRoutes);
+
+// Middleware to serve product images (if using an "uploads" folder)
+app.use("/uploads", express.static("uploads"));
+
+// Fallback route for undefined API endpoints
+app.use((req, res, next) => {
+  res.status(404).json({ message: "API endpoint not found" });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
