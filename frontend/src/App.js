@@ -18,6 +18,8 @@ import ProductPage from './pages/sportPeople/ProductsPage';
 import AdminSignin from './components/admin/AdminSignin';
 
 import RequestedMembers from "./components/clubs/ReqMemberView";
+import Cart from "./components/sportPeople/cart";
+
 
 
 import Singleproduct from './components/sportPeople/SingleProd';
@@ -64,10 +66,7 @@ function App() {
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
-        <Route path="editprofile" element={<PersonPortfolio />} />
-        <Route path="/RMview" element={<RequestedMembers />} />
 
-        <Route path="/product/:id" element={<Singleproduct />} />
 
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
