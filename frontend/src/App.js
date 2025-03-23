@@ -14,6 +14,8 @@ import ClubHome from "./components/clubs/ClubHome";
 import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from './pages/sportPeople/ProductsPage';
 import RequestedMembers from "./components/clubs/ReqMemberView";
+import Cart from "./components/sportPeople/cart";
+
 
 
 function App() {
@@ -31,6 +33,7 @@ function App() {
         <Route path="/club/home" element={<ClubHome />} />
         <Route path="editprofile" element={<PersonPortfolio/>} />
         <Route path="/RMview"element={<RequestedMembers/>}/>
+        <Route path="/cart" element={<Cart/>}/>
 
       </Routes>
     </Router>
