@@ -3,6 +3,7 @@ import { FaGoogle,FaFacebook,FaLinkedin } from 'react-icons/fa'
 import { Eye, EyeOff } from "lucide-react"; // Import eye icons
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useAuthStore } from "../../store/useAuthStore";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { signin } = useAuthStore();
  
 
   const handleChange = (e) => {
@@ -28,14 +31,9 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-        console.log("Sending request with:", formData);
-        const response = await axios.post("http://localhost:5000/api/auth/signin", formData, {
-            headers: { "Content-Type": "application/json" }
-        });
-        localStorage.setItem("token", response.data.token);
-        alert("Sign In Successful!");
-        console.log("Sign in success:", response.data);
-        navigate("/")
+      await signin(formData);
+      alert("Sign in Successfully!");
+      navigate("/");
     } catch (err) {
         console.error("Sign in error:", err);
         if (err.response) {
