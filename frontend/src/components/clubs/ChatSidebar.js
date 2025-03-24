@@ -7,7 +7,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 const ChatSidebar = () => {
     const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
 
-    const {onlineUsers} = useAuthStore();
+    const { onlineUsers } = useAuthStore();
 
     const skeletonContacts = Array(8).fill(null);
 
@@ -47,13 +47,13 @@ const ChatSidebar = () => {
     </aside>
 
     return (
-        <aside className='h-full w-20 lg:w-96 border-r border-base-300 flex flex-col transition-all duration-200'>
-            <div className='border-b border-base-300 w-full p-4 lg:p-5'>
+        <aside className='h-full w-full lg:w-96 border-r border-base-300 flex flex-col transition-all duration-200'>
+            <div className='border-b border-base-300 w-full p-4 lg:p-5 shadow-md'>
                 <div className='flex items-center gap-3'>
                     <div className='w-12 h-12 rounded-xl bg-primary-light items-center justify-center flex'>
                         <MessageSquare size={30} className="text-primary" />
                     </div>
-                    <span className='font-medium text-xl hidden lg:block'>Chats</span>
+                    <span className='font-medium text-xl block'>Chats</span>
                 </div>
             </div>
             <div className='overflow-y-auto w-full py-3'>
@@ -62,14 +62,14 @@ const ChatSidebar = () => {
                         key={user._id}
                         onClick={() => setSelectedUser(user)}
                         className={`
-              w-full p-3 lg:pl-8 flex items-center gap-3
+              w-full p-3 pl-8 flex items-center gap-3 border-b lg:border-none
               hover:bg-primary-light transition-colors
               ${selectedUser?._id === user._id ? "bg-primary-light ring-1 ring-base-300" : ""}
             `}
                     >
-                        <div className="relative mx-auto lg:mx-0">
+                        <div className="relative mx-0">
                             <img
-                                src={user.profilePic || "/uploads/1741847942211-seon jae.jpg"}
+                                src={user.profilePic || "/defaultProfilePic.jpg"}
                                 alt={user.name}
                                 className="size-12 object-cover rounded-full"
                             />
@@ -82,7 +82,7 @@ const ChatSidebar = () => {
                         </div>
 
                         {/* User info - only visible on larger screens */}
-                        <div className="hidden lg:block text-left min-w-0">
+                        <div className="block text-left min-w-0">
                             <div className="font-medium truncate">{user.firstName}</div>
                             <div className="text-sm text-zinc-400">
                                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
