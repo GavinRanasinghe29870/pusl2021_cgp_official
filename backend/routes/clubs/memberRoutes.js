@@ -42,4 +42,59 @@ router.get("/members", async (req, res) => {
   }
 });
 
+
+// Approve Member
+router.post("/members/:id/approve", async (req, res) => {
+  try {
+    const updatedMember = await Member.findByIdAndUpdate(
+      req.params.id,
+      { status: "Approved" }, // Update status to Approved
+      { new: true }
+    );
+
+    if (!updatedMember) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res.status(200).json(updatedMember);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Reject Member
+router.post("/members/:id/reject", async (req, res) => {
+  try {
+    const updatedMember = await Member.findByIdAndUpdate(
+      req.params.id,
+      { status: "Rejected" }, // Update status to Rejected
+      { new: true }
+    );
+
+    if (!updatedMember) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res.status(200).json(updatedMember);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Move member back to Pending
+router.post("/members/:id/pending", async (req, res) => {
+  try {
+    const member = await Member.findById(req.params.id);
+    if (!member) return res.status(404).json({ error: "Member not found" });
+
+    member.status = "Pending"; // Change status back to Pending
+    await member.save();
+    res.status(200).json({ message: "Member moved to pending", member });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 module.exports = router;
