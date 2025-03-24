@@ -25,7 +25,12 @@ import Cart from "./components/sportPeople/cart";
 import Singleproduct from './components/sportPeople/SingleProd';
 import RegistrationApproval from './components/clubs/RegistrationApproval';
 import DonorPortfolio from './components/sportPeople/Donorportfolio';
+
+import Clubsignup from "./components/clubs/Clubsignup";
+import ClubSignIn from "./components/clubs/Clubsignin";
+
 import ClubChat from "./pages/clubs/ClubChat";
+
 
 
 
@@ -66,6 +71,11 @@ function App() {
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
+
+        <Route path="/product/:id" element={<Singleproduct />} />
+        <Route path="/Clubsignup" element={<Clubsignup />} />
+        <Route path="/Clubsignin" element={<ClubSignIn />} />
+
 
 
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
