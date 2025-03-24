@@ -85,7 +85,7 @@ const ChatContainer = () => {
         <div className='flex-1 flex flex-col overflow-auto'>
 
             {/* Chat Header */}
-            <div className="p-2.5 lg:p-5 border-b border-base-300">
+            <div className="p-2.5 lg:p-5 border-b border-base-300 shadow-md bg-primary-light">
                 <div className="flex items-center gap-5">
                     {/* Close button */}
                     <button onClick={() => setSelectedUser(null)}>
@@ -95,7 +95,7 @@ const ChatContainer = () => {
                         {/* Avatar */}
                         <div className="avatar">
                             <div className="size-10 rounded-full relative">
-                                <img src={selectedUser.profilePic || "/uploads/1741847942211-seon jae.jpg"} alt={selectedUser.firstName} className='rounded-full' />
+                                <img src={selectedUser.profilePic || "/defaultProfilePic.jpg"} alt={selectedUser.firstName} className='rounded-full' />
                             </div>
                         </div>
 
