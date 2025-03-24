@@ -23,7 +23,8 @@ import RequestedMembers from "./components/clubs/ReqMemberView";
 import Singleproduct from './components/sportPeople/SingleProd';
 import RegistrationApproval from './components/clubs/RegistrationApproval';
 import DonorPortfolio from './components/sportPeople/Donorportfolio';
-
+import Clubsignup from "./components/clubs/Clubsignup";
+import ClubSignIn from "./components/clubs/Clubsignin";
 
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
         <Route path="/RMview"element={<RequestedMembers/>}/>
 
         <Route path="/product/:id" element={<Singleproduct />} />
+        <Route path="/Clubsignup" element={<Clubsignup />} />
+        <Route path="/Clubsignin" element={<ClubSignIn />} />
+
 
         <Route path="/registrationApproval" element={<RegistrationApproval/>} />
         <Route path="/Donorportfolio" element={<DonorPortfolio/>} />

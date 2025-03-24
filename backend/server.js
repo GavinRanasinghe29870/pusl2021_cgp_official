@@ -39,8 +39,12 @@ const messageRoutes = require("./routes/clubs/messageRoutes.js");
 const donationRoutes = require("./routes/sportPeople/donationRoutes");
 const memberRoutes = require("./routes/clubs/memberRoutes");
 const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes"); 
+const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
+const ClubAuth =require("./routes/clubs/ClubAuth.js");
+
 
 const jwt = require('jsonwebtoken');
+
 
 const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, { expiresIn: "1h" })
 
@@ -52,6 +56,9 @@ app.post('/api/donation', (req, res) => {
     // Process the donation data here...
     res.send('Donation received!');
   });
+
+
+
 
   // Serve static files (for uploaded images)
 app.use('/public/uploads', express.static('uploads'));
@@ -68,8 +75,17 @@ app.use('/api/products', productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/ClubAuth", ClubAuth);
+
 
 app.use('/api/singleproduct', SingleProductRoutes);
+
+// Serve uploaded PDFs
+app.use("/uploads/pdfs", express.static("uploads/pdfs"));
+
+// Use Registration Approval Routes
+app.use("/api/registrationApproval", registrationApprovalRoutes);
+
 
 // Middleware to serve product images (if using an "uploads" folder)
 app.use("/uploads", express.static("uploads"));
