@@ -66,12 +66,7 @@ const App = () => {
 
       {/* Footer */}
       <footer className="bg-blue-200 p-4 text-center mt-8">
-        <h2 className="font-bold">Contact Details</h2>
-        <div className="flex justify-center space-x-8 mt-2">
-          <div>📞 +94 776543218</div>
-          <div>📍 112, Bambalapitiya, Colombo.</div>
-          <div>📧 sportyyy@gmail.com</div>
-        </div>
+        
       </footer>
     </div>
   );
