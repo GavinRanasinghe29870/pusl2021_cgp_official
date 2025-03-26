@@ -1,81 +1,139 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const User = require('../../models/sportPeople/signin') //Imports the User model
-
+const User = require("../../models/sportPeople/User")//Imports the User model
 const router = express.Router()
+const { generateToken } = require("../../lib/utils.js");
+
+const allowedRoles = ["SportPeople", "Admin", "Clubs"];
+const { protectRoute } = require("../../middleware/authMiddleware.js");
 
 //User Sign-Up Route
-router.post("/signup",async (req,res) => {
-  const {username,password, role } = req.body
+router.post("/signup", async (req, res) => {
+
+    console.log("Received Signup Request:", req.body);
   try {
-    
-    //Check if user already exists
-    const existingUser = await User.findOne({ username })
-    if (existingUser){
-      return res.status(400).json({ message: "User already exists!"})
+    const { firstName, age, username, password, confirmPassword, mobile, address, email, sportLevel, gender } = req.body;
+
+    // Check for missing required fields
+    if (!firstName || !age || !username || !password || !confirmPassword || !email || !sportLevel) {
+        return res.status(400).json({ error: "All required fields must be filled" });
     }
 
-    //Hash Password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt)
+    // Validate sportLevel
+    if (!sportLevel || !allowedRoles.includes(sportLevel)) {
+        console.error("Invalid sportLevel:", sportLevel);
+        return res.status(400).json({ error: `Invalid sportLevel selected: ${sportLevel}` });
+    }
+    
 
-    //Create new user
+    // Check if passwords match
+    if (!password || !confirmPassword || password !== confirmPassword) {
+        return res.status(400).json({ error: "Passwords do not match or are empty" });
+    }
+    
+
+    // Check if the user already exists
+    console.log("Checking database for existing username or email...");
+    const existingUser = await User.findOne({ 
+        $or: [{ username  }, { email }] });
+
+        console.log("Existing User Found:", existingUser);
+
+        if(existingUser){
+            return res.status(409).json({error: "User with this username or email already exists"})
+        }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new user instance
     const newUser = new User({
-      username,
-      password: hashedPassword,
-      role
-    })
+        firstName,
+        age,
+        username,
+        password: hashedPassword,
+        mobile,
+        address,
+        email,
+        sportLevel,  // Save the selected role
+        gender
+    });
 
-    await newUser.save()
+    if (newUser) {
+        // Generate jwt token and set cookie
+        generateToken(newUser._id, res);
+        // Save user
+        await newUser.save();
 
-    //Generate JWT Token
-    const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    })
-
-    res.status(201).json({ message: "User registered Sucessfully!",token })
-  } catch (error) {
-      console.error("Signup Error:",error.message)
-      res.status(500).json({ message: "Server Error!" })
-  }
-})
+        res.status(201).json({
+            _id: newUser._id,
+            firstName: newUser.firstName,
+            age: newUser.age,
+            username: newUser.username,
+            mobile: newUser.mobile,
+            address: newUser.address,
+            email: newUser.email,
+            sportLevel: newUser.sportLevel,
+            gender: newUser.gender,
+            message: "User registered successfully!"
+        });
+    } else {
+        res.status(400).json({ error: "Invalid user data" });
+    }
+} catch (error) {
+    console.error("Signup Error:", error);
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
+}
+});
 
 //User Sign-In Route
-router.post('/signin',async(req,res) => {
-   
-    const { username, password, role } = req.body 
+router.post('/signin', async (req, res) => {
+    console.log("Received Sign-In Request:", req.body);
+  const { username, password, sportLevel } = req.body;
 
-    //Checks if the user exists
-     try { 
+  try {
+      const user = await User.findOne({ username, sportLevel });
+      if (!user) 
+        {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
-        //find user
-        const user = await User.findOne({ username, role })
-        if (!user) return res.status(404).json({ message: 'User not found'})
-        
-        //Check Password
-        const isValidPassword = await bcrypt.compare(password,user.password)
-        if(!isValidPassword) return res.status(401).json({ message: 'Invalid Password'})
-        
-       // Generate a token
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token, message: 'Sign in successful' });
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword)
+        { 
+            return res.status(401).json({ error: 'Invalid Password' });
+        }
+
+        generateToken(user._id, res);
+        res.status(200).json({
+            _id: user._id,
+            firstName: user.firstName,
+            age: user.age,
+            username: user.username,
+            mobile: user.mobile,
+            address: user.address,
+            email: user.email,
+            sportLevel: user.sportLevel,
+            gender: user.gender,
+            message: "User signed in successfully!"
+        });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-    
+    console.error("Sign-in Error:", error);
+    res.status(500).json({ error: "Server error" });  } 
 })
 
-/* router.post('/google', async (req, res) => { 
-    // Implement Google OAuth logic
-   });
+const checkAuth = async (req, res) => {
+    try {
+        res.status(200).json(req.user);
+    } catch (error) {
+        console.log("Error in checkAuth controller", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
 
-router.post('/facebook', async (req, res) => {
-    // Implement Facebook OAuth logic
-  });
+router.get("/check", protectRoute, checkAuth);
 
-router.post('/linkedin', async (req, res) => {
-    // Implement LinkedIn OAuth logic
-  }); */
-module.exports = router 
+
+module.exports = router;
 
