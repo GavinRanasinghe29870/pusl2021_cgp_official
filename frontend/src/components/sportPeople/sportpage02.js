@@ -8,8 +8,7 @@ import 'react-multi-carousel/lib/styles.css';
 const SportPage02 = () => {
   return (
     <div className="w-full min-h-screen bg-gray-100">
-      {/* Navbar */}
-      <Navbar />
+      
 
       {/* Main Section */}
       <div className="p-8 grid grid-cols-3 gap-4">
