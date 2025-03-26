@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { IoNotifications } from "react-icons/io5";
 import { MdOutlineShoppingBag } from "react-icons/md";
@@ -7,7 +7,7 @@ import { FiMenu } from "react-icons/fi";
 import { FiUser } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
@@ -24,7 +24,7 @@ const Navbar = () => {
     const [searchOpen, setSearchOpen] = React.useState(false);
 
     return (
-        <nav className='sticky top-0 z-50 shadow-lg'>
+        <nav className='sticky top-0 z-50 shadow-md'>
             <div className='hidden md:flex mb-1 px-6 bg-primary-light py-1 justify-end gap-6 rounded-b-2xl text-xs xl:text-base'>
                 <div>
                     <p>info@sportnest.com | 011-123-4567</p>
@@ -39,37 +39,38 @@ const Navbar = () => {
                     <FiMenu onClick={openSideMenu} className='md:hidden text-3xl cursor-pointer' />
                     {isSideMenuOpen && <MobileNav closeSideMenu={closeSideMenu} />}
                     {/* Logo Section */}
-                    <div className='text-1xl xl:text-2xl flex items-center gap-2 font-bold py-4'>
-                        <a href='#' className='text-primary logo-txt'><span className='underline'>SPORT</span><span className='parallelogram-bg'>NEST</span></a>
-                    </div>
+                    <NavLink to="/">
+                        <div className='text-1xl xl:text-2xl flex items-center gap-2 font-bold py-4'>
+                            <a href='#' className='text-primary logo-txt'><span className='underline'>SPORT</span><span className='parallelogram-bg'>NEST</span></a>
+                        </div>
+                    </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
                         <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8'>
                             <li>
-                                <a href='#' className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold'>Home</a>
+                                <NavLink to="/" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Home</NavLink>
                             </li>
                             <li className="relative group">
                                 <a className="relative cursor-pointer flex items-center gap-2 font-body text-sm xl:text-base py-2 px-3 text-gray-700 group-hover:text-primary font-semibold">
-                                    Club Center <IoIosArrowDown className="text-xl rotate-0 transition-all group-hover:rotate-180" />
+                                    Club Center <IoIosArrowUp className="text-xl rotate-180 transition-all group-hover:rotate-0" />
                                 </a>
-                                <div className="absolute left-0 top-full hidden w-44 xl:w-64 flex-col rounded-xl bg-white py-4 shadow-lg transition-all group-hover:flex">
-                                    <a href="#" className="flex items-center font-body text-sm xl:text-base gap-3 px-5 py-3 text-gray-700 hover:text-primary hover:bg-primary-light font-semibold">
+                                <div className="absolute top-full left-0 hidden w-44 xl:w-64 flex-col rounded-xl bg-white py-4 shadow-lg transition-all group-hover:flex">
+                                    <NavLink to="" className="flex items-center font-body text-sm xl:text-base gap-3 px-5 py-3 text-gray-700 hover:text-primary hover:bg-primary-light font-semibold" activeClassName="active">
                                         Registered Clubs
-                                    </a>
-                                    <a href="#" className="flex items-center font-body text-sm xl:text-base gap-3 px-5 py-3 text-gray-700 hover:text-primary font-semibold hover:bg-primary-light">
+                                    </NavLink>
+                                    <NavLink to="/club/chat" className="flex items-center font-body text-sm xl:text-base gap-3 px-5 py-3 text-gray-700 hover:text-primary font-semibold hover:bg-primary-light" activeClassName="active">
                                         Club Chat
-                                    </a>
+                                    </NavLink>
                                 </div>
                             </li>
-
                             <li>
-                                <a href='#' className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold'>Friend Zone</a>
+                                <NavLink to="/aa" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Friend Zone</NavLink>
                             </li>
                             <li>
-                                <a href='#' className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold'>About Us</a>
+                                <NavLink to="/dd" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">About Us</NavLink>
                             </li>
                             <li>
-                                <a href='#' className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center'><MdOutlineShoppingBag className='text-xl font-body' />Shop</a>
+                                <NavLink to="/shop" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active"><MdOutlineShoppingBag className='text-xl font-body' />Shop</NavLink>
                             </li>
                         </ul>
                     </div>
@@ -81,12 +82,16 @@ const Navbar = () => {
                         <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
                             <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
                         </button>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                            <FaShoppingCart className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                        </button>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                            <FiUser className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                        </button>
+                        <NavLink to="">
+                            <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                                <FaShoppingCart className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                            </button>
+                        </NavLink>
+                        <NavLink to="/Signin">
+                            <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                                <FiUser className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                            </button>
+                        </NavLink>
                     </div>
                 </div>
                 <div className='relative flex justify-center'>
@@ -130,28 +135,28 @@ function MobileNav({ closeSideMenu }) {
                 {/* Menu Section */}
                 <ul className='flex flex-col gap-7 pt-16 pl-7'>
                     <li>
-                        <a href='#' className='font-body text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold'>Home</a>
+                        <NavLink to="/" className='mobile-nav' activeClassName="active">Home</NavLink>
                     </li>
                     <li className='relative group' ref={animationParent}>
                         <a onClick={toggleDropdown} className='relative flex items-center gap-2 font-body text-base py-1 px-1 text-gray-700 group-hover:text-primary font-semibold cursor-pointer'>
-                            Club Center <IoIosArrowDown className={`text-xl transition-transform ${isDropdownOpen ? 'rotate-0' : 'rotate-180'}`} />
+                            Club Center <IoIosArrowUp className={`text-xl transition-transform ${isDropdownOpen ? 'rotate-0' : 'rotate-180'}`} />
                         </a>
                         <div className={`right-0 top-10 flex-col gap-4 px-5 transition-all ${isDropdownOpen ? 'flex' : 'hidden'}`}>
-                            <a href='#' className='font-body text-base inline-block pt-5 pb-3 px-3 text-gray-700 hover:text-primary font-semibold'>Registered Clubs</a>
-                            <a href='#' className='font-body text-base inline-block px-3 text-gray-700 hover:text-primary font-semibold'>Club Chat</a>
+                            <NavLink to="" className='font-body text-base inline-block pt-5 pb-3 px-3 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Registered Clubs</NavLink>
+                            <NavLink to="/club/chat" className='font-body text-base inline-block px-3 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Club Chat</NavLink>
                         </div>
                     </li>
                     <li>
-                        <a href='#' className='font-body text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold'>Friend Zone</a>
+                        <NavLink to="/friend-zone" className='mobile-nav' activeClassName="active">Friend Zone</NavLink>
                     </li>
                     <li>
-                        <a href='#' className='font-body text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold'>About Us</a>
+                        <NavLink to="/about-us" className='mobile-nav' activeClassName="active">About Us</NavLink>
                     </li>
                     <li>
-                        <a href='#' className='font-body text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center'><MdOutlineShoppingBag className='text-xl font-body' />Shop</a>
+                        <NavLink to="/shop" className='mobile-nav flex items-center' activeClassName="active"><MdOutlineShoppingBag className='text-xl font-body' />Shop</NavLink>
                     </li>
                     <li>
-                        <a href='#' className='font-body text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold'>Help Center</a>
+                        <NavLink to="/help-center" className='font-body text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Help Center</NavLink>
                     </li>
                 </ul>
             </div>
@@ -159,4 +164,4 @@ function MobileNav({ closeSideMenu }) {
     );
 }
 
-export default Navbar
+export default Navbar;
