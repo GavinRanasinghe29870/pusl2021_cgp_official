@@ -14,6 +14,9 @@ import AdminHome from "./pages/admin/AdminHome";
 import ClubHome from "./components/clubs/ClubHome";
 import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from './pages/sportPeople/ProductsPage';
+import AdPost from './components/clubs/adposting';
+import SportPage from './components/sportPeople/sportpage02';
+
 
 import AdminSignin from './components/admin/AdminSignin';
 
@@ -66,6 +69,8 @@ function App() {
         <Route path="/Signin" element={!authUser ? <Signin /> : <Navigate to="/" />} />
         <Route path="/Signup" element={!authUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/admin/signin" element={<AdminSignin />} />
+        <Route path="/sport" element={<SportPage/>} />
+        <Route path="/adpost" element={<AdPost/>} />
 
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />
