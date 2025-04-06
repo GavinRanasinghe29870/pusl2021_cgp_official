@@ -1,11 +1,9 @@
 import React from 'react'
 import '../../App.css';
-import Navbar from '../../components/sportPeople/Navbar';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import Footer from '../../components/sportPeople/Footer';
 
 const Home = (props) => {
   const categories = [
@@ -62,7 +60,7 @@ const Home = (props) => {
       {/* Banner Section */}
       <div className='pb-14'>
         <div className='relative'>
-          <img src='/Site Banner.jpg' alt='home' className='w-full object-cover h-[55rem] bg-blend-darken brightness-50' />
+          <img src='/Site Banner.jpg' alt='home' className='w-full object-cover h-screen bg-blend-darken brightness-50' />
           <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center text-white px-4'>
             <h1 className='font-header text-header-01 font-bold'>Join Us and You’ll Never Have to Play Alone.</h1>
             <p className='mt-4 pb-[25px] text-center font-header text-header-04 font-bold w-[80%] xl:w-[50%] '>Bring your community together with the ultimate all-in-one sports web application. Connect, socialize, and access a variety of sports facilities-all in one place. Trusted by 500+ sports clubs in Sri Lanka.</p>
@@ -83,12 +81,12 @@ const Home = (props) => {
           transitionDuration={2000}
           containerClass="carousel-container"
         >
-          <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-80 object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-80 object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/netBall.jpg' className='w-full h-80 object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/chess.jpg' className='w-full h-80 object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/football.jpg' className='w-full h-80 object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/Tennis.jpg' className='w-full h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/netBall.jpg' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/chess.jpg' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/football.jpg' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Tennis.jpg' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
         </Carousel>
       </div>
 
@@ -131,18 +129,18 @@ const Home = (props) => {
           transitionDuration={2000}
           containerClass="carousel-container"
         >
-          <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/netBall.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/chess.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/football.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
-          <div style={{ padding: '0 10px' }}><img src='/Tennis.jpg' className='w-full h-[21.8rem] object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/netBall.jpg' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/chess.jpg' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/football.jpg' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
+          <div style={{ padding: '0 10px' }}><img src='/Tennis.jpg' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
         </Carousel>
       </div>
 
       {/* About Sports */}
       <div className='pb-[150px] pt-[7rem]'>
-        <div className='container bg-[#fafcff] rounded-md shadow-lg'>
+        <div className='bg-[#fafcff] rounded-md shadow-lg'>
           <div className='pt-[4.5rem] pb-[2.5rem]'>
             <h4 className='text-center font-header text-header-02 font-bold'>About <span className='text-primary'>Sports</span></h4>
             <h6 className='text-center font-body'>Learn more about the sports you love</h6>
