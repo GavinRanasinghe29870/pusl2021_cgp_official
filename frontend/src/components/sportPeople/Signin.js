@@ -1,51 +1,55 @@
-import React, { useState } from 'react'; // Add useState to the import//import axios from "axios"
+import { useState } from "react"
+//import axios from "axios"
 import { FaGoogle,FaFacebook,FaLinkedin } from 'react-icons/fa'
 import { Eye, EyeOff } from "lucide-react"; // Import eye icons
-import axios from 'axios';
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { useAuthStore } from "../../store/useAuthStore";
 
-const SignIn = () => {
-  const [formData, setFormData] = useState({
-      username: "",
-      password: "",
-      sportLevel: "", 
-  });
 
-  const navigate = useNavigate();
+const Signin = () => {
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [role, setRole] = useState('SportPeople')
+    const [showPassword, setShowPassword] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const { signin } = useAuthStore();
- 
-
-  const handleChange = (e) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      await signin(formData);
-      alert("Sign in Successfully!");
-      navigate("/");
-    } catch (err) {
-        console.error("Sign in error:", err);
-        if (err.response) {
-            setError(err.response.data.message || "Sign in failed");
-        } else {
-            setError("Network error. Please try again.");
-        }
-    } finally {
-        setLoading(false);
+    const handleChange = (e) => {
+      const { name, value } = e.target
+      if (name === "username") setUsername(value)
+      if (name === "password") setPassword(value)
+      if (name === "role") setRole(value)
     }
-};
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setLoading(true)
 
+        console.log("Submitted:",{username,password,role})
+
+        try {
+          const response = await fetch("http://localhost:5000/api/auth/signin",{
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password, role }),
+          })
+
+          const data = await response.json()
+          console.log("Response:",data)
+
+          if(response.ok) {
+            localStorage.setItem("token",data.token)
+            alert("Signin Successful!")
+            //Redirect to dashboard if needed
+            //navigate("/dashboard")
+          }
+          else
+          {
+            alert(data.message || "Signin Failed!")
+          }
+        } 
+        catch (error) {
+          console.error("Signin Error:",error);
+        }
+      setLoading(false)
+    
+    }
       return (
         <div className="bg-blue-100 flex items-center justify-center min-h-screen">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
@@ -66,12 +70,11 @@ const SignIn = () => {
     {/* Role Dropdown */}
     <div className="mb-4">
       <select
-        name="sportLevel"
+        name="role"
         className="block w-full bg-blue-900 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-blue-800"
-        value={formData.sportLevel}
+        value={role}
         onChange={handleChange}>
         
-        <option value="" disabled>Select Sport Level</option>
         <option value="SportPeople">Sports People</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
@@ -86,7 +89,7 @@ const SignIn = () => {
                   name="username"
                   placeholder="Username"
                   className="w-full px-4 py-2 border rounded bg-blue-100"
-                  value={formData.username}
+                  value={username}
                   onChange={handleChange}
                   required
                 />
@@ -100,7 +103,7 @@ const SignIn = () => {
                   name="password"
                   placeholder="Password"
                   className="w-full px-4 py-2 border rounded bg-blue-100"
-                  value={formData.password}
+                  value={password}
                   onChange={handleChange}
                   required
                 />
@@ -162,5 +165,10 @@ const SignIn = () => {
       )
 }
   
+    
+    
+  
+    
 
-export default SignIn
+
+export default Signin

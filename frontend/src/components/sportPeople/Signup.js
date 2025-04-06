@@ -1,8 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { Eye, EyeOff } from "react-feather";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { useAuthStore } from "../../store/useAuthStore";
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -18,246 +15,68 @@ const SignUp = () => {
       gender: "",
     })
 
-    const navigate = useNavigate();
-
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [loading, setLoading] = useState(false);
-
-    const { signup, isSigningUp } = useAuthStore();
-
-    useEffect(() => {
-      console.log("Form Data Updated:", formData);
-  }, [formData]);
-
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
       }
     
       const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        const response = await fetch("http://localhost:5000/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+    
+        const data = await response.json();
+        alert(data.message);
+      };
 
-        console.log("Form Data Before Sending:", formData);
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-blue-100 p-10 rounded-lg shadow-lg flex">
+        <div className="w-1/3 bg-white flex items-center justify-center">
+          <h2 className="text-xl font-bold">LOGO</h2>
+        </div>
+        <div className="w-2/3 p-5">
+          <h2 className="text-2xl font-bold mb-5 text-center">Sign Up</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <input type="text" name="firstName" placeholder="First Name" className="p-2 border rounded w-full" onChange={handleChange} required />
+              <input type="number" name="age" placeholder="Age" className="p-2 border rounded w-full" onChange={handleChange} required />
+              <input type="text" name="username" placeholder="Username" className="p-2 border rounded w-full" onChange={handleChange} required />
+              <input type="password" name="password" placeholder="Password" className="p-2 border rounded w-full" onChange={handleChange} required />
+              <input type="password" name="confirmPassword" placeholder="Re-enter Password" className="p-2 border rounded w-full" onChange={handleChange} required />
+              <input type="text" name="mobile" placeholder="Mobile" className="p-2 border rounded w-full" onChange={handleChange} required />
+              <input type="text" name="address" placeholder="Address" className="p-2 border rounded w-full" onChange={handleChange} required />
+              <input type="email" name="email" placeholder="Email" className="p-2 border rounded w-full" onChange={handleChange} required />
+            </div>
 
-        if (!formData.sportLevel) {
-          alert("Please select a Sport Level.");
-          setLoading(false);
-          return;
-      }
+            <select name="sportLevel" className="p-2 border rounded w-full" onChange={handleChange} required>
+              <option value="">Choose Sport Level</option>
+              <option value="SportPeople">SportPeople</option>
+              <option value="Admin">Admin</option>
+              <option value="Clubs">Clubs</option>
+            </select>
 
-      if (!formData.firstName || !formData.age || !formData.username || !formData.password ||
-        !formData.confirmPassword || !formData.email || !formData.gender) {
-        alert("All required fields must be filled.");
-        setLoading(false);
-        return;
-    }
+            <div className="flex space-x-4">
+              <label className="flex items-center">
+                <input type="radio" name="gender" value="Male" onChange={handleChange} required />
+                <span className="ml-2">Male</span>
+              </label>
+              <label className="flex items-center">
+                <input type="radio" name="gender" value="Female" onChange={handleChange} required />
+                <span className="ml-2">Female</span>
+              </label>
+            </div>
 
-       if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
-            setLoading(false);
-            return;
-        }
-        
-
-        try{
-        await signup(formData);
-            alert("User Registered Successfully!");
-            navigate("/");
-      } 
-      catch (error) 
-      {
-        console.error("Signup Error:", error);
-      } 
-    finally
-    {
-        setLoading(false);
-    }
-  };
-
-    return (
-      <div className="bg-blue-100 flex items-center justify-center min-h-screen overflow-hidden">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl h-[96vh]">
-          <h1 className="text-center text-2xl font-bold mb-6">Sign Up</h1>
-
-          <div className="flex md:flex-row">
-          {/* Logo Section */}
-    <div className="flex-1 flex items-center justify-center">
-        <img src="/logo512.png" alt="logo" className="h-16 w-16" />
+            <button type="submit" className="bg-[#0D1271] text-white px-5 py-2 rounded w-full">Sign Up</button>
+          </form>
+        </div>
+      </div>
     </div>
-
-    {/* Divider */}
-
-    <div className="border-l border-blue-200 mx-4"></div>
-    {/* Sign-up Form */}
-    <div className="flex-1">                
-      <form onSubmit={handleSubmit}>
-    {/* First Name */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">First Name</label>
-    <input
-        type="text"
-        name="firstName"
-        placeholder="First Name"
-        className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-        value={formData.firstName}
-        onChange={handleChange}
-        required
-    />
-    </div>
-
-    {/* Age */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">Age</label>
-    <input
-        type="number"
-        name="age"
-        placeholder="Age"
-        className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-        value={formData.age}
-        onChange={handleChange}
-        required
-    />
-    </div>
-
-    {/* Username */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">Username</label>
-    <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-        value={formData.username}
-        onChange={handleChange}
-        required
-    />
-    </div>
-
-    {/* Password */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">Password</label>
-    <div className="relative">
-        <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-            value={formData.password}
-            onChange={handleChange}
-            required
-        />
-        <button type="button" className="absolute right-3 top-2" onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-        </button>
-    </div>
-    </div>
-
-    {/* Confirm Password */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">Confirm Password</label>
-    <div className="relative">
-        <input
-            type={showConfirmPassword ? "text" : "password"}
-            name="confirmPassword"
-            placeholder="Re-enter Password"
-            className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-        />
-        <button type="button" className="absolute right-3 top-2" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-            {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-        </button>
-    </div>
-    </div>
-
-    {/* Mobile */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">Mobile</label>
-    <input
-        type="text"
-        name="mobile"
-        placeholder="Mobile"
-        className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-        value={formData.mobile}
-        onChange={handleChange}
-        required
-    />
-    </div>
-
-    {/* Email */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">Email</label>
-    <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-        value={formData.email}
-        onChange={handleChange}
-        required
-    />
-    </div>
-
-    {/* Address */}
-    <div className="mb-3">
-    <label className="block text-gray-700 text-sm">Address</label>
-    <input
-        type="text"
-        name="address"
-        placeholder="Address"
-        className="w-full px-2 py-1 border rounded bg-blue-100 text-sm"
-        value={formData.address}
-        onChange={handleChange}
-        required
-    />
-    </div>
-
-    {/* Sport Level */}
-    <div className="mb-3">
-    <select
-        name="sportLevel"
-        className="w-full bg-blue-900 text-white py-2 px-4 pr-8 rounded text-sm"
-        value={formData.sportLevel}
-        onChange={handleChange}
-    >
-        <option value="" disabled>Select Sport Level</option>
-        <option value="SportPeople">Sports People</option>
-        <option value="Clubs">Clubs</option>
-        <option value="Admin">Admin</option>
-    </select>
-    </div>
-
-    {/* Gender */}
-    <div className="mb-2">
-    <label className="block text-gray-700 text-sm">Gender</label>
-    <div className="flex space-x-4">
-        <label>
-            <input type="radio" name="gender" value="Male" onChange={handleChange} required /> Male
-        </label>
-        <label>
-            <input type="radio" name="gender" value="Female" onChange={handleChange} required /> Female
-        </label>
-    </div>
-    </div>
-
-    {/* Submit Button */}
-    <button
-        type="submit"
-        className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88] transition duration-300 col-span-2 text-sm"
-        disabled={loading}
-    >
-        {loading ? "Signing up..." : "Sign Up"}
-    </button>
-</form>
-</div>
-     </div>
-  </div>
-</div>
-        
-    );
+  );
 };
+
 export default SignUp;
     
     

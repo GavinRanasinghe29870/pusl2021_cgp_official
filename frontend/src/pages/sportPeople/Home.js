@@ -59,6 +59,7 @@ const Home = (props) => {
 
   return (
     <div>
+      <Navbar />
       {/* Banner Section */}
       <div className='pb-14'>
         <div className='relative'>
@@ -164,6 +165,7 @@ const Home = (props) => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
