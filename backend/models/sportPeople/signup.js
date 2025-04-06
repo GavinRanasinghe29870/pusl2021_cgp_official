@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     sportLevel: { type: String },
     gender: { type: String },
-    role: { type: String } // Assuming you have a role field
+    role: { type: String }
 });
 
 const SignupUser = mongoose.model('User', userSchema);

@@ -49,5 +49,4 @@ router.post('/facebook', async (req, res) => {
 router.post('/linkedin', async (req, res) => {
     // Implement LinkedIn OAuth logic
   }); */
-module.exports = router 
-
+module.exports = router

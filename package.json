@@ -8,6 +8,7 @@
   "version": "1.0.0",
   "description": "All in one sport web application which facilitates users to gather socially within their area and many other sport facilities",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "cd frontend && npm start",
