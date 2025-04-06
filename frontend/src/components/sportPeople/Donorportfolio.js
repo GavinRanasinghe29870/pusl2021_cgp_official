@@ -27,7 +27,9 @@ const DonorPortfolio = () => {
   return (
     <div className="bg-gray-100 min-h-screen py-8 px-4">
       <div className="container mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center text-blue-600">Donor Portfolio - We Are Here To Support You</h1>
+        <h1 className="text-4xl font-bold mb-8 text-center text-primary">
+          Donor Portfolio - We Are Here To Support You
+        </h1>
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -71,17 +73,17 @@ const DonorPortfolio = () => {
 
                 <div className="p-6">
                   <div className="flex items-start mb-4">
-                    <FaMapMarkerAlt className="text-blue-500 mt-1 mr-3 flex-shrink-0" />
+                    <FaMapMarkerAlt className="text-primary mt-1 mr-3 flex-shrink-0" />
                     <p className="text-gray-700">{donation.address}</p>
                   </div>
 
                   <div className="flex items-start mb-4">
-                    <FaEnvelope className="text-blue-500 mt-1 mr-3 flex-shrink-0" />
+                    <FaEnvelope className="text-primary mt-1 mr-3 flex-shrink-0" />
                     <p className="text-gray-700">{donation.email}</p>
                   </div>
 
                   <div className="flex items-start mb-4">
-                    <FaPhone className="text-blue-500 mt-1 mr-3 flex-shrink-0" />
+                    <FaPhone className="text-primary mt-1 mr-3 flex-shrink-0" />
                     <p className="text-gray-700">{donation.phone}</p>
                   </div>
 
@@ -92,7 +94,7 @@ const DonorPortfolio = () => {
 
                   <div className="mt-6">
                     <button
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200"
+                      className="w-full bg-primary hover:bg-primary-light text-white font-bold py-3 px-4 rounded-lg transition duration-200"
                       onClick={() => window.location.href = `mailto:${donation.email}?subject=Responding to your donation request`}
                     >
                       Contact
