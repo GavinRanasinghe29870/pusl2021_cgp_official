@@ -22,15 +22,15 @@ app.use(cookieParser());
 const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGODB_URL;
 mongoose.connect(URL, {
-    // useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    // useFindAndModify: false
+  // useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  // useFindAndModify: false
 });
-const connection = mongoose.connection
-connection.once("open", ()=> {
-    console.log("Mongodb Connection success!");
-})
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("Mongodb Connection success!");
+});
 
 const authRoutes = require("./routes/sportPeople/authRoutes")
 const productRoutes = require("./routes/sportPeople/productRoutes");
@@ -46,9 +46,11 @@ const ClubAuth =require("./routes/clubs/ClubAuth.js");
 const jwt = require('jsonwebtoken');
 
 
-const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, { expiresIn: "1h" })
+const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
+  expiresIn: "1h",
+});
 
-console.log("Generated Token:",token)
+console.log("Generated Token:", token);
 
 
 app.post('/api/donation', (req, res) => {
@@ -60,18 +62,15 @@ app.post('/api/donation', (req, res) => {
 
 
 
-  // Serve static files (for uploaded images)
-app.use('/public/uploads', express.static('uploads'));
-
+// Serve static files (for uploaded images)
+app.use("/public/uploads", express.static("uploads"));
 
 //Link Signin Authentication Routes
-app.use('/api/auth', authRoutes);
+app.use("/api/auth", authRoutes);
 
-app.use('/api/admin', auth);
+app.use("/api/admin", auth);
 
-
-
-app.use('/api/products', productRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
 
