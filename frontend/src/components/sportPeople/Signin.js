@@ -3,6 +3,7 @@ import { FaGoogle, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { Eye, EyeOff } from "lucide-react"; // Import eye icons
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useAuthStore } from "../../store/useAuthStore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,6 +20,9 @@ const SignIn = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { signin } = useAuthStore();
+ 
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -29,22 +33,9 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      console.log("Sending request with:", formData);
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/signin",
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      localStorage.setItem("token", response.data.token);
-
-      toast.success("Sign In Successful!", { position: "top-center" });
-      console.log("Sign in success:", response.data);
-
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      await signin(formData);
+      alert("Sign in Successfully!");
+      navigate("/");
     } catch (err) {
       console.error("Sign in error:", err);
       toast.error(

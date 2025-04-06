@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Eye, EyeOff } from "react-feather";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useAuthStore } from "../../store/useAuthStore";
 import { ToastContainer, toast } from "react-toastify"; // Import toast
 import "react-toastify/dist/ReactToastify.css";
 
@@ -24,6 +25,8 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const { signup, isSigningUp } = useAuthStore();
 
     useEffect(() => {
       console.log("Form Data Updated:", formData);
@@ -59,15 +62,9 @@ const SignUp = () => {
         
 
         try{
-        const response = await axios.post("http://localhost:5000/api/auth/signup", formData);
-      
-        if (response.status === 201)
-        {
-            toast.success("Signup is Successful!"); // Success toast
-            setTimeout(() => {
-                navigate("/");
-            }, 2000); // Redirect after 2 seconds
-        }
+        await signup(formData);
+            alert("User Registered Successfully!");
+            navigate("/");
       } 
       catch (error) 
       {

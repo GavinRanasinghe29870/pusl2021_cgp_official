@@ -1,21 +1,12 @@
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const session = require("express-session");
-const User = require("../../models/sportPeople/User"); //Imports the User model
-const router = express.Router();
+const express = require('express')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const User = require("../../models/sportPeople/User")//Imports the User model
+const router = express.Router()
+const { generateToken } = require("../../lib/utils.js");
 
 const allowedRoles = ["SportPeople", "Admin", "Clubs"];
-
-// Session Middleware
-router.use(
-  session({
-    secret: process.env.SESSION_SECRET || "your_secret_key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true, maxAge: 3600000 }, // 1-hour session
-  })
-);
+const { protectRoute } = require("../../middleware/authMiddleware.js");
 
 //User Sign-Up Route
 router.post("/signup", async (req, res) => {
@@ -94,11 +85,28 @@ router.post("/signup", async (req, res) => {
       gender,
     });
 
-    // Save user
-    await newUser.save();
+    if (newUser) {
+        // Generate jwt token and set cookie
+        generateToken(newUser._id, res);
+        // Save user
+        await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully!" });
-  } catch (error) {
+        res.status(201).json({
+            _id: newUser._id,
+            firstName: newUser.firstName,
+            age: newUser.age,
+            username: newUser.username,
+            mobile: newUser.mobile,
+            address: newUser.address,
+            email: newUser.email,
+            sportLevel: newUser.sportLevel,
+            gender: newUser.gender,
+            message: "User registered successfully!"
+        });
+    } else {
+        res.status(400).json({ error: "Invalid user data" });
+    }
+} catch (error) {
     console.error("Signup Error:", error);
     res
       .status(500)
@@ -122,16 +130,34 @@ router.post("/signin", async (req, res) => {
       return res.status(401).json({ error: "Invalid Password" });
     }
 
-    const token = jwt.sign(
-      { id: user._id, sportLevel: user.sportLevel },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    res.json({ token, message: "Sign in successful" });
+        generateToken(user._id, res);
+        res.status(200).json({
+            _id: user._id,
+            firstName: user.firstName,
+            age: user.age,
+            username: user.username,
+            mobile: user.mobile,
+            address: user.address,
+            email: user.email,
+            sportLevel: user.sportLevel,
+            gender: user.gender,
+            message: "User signed in successfully!"
+        });
   } catch (error) {
     console.error("Sign-in Error:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+    res.status(500).json({ error: "Server error" });  } 
+})
+
+const checkAuth = async (req, res) => {
+    try {
+        res.status(200).json(req.user);
+    } catch (error) {
+        console.log("Error in checkAuth controller", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+router.get("/check", protectRoute, checkAuth);
+
 
 module.exports = router;
