@@ -1,5 +1,5 @@
 import React from "react"; 
-import Navbar from "../sportPeople/Navbar";
+//import Navbar from "../sportPeople/Navbar";
 import Footer from "../sportPeople/Footer";
 
 // Define the sports categories array
@@ -19,7 +19,7 @@ const sportsCategories = [
 const ClubApprovingPage1 = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      {/* <Navbar /> */}
 
       {/* Hero Section */}
       <div className="relative w-full mb-8 aspect-w-16 aspect-h-9">
@@ -50,7 +50,7 @@ const ClubApprovingPage1 = () => {
       </div>
 
       {/* Footer */}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
