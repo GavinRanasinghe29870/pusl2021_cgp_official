@@ -14,16 +14,26 @@ import AdminHome from "./pages/admin/AdminHome";
 import ClubHome from "./components/clubs/ClubHome";
 import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from './pages/sportPeople/ProductsPage';
+import AdPost from './components/clubs/adposting';
+import SportPage from './components/sportPeople/sportpage02';
+
 
 import AdminSignin from './components/admin/AdminSignin';
 
 import RequestedMembers from "./components/clubs/ReqMemberView";
+import Cart from "./components/sportPeople/cart";
+
 
 
 import Singleproduct from './components/sportPeople/SingleProd';
 import RegistrationApproval from './components/clubs/RegistrationApproval';
 import DonorPortfolio from './components/sportPeople/Donorportfolio';
+
+import Clubsignup from "./components/clubs/Clubsignup";
+import ClubSignIn from "./components/clubs/Clubsignin";
+
 import ClubChat from "./pages/clubs/ClubChat";
+
 
 
 
@@ -59,15 +69,19 @@ function App() {
         <Route path="/Signin" element={!authUser ? <Signin /> : <Navigate to="/" />} />
         <Route path="/Signup" element={!authUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/admin/signin" element={<AdminSignin />} />
+        <Route path="/sport" element={<SportPage/>} />
+        <Route path="/adpost" element={<AdPost/>} />
 
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
-        <Route path="editprofile" element={<PersonPortfolio />} />
-        <Route path="/RMview" element={<RequestedMembers />} />
 
         <Route path="/product/:id" element={<Singleproduct />} />
+        <Route path="/Clubsignup" element={<Clubsignup />} />
+        <Route path="/Clubsignin" element={<ClubSignIn />} />
+
+
 
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />

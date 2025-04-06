@@ -5,6 +5,8 @@ export default function ProductsPage() {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,16 +45,20 @@ export default function ProductsPage() {
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-100 p-5">
-            {/* Sidebar for categories */}
-            <div className="w-1/4 p-4 bg-primary shadow rounded-lg">
-                <div className="bg-primary-light pt-2 pb-2 mt-1">
-                    <h2 className="text-xl text-black text-center font-bold">Categories</h2>
+        <div>
+            <h2 className="text-2xl text-center font-bold mb-1">Products</h2>
+
+        <div className="block md:flex sm:flex min-h-screen bg-gray-100 p-1 gap-1">
+            
+            {/* Desktop Sidebar for categories */}
+            <div className="hidden md:block sm:block w-[120px] md:w-[200px] sm:w-[150px] p-2 bg-primary shadow rounded-lg">
+                <div className="bg-primary-light pt-2 pb-2 pl-2 mt-1">
+                    <h2 className="text-sm md:text-xl sm:text-md text-black text-center font-bold">Categories</h2>
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 text-white text-sm md:text-xl sm:text-md">
                     <ul>
                         <li
-                            className={`cursor-pointer p-2 ${selectedCategory === "All" ? "bg-blue-500 text-white" : ""}`}
+                            className={`cursor-pointer p-2 ${selectedCategory === "All" ? "bg-blue-500 text-black" : ""}`}
                             onClick={() => filterProducts("All")}
                         >
                             All
@@ -60,7 +66,7 @@ export default function ProductsPage() {
                         {categories.map((category, index) => (
                             <li
                                 key={index}
-                                className={`cursor-pointer p-2 ${selectedCategory === category ? "bg-blue-500 text-white" : ""}`}
+                                className={`cursor-pointer p-2 ${selectedCategory === category ? "bg-blue-500 text-black" : ""}`}
                                 onClick={() => filterProducts(category)}
                             >
                                 {category}
@@ -70,13 +76,51 @@ export default function ProductsPage() {
                 </div>
             </div>
 
+            {/* Mobile Sidebar DropDown */}
+            <div className="block sm:hidden p-4">
+                <div className="sm:hidden rounded-lg ">
+
+                    <button onClick={() => setIsOpen(!isOpen)} className="bg-gray-800 text-white px-4 py-2 rounded-md shadow">
+                        ☰ Categories
+                    </button>
+                </div>
+                {isOpen && (
+                    <div className="lg:hidden absolute top-16 left-0 w-64 bg-gray-800 text-white p-4 shadow-lg">
+                        
+                        <div className="mt-4 text-white text-sm md:text-xl sm:text-md">
+                            <ul>
+                                <li
+                                    className={`cursor-pointer p-2 ${selectedCategory === "All" ? "bg-blue-500 text-black" : ""}`}
+                                    onClick={() => filterProducts("All")}
+                                >
+                                    All
+                                </li>
+                                {categories.map((category, index) => (
+                                    <li
+                                        key={index}
+                                        className={`cursor-pointer p-2 ${selectedCategory === category ? "bg-blue-500 text-black" : ""}`}
+                                        onClick={() => filterProducts(category)}
+                                    >
+                                        {category}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+
+                )
+                }
+            </div>
+
+
+
             {/* Product Display Section */}
-            <div className="w-3/4 p-4">
-                <h2 className="text-2xl font-bold mb-4">Products</h2>
-                <div className="grid grid-cols-3 gap-4">
+            <div className="w-full p-4">
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
                     {products.length > 0 ? (
                         products.map((product) => (
-                            <div key={product._id} className="bg-white shadow rounded-lg p-4">
+                            <div key={product._id} className="bg-primary-light shadow rounded-lg p-4">
                                 <img src={product.pd_image} alt={product.pd_name} className="w-full h-40 object-cover rounded" />
                                 <h3 className="text-lg font-semibold mt-2">{product.pd_name}</h3>
                                 <p className="text-gray-600">{product.pd_category}</p>
@@ -89,6 +133,7 @@ export default function ProductsPage() {
                     )}
                 </div>
             </div>
+        </div>
         </div>
     );
 }
