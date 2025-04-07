@@ -1,3 +1,6 @@
+import 'react-multi-carousel/lib/styles.css';
+import ClubMakerPage from './components/clubs/Clubmaker';
+import CheckoutPage  from './components/clubs/Checkout';
 import { useState, useEffect } from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/sportPeople/Navbar";
@@ -23,7 +26,7 @@ import AdminSignin from './components/admin/AdminSignin';
 
 import RequestedMembers from "./components/clubs/ReqMemberView";
 import Cart from "./components/sportPeople/cart";
-
+import ClubPortfolio from "./components/clubs/ClubPortfolio";
 
 
 import Singleproduct from './components/sportPeople/SingleProd';
@@ -43,6 +46,7 @@ import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
+
 
 
 function App() {
@@ -72,8 +76,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/shop" element={authUser ? <ProductPage /> && <Footer /> : <Navigate to="/Signin" />} /> */}
-        <Route path="/shop" element={<ProductPage /> } />
+        <Route path="/ClubPortfolio" element={<ClubPortfolio />}/>
+        <Route path="/Clubmaker" element={<ClubMakerPage />}/>
+        <Route path="/Checkout" element={<CheckoutPage />}/>
+        <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={!authUser ? <Signin /> : <Navigate to="/" />} />
         <Route path="/Signup" element={!authUser ? <Signup /> : <Navigate to="/" />} />
@@ -97,6 +103,7 @@ function App() {
 
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
+
         {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
         <Route path="/club/chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
