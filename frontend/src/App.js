@@ -4,8 +4,9 @@ import Navbar from "./components/sportPeople/Navbar";
 import Footer from "./components/sportPeople/Footer";
 import { useAuthStore } from "./store/useAuthStore.js";
 import Home from "./pages/sportPeople/Home";
-import ProductList from "./pages/clubs/ProductList";
+// import ProductList from "./pages/clubs/ProductList";
 import ProductManage from './pages/admin/ProductManage';
+
 import Signin from "./components/sportPeople/Signin";
 import Signup from "./components/sportPeople/Signup";
 import DonationRequestForm from "./components/sportPeople/donation";
@@ -33,8 +34,15 @@ import Clubsignup from "./components/clubs/Clubsignup";
 import ClubSignIn from "./components/clubs/Clubsignin";
 
 import ClubChat from "./pages/clubs/ClubChat";
+import SalesManage from "./pages/admin/SalesManage.js"
 
 
+
+
+import HelpCenterPage from "./pages/sportPeople/HelpCenter";
+
+import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
+import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
 
 
 function App() {
@@ -64,13 +72,17 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/shop" element={<ProductPage />} />
+        {/* <Route path="/shop" element={authUser ? <ProductPage /> && <Footer /> : <Navigate to="/Signin" />} /> */}
+        <Route path="/shop" element={<ProductPage /> } />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={!authUser ? <Signin /> : <Navigate to="/" />} />
         <Route path="/Signup" element={!authUser ? <Signup /> : <Navigate to="/" />} />
         <Route path="/admin/signin" element={<AdminSignin />} />
         <Route path="/sport" element={<SportPage/>} />
         <Route path="/adpost" element={<AdPost/>} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
+        <Route path="/RequestMember" element={<RequestedMembers />} />
 
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />
@@ -80,12 +92,15 @@ function App() {
         <Route path="/product/:id" element={<Singleproduct />} />
         <Route path="/Clubsignup" element={<Clubsignup />} />
         <Route path="/Clubsignin" element={<ClubSignIn />} />
-
+        <Route path="/salesManage" element={<SalesManage />} />
 
 
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
-        <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />
+        {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
+        <Route path="/club/chat" element={<ClubChat />} />
+        <Route path="/helpcenter" element={<HelpCenterPage />} />
+
       </Routes>
       {location.pathname !== "/club/chat" && <Footer />}
     </div>

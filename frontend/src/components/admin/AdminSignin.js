@@ -29,15 +29,20 @@ const AdminSignin = () => {
       console.log("Sending request with:", formData);
 
       const response = await axios.post('http://localhost:5000/api/admin/signin', formData); 
-        
+      
+      // Save token in local storage
       localStorage.setItem("token", response.data.token);
-      toast.success("Admin Sign In Successful!");
+
+      toast.success("Admin Sign In Successful!", { position: "top-center"});
       console.log("Admin Sign in success:", response.data);
 
-      navigate("/");
+      setTimeout(() => {
+      navigate("/admin/home");
+      }, 2000);
+      
     } catch (err) {
       console.error("Admin Signin error:", err);
-      toast.error(err.response?.data?.message || "Network error. Please try again.");
+      toast.error(err.response?.data?.msg || "Network error. Please try again.");
     } finally {
       setLoading(false);
     }
