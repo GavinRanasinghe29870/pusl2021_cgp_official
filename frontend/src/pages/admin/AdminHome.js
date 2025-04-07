@@ -25,7 +25,7 @@ const AdminHome = () => {
   };
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="container">
         {/* Admin Home Slider */}
         <div className="px-8">
