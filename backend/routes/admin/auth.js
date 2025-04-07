@@ -22,11 +22,18 @@ router.post('/signup', async (req, res) => {
 
 //Signin Route
 router.post('/signin', async (req, res) => {
-  const { username, password } = req.body;
+  console.log("Received request body:", req.body); // Debugging log
+
+  const { username, password, sportLevel } = req.body;
+
+  // Validate input
+  if (!username || !password || !sportLevel) {
+    return res.status(400).json({ msg: "Missing username, password, or sportLevel" });
+  }
 
   try {
     // Find admin by username only
-    const admin = await Admin.findOne({ username });
+    const admin = await Admin.findOne({ username, sportLevel });
     if (!admin) return res.status(400).json({ msg: 'User not found' });
 
     // Check if password matches
@@ -35,7 +42,7 @@ router.post('/signin', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: admin._id}, // Include sportLevel in token payload
+      { id: admin._id, sportLevel: admin.sportLevel }, // Include sportLevel in token payload
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
