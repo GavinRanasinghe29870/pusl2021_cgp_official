@@ -1,9 +1,3 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/sportPeople/Home';
-import ProductList from "./components/sportPeople/ProductList";
-import Signin from './components/sportPeople/Signin';
-import ClubPortfolio from "./components/clubs/ClubPortfolio";
 import 'react-multi-carousel/lib/styles.css';
 import ClubMakerPage from './components/clubs/Clubmaker';
 import CheckoutPage  from './components/clubs/Checkout';
@@ -31,7 +25,7 @@ import AdminSignin from './components/admin/AdminSignin';
 
 import RequestedMembers from "./components/clubs/ReqMemberView";
 import Cart from "./components/sportPeople/cart";
-
+import ClubPortfolio from "./components/clubs/ClubPortfolio";
 
 
 import Singleproduct from './components/sportPeople/SingleProd';
