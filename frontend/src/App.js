@@ -6,6 +6,7 @@ import { useAuthStore } from "./store/useAuthStore.js";
 import Home from "./pages/sportPeople/Home";
 // import ProductList from "./pages/clubs/ProductList";
 import ProductManage from './pages/admin/ProductManage';
+
 import Signin from "./components/sportPeople/Signin";
 import Signup from "./components/sportPeople/Signup";
 import DonationRequestForm from "./components/sportPeople/donation";
@@ -37,7 +38,12 @@ import SalesManage from "./pages/admin/SalesManage.js"
 
 
 
+
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
+
+import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
+import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
+
 
 function App() {
 
