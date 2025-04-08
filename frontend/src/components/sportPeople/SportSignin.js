@@ -11,7 +11,7 @@ const SignIn = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    sportLevel: "",
+    sportLevel: "Sport People",
   });
 
   const navigate = useNavigate();
