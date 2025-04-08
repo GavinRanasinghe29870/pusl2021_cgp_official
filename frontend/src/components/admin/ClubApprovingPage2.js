@@ -80,9 +80,9 @@ const ClubApprovingPage2 = () => {
           return (
             <div
               key={index}
-              className="bg-[#0D1271] text-white rounded-lg p-4 mb-4 flex items-center justify-between"
+              className="bg-[#0D1271] text-white rounded-lg p-4 mb-4 flex flex-wrap md:flex-nowrap items-center justify-between gap-4"
             >
-              <div className="flex items-center">
+              <div className="flex items-center w-full md:w-1/3">
                 <img
                   src={imagePath}
                   alt={club.sport}
@@ -100,16 +100,17 @@ const ClubApprovingPage2 = () => {
                 </div>
               </div>
 
-              <input
-                type="text"
-                className="bg-gray-200 text-black p-2 rounded-md w-1/4"
-                placeholder="Enter remarks"
-              />
+              <div className="flex items-center gap-4 w-full md:w-1/3 justify-center">
+                <input
+                  type="text"
+                  className="bg-gray-200 text-black p-2 rounded-md w-[250px] md:w-[350px]"
+                  placeholder="Enter remarks"
+                />
+                <Download className="text-yellow-400 cursor-pointer mx-4" />
+              </div>
 
-              <Download className="text-yellow-400 cursor-pointer mx-4" />
-
-              <div>
-                <button className="bg-yellow-400 text-black px-4 py-2 rounded-md mr-2 hover:bg-yellow-500">
+              <div className="flex space-x-2 w-full md:w-1/3 justify-end">
+                <button className="bg-yellow-400 text-black px-4 py-2 rounded-md hover:bg-yellow-500">
                   Approve
                 </button>
                 <button className="bg-yellow-400 text-black px-4 py-2 rounded-md hover:bg-yellow-500">
