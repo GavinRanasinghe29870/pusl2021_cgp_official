@@ -8,6 +8,7 @@ export default function SingleProduct() {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("");
+  const [mainImage, setMainImage] = useState("");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -29,6 +30,10 @@ export default function SingleProduct() {
         if (data.pd_colors && data.pd_colors.length > 0) {
           setSelectedColor(data.pd_colors[0]); // Default to first color
         }
+
+        if (data.pd_image) {
+          setMainImage(data.pd_image);
+        }
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -47,10 +52,10 @@ export default function SingleProduct() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Product Images Section */}
-        <div className="flex flex-col">
+        <div className="flex flex-col items-center">
           {/* Main Image */}
           <motion.img
-            src={product.pd_image}
+            src={mainImage}
             alt={product.pd_name}
             className="w-full h-96 object-cover rounded-lg shadow-md hover:scale-105 transition-transform"
           />
@@ -63,7 +68,7 @@ export default function SingleProduct() {
                 src={img}
                 alt={`Side view ${index + 1}`}
                 className="w-20 h-20 object-cover rounded-lg shadow-md cursor-pointer hover:scale-110 transition"
-                onClick={() => console.log("Side image clicked")}
+                onClick={() => setMainImage(img)}
               />
             ))}
           </div>
@@ -84,14 +89,14 @@ export default function SingleProduct() {
           {/* Color Selection */}
           {product.pd_colors && (
             <div className="flex items-center gap-4">
-              <h3 className="text-lg font-semibold">Color:</h3>
+              <h3 className="text-lg font-semibold">Choose Color:</h3>
               <div className="flex gap-3">
                 {product.pd_colors.map((color, index) => (
                   <button
                     key={index}
                     className={`w-8 h-8 rounded-full border-2 ${
-                      selectedColor === color ? "border-blue-500" : "border-gray-300"
-                    }`}
+                      selectedColor === color ? "border-blue-500 scale-110" : "border-gray-300"
+                    } transition`}
                     style={{ backgroundColor: color }}
                     onClick={() => setSelectedColor(color)}
                   ></button>

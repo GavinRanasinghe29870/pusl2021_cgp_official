@@ -3,73 +3,83 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const { app, server } = require('./lib/socket.js');
-
+const { app, server } = require("./lib/socket.js");
 
 //Load environment variables
 dotenv.config();
 
 app.use(express.json());
-app.use(cors(
-    {
-        origin: "http://localhost:3000",
-        credentials: true,
-    }
-));
-app.use(express.urlencoded({ extended: true}));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGODB_URL;
 mongoose.connect(URL, {
-    // useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    // useFindAndModify: false
+  // useCreateIndex: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  // useFindAndModify: false
 });
-const connection = mongoose.connection
-connection.once("open", ()=> {
-    console.log("Mongodb Connection success!");
-})
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("Mongodb Connection success!");
+});
 
-const authRoutes = require("./routes/sportPeople/authRoutes")
+const authRoutes = require("./routes/sportPeople/authRoutes");
 const productRoutes = require("./routes/sportPeople/productRoutes");
-const auth = require("./routes/admin/auth");
+const adminRoutes = require("./routes/admin/adminRoutes.js");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
 const donationRoutes = require("./routes/sportPeople/donationRoutes");
 const memberRoutes = require("./routes/clubs/memberRoutes");
-const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes"); 
+const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
+const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
+const ClubAuth = require("./routes/clubs/ClubAuth.js");
 
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, { expiresIn: "1h" })
+const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
+  expiresIn: "1h",
+});
 
-console.log("Generated Token:",token)
+console.log("Generated Token:", token);
 
+app.post("/api/donation", (req, res) => {
+  console.log("Received donation request:", req.body); // Log the request body
+  // Process the donation data here...
+  res.send("Donation received!");
+});
 
-app.post('/api/donation', (req, res) => {
-    console.log('Received donation request:', req.body); // Log the request body
-    // Process the donation data here...
-    res.send('Donation received!');
-  });
-
-  // Serve static files (for uploaded images)
-app.use('/public/uploads', express.static('uploads'));
-
+// Serve static files (for uploaded images)
+app.use("/public/uploads", express.static("uploads"));
 
 //Link Signin Authentication Routes
-app.use('/api/auth', authRoutes);
+app.use("/api/auth", authRoutes);
 
-app.use('/api/admin', auth);
+// ✅ Mount Admin Auth Routes
 
-
-
-app.use('/api/products', productRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
+
+app.use("/api/message", messageRoutes);
+app.use("/api/ClubAuth", ClubAuth);
+
 app.use("/api/messages", messageRoutes);
 
-app.use('/api/singleproduct', SingleProductRoutes);
+app.use("/api/singleproduct", SingleProductRoutes);
+
+// Serve uploaded PDFs
+app.use("/uploads/pdfs", express.static("uploads/pdfs"));
+
+// Use Registration Approval Routes
+app.use("/api/registrationApproval", registrationApprovalRoutes);
 
 // Middleware to serve product images (if using an "uploads" folder)
 app.use("/uploads", express.static("uploads"));
@@ -80,5 +90,5 @@ app.use((req, res, next) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
