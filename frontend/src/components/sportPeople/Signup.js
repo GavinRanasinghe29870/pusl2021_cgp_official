@@ -3,6 +3,8 @@ import axios from "axios";
 import { Eye, EyeOff } from "react-feather";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useAuthStore } from "../../store/useAuthStore";
+import { ToastContainer, toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -38,25 +40,24 @@ const SignUp = () => {
         e.preventDefault();
         setLoading(true);
 
-        console.log("Form Data Before Sending:", formData);
 
         if (!formData.sportLevel) {
-          alert("Please select a Sport Level.");
+          toast.error("Please select a Sport Level.");
           setLoading(false);
           return;
       }
 
       if (!formData.firstName || !formData.age || !formData.username || !formData.password ||
         !formData.confirmPassword || !formData.email || !formData.gender) {
-        alert("All required fields must be filled.");
+        toast.error("All required fields must be filled.");
         setLoading(false);
         return;
     }
 
        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
-            setLoading(false);
-            return;
+        toast.error("Passwords do not match!");
+        setLoading(false);
+        return;
         }
         
 
@@ -67,6 +68,7 @@ const SignUp = () => {
       } 
       catch (error) 
       {
+        toast.error("Signup failed. Please try again.");
         console.error("Signup Error:", error);
       } 
     finally
@@ -254,6 +256,8 @@ const SignUp = () => {
 </div>
      </div>
   </div>
+  {/* Toast Container */}
+  <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
 </div>
         
     );
