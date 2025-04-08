@@ -6,42 +6,30 @@ import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/sportPeople/Navbar";
 import Footer from "./components/sportPeople/Footer";
 import { useAuthStore } from "./store/useAuthStore.js";
-import Home from "./pages/sportPeople/Home";
-// import ProductList from "./pages/clubs/ProductList";
-import ProductManage from './pages/admin/ProductManage';
-
-import Signin from "./components/sportPeople/Signin";
-import Signup from "./components/sportPeople/Signup";
+import Home from "./pages/sportPeople/Home"
+//import ProductList from "./pages/clubs/ProductList";
+import ProductManage from "./pages/admin/ProductManage";
+import Signin from "./components/sportPeople/SportSignin.js";
+import Signup from "./components/sportPeople/SportSignup.js";
 import DonationRequestForm from "./components/sportPeople/donation";
-import InsertProduct from './components/admin/InsertProduct';
+import InsertProduct from "./components/admin/InsertProduct";
 import AdminHome from "./pages/admin/AdminHome";
 import ClubHome from "./components/clubs/ClubHome";
 import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
-import ProductPage from './pages/sportPeople/ProductsPage';
-import AdPost from './components/clubs/adposting';
-import SportPage from './components/sportPeople/sportpage02';
-
-
-import AdminSignin from './components/admin/AdminSignin';
-
+import ProductPage from "./pages/sportPeople/ProductsPage";
+import AdPost from "./components/clubs/adposting";
+import SportPage from "./components/sportPeople/sportpage02";
+import AdminSignin from "./components/admin/AdminSignin.js";
 import RequestedMembers from "./components/clubs/ReqMemberView";
 import Cart from "./components/sportPeople/cart";
 import ClubPortfolio from "./components/clubs/ClubPortfolio";
-
-
 import Singleproduct from './components/sportPeople/SingleProd';
 import RegistrationApproval from './components/clubs/RegistrationApproval';
 import DonorPortfolio from './components/sportPeople/Donorportfolio';
-
 import Clubsignup from "./components/clubs/Clubsignup";
 import ClubSignIn from "./components/clubs/Clubsignin";
-
 import ClubChat from "./pages/clubs/ClubChat";
 import SalesManage from "./pages/admin/SalesManage.js"
-
-
-
-
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
@@ -50,8 +38,7 @@ import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
 
 
 function App() {
-
-  const { authUser, checkAuth, onlineUsers } = useAuthStore()
+  const { authUser, checkAuth, onlineUsers } = useAuthStore();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
 
@@ -63,10 +50,11 @@ function App() {
 
   if (loading) {
     return (
-      <div className='flex flex-1 items-center justify-center'>
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-          role="status">
-        </div>
+      <div className="flex flex-1 items-center justify-center">
+        <div
+          className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+          role="status"
+        ></div>
       </div>
     );
   }
@@ -81,11 +69,20 @@ function App() {
         <Route path="/Checkout" element={<CheckoutPage />}/>
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
-        <Route path="/Signin" element={!authUser ? <Signin /> : <Navigate to="/" />} />
-        <Route path="/Signup" element={!authUser ? <Signup /> : <Navigate to="/" />} />
+        <Route
+          path="/Signin"
+          element={!authUser ? <Signin /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/Signup"
+          element={!authUser ? <Signup /> : <Navigate to="/" />}
+        />
+
         <Route path="/admin/signin" element={<AdminSignin />} />
+
         <Route path="/sport" element={<SportPage/>} />
         <Route path="/adpost" element={<AdPost/>} />
+
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
         <Route path="/RequestMember" element={<RequestedMembers />} />
@@ -98,6 +95,11 @@ function App() {
         <Route path="/product/:id" element={<Singleproduct />} />
         <Route path="/Clubsignup" element={<Clubsignup />} />
         <Route path="/Clubsignin" element={<ClubSignIn />} />
+
+        <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
+        <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
+
+       
         <Route path="/salesManage" element={<SalesManage />} />
 
 
