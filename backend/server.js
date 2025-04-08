@@ -5,31 +5,34 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { app, server } = require('./lib/socket.js');
 
-// Load environment variables
+
+//Load environment variables
 dotenv.config();
 
 app.use(express.json());
-app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-}));
-app.use(express.urlencoded({ extended: true }));
+app.use(cors(
+    {
+        origin: "http://localhost:3000",
+        credentials: true,
+    }
+));
+app.use(express.urlencoded({ extended: true}));
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGODB_URL;
-
 mongoose.connect(URL, {
+  // useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  // useFindAndModify: false
 });
-
 const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("Mongodb Connection success!");
 });
 
-const authRoutes = require("./routes/sportPeople/authRoutes");
+const authRoutes = require("./routes/sportPeople/authRoutes")
 const productRoutes = require("./routes/sportPeople/productRoutes");
 const auth = require("./routes/admin/auth");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
@@ -37,8 +40,10 @@ const donationRoutes = require("./routes/sportPeople/donationRoutes");
 const memberRoutes = require("./routes/clubs/memberRoutes");
 const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes"); 
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
-const ClubAuth = require("./routes/clubs/ClubAuth.js");
-const profileRoutes = require("./routes/sportPeople/profileRoutes.js"); // <-- Added for profile features
+const ClubAuth =require("./routes/clubs/ClubAuth.js");
+const userProfileRoutes = require("./routes/sportPeople/userProfileRoutes.js");
+
+
 
 const jwt = require('jsonwebtoken');
 
@@ -49,30 +54,48 @@ const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
 
 console.log("Generated Token:", token);
 
+
 app.post('/api/donation', (req, res) => {
-  console.log('Received donation request:', req.body);
-  res.send('Donation received!');
-});
+    console.log('Received donation request:', req.body); // Log the request body
+    // Process the donation data here...
+    res.send('Donation received!');
+  });
+
+
+
 
 // Serve static files (for uploaded images)
 app.use("/public/uploads", express.static("uploads"));
 
-// Link Signin Authentication Routes
+//Link Signin Authentication Routes
 app.use("/api/auth", authRoutes);
+
 app.use("/api/admin", auth);
+
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
+
 app.use("/api/message", messageRoutes);
 app.use("/api/ClubAuth", ClubAuth);
+
+
 app.use("/api/messages", messageRoutes);
-app.use("/api/singleproduct", SingleProductRoutes);
+
+
+app.use('/api/singleproduct', SingleProductRoutes);
+// update user profile
+app.use("/api/profile", userProfileRoutes);
+
+// Serve uploaded PDFs
+app.use("/uploads/pdfs", express.static("uploads/pdfs"));
+
+// Use Registration Approval Routes
 app.use("/api/registrationApproval", registrationApprovalRoutes);
-app.use("/api/profile", profileRoutes); // <-- Route added here
+
 
 // Middleware to serve product images (if using an "uploads" folder)
 app.use("/uploads", express.static("uploads"));
-app.use("/uploads/pdfs", express.static("uploads/pdfs"));
 
 // Fallback route for undefined API endpoints
 app.use((req, res, next) => {
@@ -80,5 +103,5 @@ app.use((req, res, next) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
