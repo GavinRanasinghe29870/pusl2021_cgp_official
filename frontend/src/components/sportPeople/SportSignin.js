@@ -50,15 +50,14 @@ const SignIn = () => {
 
     try {
       await signin(formData);
-      alert("Sign in Successfully!");
-      navigate("/");
-    } catch (err) {
-      console.error("Sign in error:", err);
-      toast.error(
-        err.response?.data?.msg ||
-          "Incorrect Username or Password. Please try again."
-      );
-    } finally {
+      toast.success("Sign in Successfully!",  { position: "top-center" });
+      setTimeout(() => navigate("/"), 2000);
+        } 
+    catch (err) {
+      toast.error("Sign in failed. Please try again");
+      console.error("Sign in Error:", err,  { position: "top-center" });
+    } 
+    finally {
       setLoading(false);
     }
   };
