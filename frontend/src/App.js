@@ -6,8 +6,8 @@ import { useAuthStore } from "./store/useAuthStore.js";
 import Home from "./pages/sportPeople/Home";
 //import ProductList from "./pages/clubs/ProductList";
 import ProductManage from "./pages/admin/ProductManage";
-import Signin from "./components/sportPeople/Signin";
-import Signup from "./components/sportPeople/Signup";
+import Signin from "./components/sportPeople/SportSignin.js";
+import Signup from "./components/sportPeople/SportSignup.js";
 import DonationRequestForm from "./components/sportPeople/donation";
 import InsertProduct from "./components/admin/InsertProduct";
 import AdminHome from "./pages/admin/AdminHome";
@@ -17,8 +17,7 @@ import ProductPage from "./pages/sportPeople/ProductsPage";
 import AdPost from "./components/clubs/adposting";
 import SportPage from "./components/sportPeople/sportpage02";
 
-import AdminSignin from "./components/admin/AdminSignin";
-
+import AdminSignin from "./components/admin/AdminSignin.js";
 import RequestedMembers from "./components/clubs/ReqMemberView";
 import Cart from "./components/sportPeople/cart";
 
@@ -71,6 +70,7 @@ function App() {
           path="/Signup"
           element={!authUser ? <Signup /> : <Navigate to="/" />}
         />
+
         <Route path="/admin/signin" element={<AdminSignin />} />
         <Route path="/sport" element={<SportPage />} />
         <Route path="/adpost" element={<AdPost />} />
