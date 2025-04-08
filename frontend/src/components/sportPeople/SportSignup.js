@@ -16,7 +16,7 @@ const SignUp = () => {
       mobile: "",
       address: "",
       email: "",
-      sportLevel: "",
+      sportLevel: "Sport People",
       gender: "",
     })
 

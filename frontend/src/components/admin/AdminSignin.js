@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { FaGoogle, FaFacebook, FaLinkedin } from 'react-icons/fa';
+import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import axios from 'axios';
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,7 +9,7 @@ const AdminSignin = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    sportLevel: "", // Added sportLevel field
+    sportLevel: "Admin", // Default role set to Admin
   });
 
   const navigate = useNavigate();
@@ -18,31 +17,54 @@ const AdminSignin = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Redirect based on selected role
+    if (name === "sportLevel") {
+      if (value === "SportPeople") {
+        navigate("/Signin");
+        return;
+      } else if (value === "Clubs") {
+        navigate("/Clubsignin");
+        return;
+      } else if (value === "Admin") {
+        navigate("/admin/signin");
+        return;
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { username, password, sportLevel } = formData;
+
+    if (!username || !password || !sportLevel) {
+      toast.error("Please fill in all fields!", { position: "top-center" });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      console.log("Sending request with:", formData);
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/signin",
+        formData
+      );
 
-      const response = await axios.post('http://localhost:5000/api/admin/signin', formData); 
-      
-      // Save token in local storage
       localStorage.setItem("token", response.data.token);
-
-      toast.success("Admin Sign In Successful!", { position: "top-center"});
-      console.log("Admin Sign in success:", response.data);
+      toast.success("Admin Sign In Successful!", { position: "top-center" });
 
       setTimeout(() => {
-      navigate("/admin/home");
+        navigate("/admin/home");
       }, 2000);
-      
     } catch (err) {
       console.error("Admin Signin error:", err);
-      toast.error(err.response?.data?.msg || "Network error. Please try again.");
+      toast.error(
+        err.response?.data?.message || "Network error. Please try again.",
+        { position: "top-center" }
+      );
     } finally {
       setLoading(false);
     }
@@ -62,33 +84,34 @@ const AdminSignin = () => {
           {/* Divider */}
           <div className="w-px bg-blue-200 mx-8"></div>
 
-          {/* Sign-in Form */}
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             <form onSubmit={handleSubmit}>
-              {/* Role Dropdown */}
               <div className="mb-4">
-                <label className="block text-gray-700">Select Role</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Select Sport Level
+                </label>
                 <select
                   name="sportLevel"
-                  className="block w-full bg-blue-900 text-white py-2 px-4 rounded leading-tight focus:outline-none focus:bg-blue-800"
+                  className="block w-full bg-blue-900 text-white py-2 px-4 rounded"
                   value={formData.sportLevel}
                   onChange={handleChange}
                   required
                 >
-                  <option value="" disabled>Select Sport Level</option>
+                  <option value="">Select Role</option>
                   <option value="SportPeople">Sport People</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
                 </select>
               </div>
 
-              {/* Username Input */}
               <div className="mb-4">
-                <label className="block text-gray-700">Username</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Username
+                </label>
                 <input
                   type="text"
                   name="username"
-                  placeholder="Enter your username"
+                  placeholder="Enter Admin Username"
                   className="w-full px-4 py-2 border rounded bg-blue-100"
                   value={formData.username}
                   onChange={handleChange}
@@ -96,65 +119,52 @@ const AdminSignin = () => {
                 />
               </div>
 
-              {/* Password Input */}
               <div className="mb-4 relative">
-                <label className="block text-gray-700">Password</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Password
+                </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  placeholder="Enter your password"
+                  placeholder="Enter Admin Password"
                   className="w-full px-4 py-2 border rounded bg-blue-100"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
-
-                {/* Toggle Eye Icon */}
-                <button type="button" className="absolute right-3 top-10 text-gray-600" onClick={() => setShowPassword(!showPassword)}>
+                <button
+                  type="button"
+                  className="absolute right-3 top-[38px] text-gray-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
 
-              {/* Forgot Password */}
-              <div className="mb-4 text-right font-semibold">
-                <a href="forgotPassword" className="text-blue-900 font-bold hover:text-gray-800">
+              <div className="mb-4 text-right">
+                <a
+                  href="/forgotPassword"
+                  className="text-blue-900 font-semibold hover:text-gray-800"
+                >
                   Forgot Password?
                 </a>
               </div>
 
-              {/* Sign In Button */}
               <div className="mb-4">
                 <button
                   type="submit"
-                  className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88] transition duration-300"
+                  className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88]"
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Sign In"}
                 </button>
               </div>
             </form>
-
-            {/* Social Sign In */}
-            <div className="text-center mb-4">
-              <span className="text-gray-700">Or Sign in using</span>
-              <div className="flex justify-center space-x-4 mt-2">
-                <FaGoogle className="text-2xl text-blue-700 cursor-pointer" />
-                <FaFacebook className="text-2xl text-blue-700 cursor-pointer" />
-                <FaLinkedin className="text-2xl text-blue-700 cursor-pointer" />
-              </div>
-            </div>
-
-            {/* Sign Up Link */}
-            <div className="text-center">
-              <span className="text-gray-700">New Member?{" "}
-                <a href="signup" className="text-blue-900 font-bold hover:underline">Sign Up</a>
-              </span>
-            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default AdminSignin;
