@@ -64,7 +64,7 @@ const SignUp = () => {
         try{
         await signup(formData);
            toast.success("User Registered Successfully!",  { position: "top-center" });
-           setTimeout(() => navigate("/"), 2000);
+           setTimeout(() => navigate("/Signin"), 2000);
       } 
       catch (error) 
       {
