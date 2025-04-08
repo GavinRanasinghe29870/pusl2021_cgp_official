@@ -1,26 +1,43 @@
+// models/sportPeople/UserProfile.js
 const mongoose = require("mongoose");
 
-const userProfileSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  name: String,
-  city: String,
-  birthday: Date,
-  email: String,
-  contactNo: String,
-  job: String,
+const postSchema = new mongoose.Schema({
+  description: String,
+  image: String,
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  comments: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      text: String,
+      timestamp: { type: Date, default: Date.now },
+    },
+  ],
+  reposts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  createdAt: { type: Date, default: Date.now },
+});
+
+const profileSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   coverPhoto: String,
   profilePhoto: String,
+  city: String,
   sports: [String],
-  favoriteSport: String,
   skillLevel: String,
-  preferredPositions: String,
+  positions: String,
   personalRecords: String,
-  highlights: String,
+  recentHighlights: String,
   shortTermGoals: String,
   longTermGoals: String,
   trainingBackground: String,
   clubsAndTeams: String,
-  yearsPlaying: Number,
-}, { timestamps: true });
+  yearsPlaying: String,
+  otherSports: String,
+  birthday: String,
+  job: String,
 
-module.exports = mongoose.model("UserProfile", userProfileSchema);
+  photos: [String],
+  videos: [String],
+  posts: [postSchema],
+});
+
+module.exports = mongoose.model("UserProfile", profileSchema);
