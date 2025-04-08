@@ -1,9 +1,12 @@
+import 'react-multi-carousel/lib/styles.css';
+import ClubMakerPage from './components/clubs/Clubmaker';
+import CheckoutPage  from './components/clubs/Checkout';
 import { useState, useEffect } from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/sportPeople/Navbar";
 import Footer from "./components/sportPeople/Footer";
 import { useAuthStore } from "./store/useAuthStore.js";
-import Home from "./pages/sportPeople/Home";
+import Home from "./pages/sportPeople/Home"
 //import ProductList from "./pages/clubs/ProductList";
 import ProductManage from "./pages/admin/ProductManage";
 import Signin from "./components/sportPeople/SportSignin.js";
@@ -16,22 +19,23 @@ import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from "./pages/sportPeople/ProductsPage";
 import AdPost from "./components/clubs/adposting";
 import SportPage from "./components/sportPeople/sportpage02";
-
 import AdminSignin from "./components/admin/AdminSignin.js";
 import RequestedMembers from "./components/clubs/ReqMemberView";
 import Cart from "./components/sportPeople/cart";
-
-import Singleproduct from "./components/sportPeople/SingleProd";
-import RegistrationApproval from "./components/clubs/RegistrationApproval";
-import DonorPortfolio from "./components/sportPeople/Donorportfolio";
-
+import ClubPortfolio from "./components/clubs/ClubPortfolio";
+import Singleproduct from './components/sportPeople/SingleProd';
+import RegistrationApproval from './components/clubs/RegistrationApproval';
+import DonorPortfolio from './components/sportPeople/Donorportfolio';
 import Clubsignup from "./components/clubs/Clubsignup";
 import ClubSignIn from "./components/clubs/Clubsignin";
-
 import ClubChat from "./pages/clubs/ClubChat";
+import SalesManage from "./pages/admin/SalesManage.js"
+import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
+
+
 
 function App() {
   const { authUser, checkAuth, onlineUsers } = useAuthStore();
@@ -60,6 +64,9 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/ClubPortfolio" element={<ClubPortfolio />}/>
+        <Route path="/Clubmaker" element={<ClubMakerPage />}/>
+        <Route path="/Checkout" element={<CheckoutPage />}/>
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route
@@ -72,8 +79,10 @@ function App() {
         />
 
         <Route path="/admin/signin" element={<AdminSignin />} />
-        <Route path="/sport" element={<SportPage />} />
-        <Route path="/adpost" element={<AdPost />} />
+
+        <Route path="/sport" element={<SportPage/>} />
+        <Route path="/adpost" element={<AdPost/>} />
+
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
         <Route path="/RequestMember" element={<RequestedMembers />} />
@@ -86,18 +95,21 @@ function App() {
         <Route path="/product/:id" element={<Singleproduct />} />
         <Route path="/Clubsignup" element={<Clubsignup />} />
         <Route path="/Clubsignin" element={<ClubSignIn />} />
+
         <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
 
-        <Route
-          path="/registrationApproval"
-          element={<RegistrationApproval />}
-        />
+       
+        <Route path="/salesManage" element={<SalesManage />} />
+
+
+        <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
-        <Route
-          path="/club/chat"
-          element={authUser ? <ClubChat /> : <Navigate to="/Signin" />}
-        />
+
+        {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
+        <Route path="/club/chat" element={<ClubChat />} />
+        <Route path="/helpcenter" element={<HelpCenterPage />} />
+
       </Routes>
       {location.pathname !== "/club/chat" && <Footer />}
     </div>
