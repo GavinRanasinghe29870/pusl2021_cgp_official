@@ -60,9 +60,8 @@ const AdminSignin = () => {
         navigate("/admin/home");
       }, 2000);
     } catch (err) {
-      console.error("Admin Signin error:", err);
-      toast.error(
-        err.response?.data?.message || "Network error. Please try again.",
+      toast.error("Admin Signin error:", err);
+      console.error("Network error. Please try again.", err,
         { position: "top-center" }
       );
     } finally {

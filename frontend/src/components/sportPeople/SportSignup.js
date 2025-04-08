@@ -63,13 +63,13 @@ const SignUp = () => {
 
         try{
         await signup(formData);
-            alert("User Registered Successfully!");
-            navigate("/");
+           toast.success("User Registered Successfully!",  { position: "top-center" });
+           setTimeout(() => navigate("/"), 2000);
       } 
       catch (error) 
       {
         toast.error("Signup failed. Please try again.");
-        console.error("Signup Error:", error);
+        console.error("Signup Error:", error,  { position: "top-center" });
       } 
     finally
     {
