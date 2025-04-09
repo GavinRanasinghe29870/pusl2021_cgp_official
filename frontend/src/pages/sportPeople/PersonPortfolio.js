@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../../components/sportPeople/Navbar";
+// import Navbar from "../../components/sportPeople/Navbar";
 import Footer from "../../components/sportPeople/Footer";
 import { FaLocationDot } from "react-icons/fa6";
 import { AiFillLike } from "react-icons/ai";
@@ -12,8 +12,7 @@ import { MdEdit } from "react-icons/md";
 const PersonPortfolio = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
-      {/* Navbar */}
-      <Navbar />
+      
 
       {/* Profile Section */}
       <div className="container mx-auto bg-white rounded-lg shadow-md overflow-hidden">
