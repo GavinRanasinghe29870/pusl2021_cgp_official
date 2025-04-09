@@ -2,8 +2,6 @@ import React from "react";
 import "../../App.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import Navbar from "../../components/sportPeople/Navbar";
-import Footer from "../../components/sportPeople/Footer";
 
 const AdminHome = () => {
   const adminhomeslider = {
@@ -25,7 +23,6 @@ const AdminHome = () => {
   };
   return (
     <div>
-      <Navbar />
       <div className="container">
         {/* Admin Home Slider */}
         <div className="px-8">
@@ -66,7 +63,6 @@ const AdminHome = () => {
           <div class="w-full h-40 bg-gray-300"></div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

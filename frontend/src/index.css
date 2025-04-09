@@ -101,6 +101,12 @@
   transform: translateY(-10px);
 }
 
+
+  .logo-txt {
+    transform: skew(-20deg);
+  }
+  
+
 .search-bar.open {
   opacity: 1;
   transform: translateY(0);
