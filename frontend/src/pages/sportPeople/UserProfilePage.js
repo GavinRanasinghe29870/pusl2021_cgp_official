@@ -1,0 +1,84 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+import ProfileHeader from '../../components/sportPeople/UserProfile/ProfileHeader';
+import ProfileNavbar from '../../components/sportPeople/UserProfile/ProfileNavbar';
+import ProfileHome from '../../components/sportPeople/UserProfile/ProfileHome';
+import ProfileAbout from '../../components/sportPeople/UserProfile/ProfileAbout';
+import ProfilePhotos from '../../components/sportPeople/UserProfile/ProfilePhotos';
+import ProfileVideos from '../../components/sportPeople/UserProfile/ProfileVideos';
+import ProfilePosts from '../../components/sportPeople/UserProfile/ProfilePosts';
+
+function UserProfilePage() {
+  const { id: userId } = useParams();
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [activeTab, setActiveTab] = useState('home');
+
+  const loggedInUserId = localStorage.getItem('userId');
+  const isOwner = userId === loggedInUserId;
+
+  useEffect(() => {
+    if (!loggedInUserId) {
+      navigate('/login');
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const [userRes, profileRes] = await Promise.all([
+          axios.get(`http://localhost:5000/api/user/${userId}`),
+          axios.get(`http://localhost:5000/api/user/${userId}/profile-data`)
+        ]);
+
+        const userData = userRes.data || {};
+        const profileData = profileRes.data || {};
+
+        setUser(userData);
+        setProfile(profileData);
+      } catch (error) {
+        console.error('Error fetching user/profile data:', error);
+      }
+    };
+
+    fetchData();
+  }, [userId, loggedInUserId, navigate]);
+
+  if (!user) {
+    return <div className="text-center mt-10 text-gray-500">Loading profile...</div>;
+  }
+
+  const mergedUser = {
+    ...user,
+    ...profile,
+    _id: user._id || profile.user?._id,
+    name: user.firstName || profile.name || 'User',
+    profilePhoto: user.profilePhoto || profile.profilePhoto || '',
+    coverPhoto: user.coverPhoto || profile.coverPhoto || '',
+  };
+
+  return (
+    <div className="bg-gray-100 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <ProfileHeader user={mergedUser} isOwner={isOwner} />
+      </div>
+
+      <div className="max-w-7xl mx-auto">
+        <ProfileNavbar activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+
+      <div className="p-4 max-w-7xl mx-auto">
+        {activeTab === 'home' && <ProfileHome user={mergedUser} isOwner={isOwner} />}
+        {activeTab === 'about' && <ProfileAbout user={mergedUser} isOwner={isOwner} />}
+        {activeTab === 'photos' && <ProfilePhotos user={mergedUser} isOwner={isOwner} />}
+        {activeTab === 'videos' && <ProfileVideos user={mergedUser} isOwner={isOwner} />}
+        {activeTab === 'posts' && <ProfilePosts user={mergedUser} isOwner={isOwner} />}
+      </div>
+    </div>
+  );
+}
+
+export default UserProfilePage;
