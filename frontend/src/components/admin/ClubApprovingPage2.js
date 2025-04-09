@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../sportPeople/Navbar";
 import { Download } from "lucide-react";
 
 const clubs = [
@@ -19,7 +18,7 @@ const ClubApprovingPage2 = () => {
     
   return (
     <div className="min-h-screen flex flex-col">
-        <Navbar />
+       
       <div className="bg-white shadow-lg rounded-lg p-4">
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-4">Club Approvals</h2>
         

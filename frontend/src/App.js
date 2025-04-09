@@ -37,7 +37,8 @@ import Clubsignup from "./components/clubs/Clubsignup";
 import ClubSignIn from "./components/clubs/Clubsignin";
 
 import ClubChat from "./pages/clubs/ClubChat";
-import SalesManage from "./pages/admin/SalesManage.js"
+import SalesManage from "./pages/admin/SalesManage.js";
+import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js";
 
 
 
@@ -89,6 +90,10 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
         <Route path="/RequestMember" element={<RequestedMembers />} />
+        <Route path="/RegisteredClubs" element={<RegisteredClub />} />
+        <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
+        <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
+        
 
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />

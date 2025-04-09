@@ -1,8 +1,8 @@
 import React from 'react';
 import '../../App.css';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import Carousel from 'react-multi-carousel';
+// import Navbar from './Navbar';
+// import Footer from './Footer';
+// import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
 const SportPage02 = () => {
@@ -41,7 +41,7 @@ const SportPage02 = () => {
       </div>
 
       {/* Footer */}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
