@@ -32,9 +32,10 @@ import ClubChat from "./pages/clubs/ClubChat";
 import SalesManage from "./pages/admin/SalesManage.js"
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 
+
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
-
+import FriendChat from './components/sportPeople/friendChat.js';//
 
 
 function App() {
@@ -91,14 +92,14 @@ function App() {
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
-
+        
         <Route path="/product/:id" element={<Singleproduct />} />
         <Route path="/Clubsignup" element={<Clubsignup />} />
         <Route path="/Clubsignin" element={<ClubSignIn />} />
 
         <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
-
+        <Route path="/RMview" element={<RequestedMembers />} />
        
         <Route path="/salesManage" element={<SalesManage />} />
 
@@ -109,10 +110,12 @@ function App() {
         {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
         <Route path="/club/chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
+        <Route path="/chat" element={<FriendChat/>}/>//
 
       </Routes>
       {location.pathname !== "/club/chat" && <Footer />}
-    </div>
+    </div>       
+
   );
 }
 

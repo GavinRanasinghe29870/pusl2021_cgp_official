@@ -41,6 +41,7 @@ const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
 
+
 const jwt = require("jsonwebtoken");
 
 const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
@@ -67,6 +68,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
+
 
 app.use("/api/message", messageRoutes);
 app.use("/api/ClubAuth", ClubAuth);
