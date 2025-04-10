@@ -29,14 +29,9 @@ import DonorPortfolio from './components/sportPeople/Donorportfolio';
 import Clubsignup from "./components/clubs/Clubsignup";
 import ClubSignIn from "./components/clubs/Clubsignin";
 import ClubChat from "./pages/clubs/ClubChat";
-import SalesManage from "./pages/admin/SalesManage.js";
-import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js";
-
-
-
-
+import SalesManage from "./pages/admin/SalesManage.js"
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
-
+import DonatingRequestForm from "./components/sportPeople/donating.js";//
 
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
@@ -92,16 +87,12 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
         <Route path="/RequestMember" element={<RequestedMembers />} />
-        <Route path="/RegisteredClubs" element={<RegisteredClub />} />
-        <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
-        <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
-        
 
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
-        
+        <Route path="/donatingReq" element={<DonatingRequestForm />} />//
         <Route path="/product/:id" element={<Singleproduct />} />
         <Route path="/Clubsignup" element={<Clubsignup />} />
         <Route path="/Clubsignin" element={<ClubSignIn />} />
