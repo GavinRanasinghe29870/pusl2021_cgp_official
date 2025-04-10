@@ -1,6 +1,7 @@
 import React from "react"; 
 
 
+
 // Define the sports categories array
 const sportsCategories = [
   { name: "Cricket", img: "/Cricket.png" },
@@ -18,7 +19,7 @@ const sportsCategories = [
 const ClubApprovingPage1 = () => {
   return (
     <div className="min-h-screen flex flex-col">
-    
+      
 
       {/* Hero Section */}
       <div className="relative w-full mb-8 aspect-w-16 aspect-h-9">
