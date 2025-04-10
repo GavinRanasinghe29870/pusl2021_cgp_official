@@ -6,7 +6,7 @@ import { FaFacebookF } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 
-const Footer = () => {
+const SportPeopleFooter = () => {
   const today = new Date();
   return (
     <footer className="bg-primary-light text-gray-700 py-12 md:py-24">
@@ -88,4 +88,4 @@ const Footer = () => {
   )
 }
 
-export default Footer
+export default SportPeopleFooter
