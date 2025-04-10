@@ -23,6 +23,7 @@ const AdminHome = () => {
   };
   return (
     <div>
+
       <div className="container">
         {/* Admin Home Slider */}
         <div className="px-8">
