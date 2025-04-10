@@ -8,7 +8,7 @@ const ClubSignIn = () => {
   const [formData, setFormData] = useState({
       Clubusername: "",
       password: "",
-      sportLevel: "", 
+      sportLevel: "Clubs", 
   });
 
   const navigate = useNavigate();

@@ -44,7 +44,7 @@ const ClubHome = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="px-8">
         <Carousel
           showDots={false}
