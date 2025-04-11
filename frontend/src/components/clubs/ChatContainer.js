@@ -162,7 +162,7 @@ const ChatContainer = () => {
                             />
                             <button
                                 onClick={removeImage}
-                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300 flex items-center justify-center"
+                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center"
                                 type="button"
                             >
                                 <X className="size-3" />
@@ -186,6 +186,12 @@ const ChatContainer = () => {
                             placeholder="Type a message..."
                             value={text}
                             onChange={(e) => setText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSendMessage(e);
+                                }
+                            }}
                         />
                         <input
                             type="file"

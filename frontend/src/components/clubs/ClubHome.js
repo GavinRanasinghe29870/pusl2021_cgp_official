@@ -2,8 +2,6 @@ import React from "react";
 import "../../App.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import Navbar from "../sportPeople/Navbar";
-import Footer from "../sportPeople/Footer";
 
 const ClubHome = () => {
   const FirstSlider = {
@@ -44,7 +42,6 @@ const ClubHome = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="px-8">
         <Carousel
           showDots={false}
@@ -103,7 +100,6 @@ const ClubHome = () => {
           <div class="w-full h-40 bg-gray-300"></div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
