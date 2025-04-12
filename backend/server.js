@@ -60,7 +60,6 @@ app.use("/public/uploads", express.static("uploads"));
 
 //Link Signin Authentication Routes
 app.use("/api/auth", authRoutes);
-
 // ✅ Mount Admin Auth Routes
 
 app.use("/api/admin", adminRoutes);
