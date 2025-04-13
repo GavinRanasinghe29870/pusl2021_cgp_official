@@ -30,7 +30,7 @@ const SportPeopleNavbar = () => {
                     <p>info@sportnest.com | 011-123-4567</p>
                 </div>
                 <div>
-                    <a href='#'>Help Center</a>
+                    <a href='http://localhost:3000/helpcenter'>Help Center</a>
                 </div>
             </div>
             <div className='bg-primary-light'>
@@ -67,7 +67,7 @@ const SportPeopleNavbar = () => {
                                 <NavLink to="/aa" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Friend Zone</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dd" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">About Us</NavLink>
+                                <NavLink to="/aboutus" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">About Us</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/shop" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active"><MdOutlineShoppingBag className='text-xl font-body' />Shop</NavLink>
@@ -150,7 +150,7 @@ function MobileNav({ closeSideMenu }) {
                         <NavLink to="/friend-zone" className='mobile-nav' activeClassName="active">Friend Zone</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/about-us" className='mobile-nav' activeClassName="active">About Us</NavLink>
+                        <NavLink to="/aboutus" className='mobile-nav' activeClassName="active">About Us</NavLink>
                     </li>
                     <li>
                         <NavLink to="/shop" className='mobile-nav flex items-center' activeClassName="active"><MdOutlineShoppingBag className='text-xl font-body' />Shop</NavLink>
