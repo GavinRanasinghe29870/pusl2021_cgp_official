@@ -1,76 +1,111 @@
 import { create } from "zustand";
-import { axiosInstance } from '../lib/axios.js';
-import { io } from 'socket.io-client';
+import axios from "axios";
 
-const BASE_URL = "http://localhost:5000";
+export const useAuthStore = create((set) => ({
+  user: null,
+  isAuthenticated: false,
+  isSigningUp: false,
 
-export const useAuthStore = create ((set, get) => ({
-    authUser: null,
-    isSigningUp: false,
-    isSigningIn: false,
-    isCheckingAuth: true,
-    onlineUsers: [],
-    socket: null,
+  signin: async (formData) => {
+    try {
+      const dataToSend = {
+        username: formData.username,
+        password: formData.password,
+        sportLevel: formData.sportLevel || "SportPeople",
+      };
 
-    checkAuth: async () => {
-        try {
-            const res = await axiosInstance.get('/auth/check');
+      console.log("Sending Sign-In Data:", dataToSend);
 
-            set({ authUser: res.data });
-
-            get().connectSocket();
-        } catch (error) {
-            console.log("Error checking auth:", error);
-            set({ authUser: null });
-        } finally {
-            set({ isCheckingAuth: false });
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/signin",
+        dataToSend,
+        {
+          withCredentials: true,
         }
-    },
+      );
 
-    signup: async (data) => {
-        set({ isSigningUp: true});
-        try {
-            const res = await axiosInstance.post('/auth/signup', data);
-            set({ authUser: res.data });
-
-            get().connectSocket();
-        } catch (error) {
-            console.error("Signup Error:", error);
-        } finally {
-            set({ isSigningUp: false });
-        }
-    },
-
-    signin: async (data) => {
-        set({ isSigningIn: true });
-        try {
-            const res = await axiosInstance.post('/auth/signin', data);
-            set({ authUser: res.data });
-
-            get().connectSocket();
-        } catch (error) {
-            console.error("Signin Error:", error);
-        } finally {
-            set({ isSigningIn: false });
-        }
-    },
-
-    connectSocket: () => {
-        const { authUser } = get();
-        if (!authUser || get().socket?.connected) return;
-
-        const socket = io(BASE_URL, {
-            query: {
-                userId: authUser._id,
-            },
+      if (response.data?.user) {
+        set({
+          user: response.data.user,
+          isAuthenticated: true,
         });
-        socket.connect();
+        return { success: true, ...response.data };
+      } else {
+        return { success: false, error: "Invalid response" };
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      return {
+        success: false,
+        error: error.response?.data?.error || error.message,
+      };
+    }
+  },
 
-        set({ socket: socket });
+  signup: async (formData) => {
+    try {
+      set({ isSigningUp: true });
 
-        socket.on("getOnlineUsers", (userIds) => {
-            set({ onlineUsers: userIds });
-        })
-    },
+      console.log("Sending Sign-Up Data:", formData);
 
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/signup",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+
+      set({ isSigningUp: false });
+
+      return {
+        success: true,
+        ...response.data,
+      };
+    } catch (error) {
+      set({ isSigningUp: false });
+      console.error("Signup error:", error);
+      return {
+        success: false,
+        error: error.response?.data?.error || error.message,
+      };
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      set({ user: null, isAuthenticated: false });
+      return { success: true };
+    } catch (error) {
+      console.error("Logout error:", error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  checkAuth: async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/auth/check", {
+        withCredentials: true,
+      });
+
+      if (response.data) {
+        set({
+          user: response.data,
+          isAuthenticated: true,
+        });
+        return { success: true };
+      }
+
+      return { success: false };
+    } catch (error) {
+      console.error("Auth check error:", error);
+      set({ user: null, isAuthenticated: false });
+      return { success: false };
+    }
+  },
 }));
