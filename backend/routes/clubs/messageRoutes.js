@@ -6,54 +6,36 @@ const { protectRoute } = require('../../middleware/authMiddleware.js');
 const { getReceiverSocketId, io } = require('../../lib/socket.js');
 
 const getUsersForSidebar = async (req, res) => {
-
     try {
         const loggedInUserId = req.user._id;
-        const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
-    
-        res.status(200).json(filteredUsers);
-      } catch (error) {
+
+        // Fetch all users except the logged-in user
+        const users = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+
+        // Fetch the last message for each user
+        const usersWithLastMessage = await Promise.all(
+            users.map(async (user) => {
+                const lastMessage = await Message.findOne({
+                    $or: [
+                        { senderId: loggedInUserId, receiverId: user._id },
+                        { senderId: user._id, receiverId: loggedInUserId }
+                    ]
+                })
+                    .sort({ createdAt: -1 }) // Sort by most recent message
+                    .select("text createdAt"); // Select only the fields you need
+
+                return {
+                    ...user.toObject(),
+                    lastMessage: lastMessage || null, // Include the last message or null if no messages exist
+                };
+            })
+        );
+
+        res.status(200).json(usersWithLastMessage);
+    } catch (error) {
         console.error("Error in getUsersForSidebar: ", error.message);
         res.status(500).json({ error: "Internal server error" });
-      }
-
-    // try {
-    //     const loggedInUserId = req.user._id;
-
-    //     // Find users that the logged-in user has chatted with
-    //     const chattedUsers = await Message.aggregate([
-    //         {
-    //             $match: {
-    //                 $or: [
-    //                     { senderId: loggedInUserId },
-    //                     { receiverId: loggedInUserId }
-    //                 ]
-    //             }
-    //         },
-    //         {
-    //             $group: {
-    //                 _id: null,
-    //                 userIds: {
-    //                     $addToSet: {
-    //                         $cond: [
-    //                             { $eq: ["$senderId", loggedInUserId] },
-    //                             "$receiverId",
-    //                             "$senderId"
-    //                         ]
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     ]);
-
-    //     const userIds = chattedUsers.length > 0 ? chattedUsers[0].userIds : [];
-
-    //     const filteredUsers = await User.find({ _id: { $in: userIds } }).select('-password');
-    //     res.status(200).json(filteredUsers);
-    // } catch (error) {
-    //     console.error("Error in getUsersForSidebar:", error.message);
-    //     res.status(500).json({ error: "Internal Server Error" });
-    // }
+    }
 };
 
 const getMessages = async (req, res) => {

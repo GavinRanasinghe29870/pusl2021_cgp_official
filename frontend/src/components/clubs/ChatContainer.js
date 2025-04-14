@@ -12,7 +12,7 @@ const ChatContainer = () => {
     const [text, setText] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
-    const { authUser } = useAuthStore();
+    const { user } = useAuthStore();
     const messageEndRef = useRef(null);
     const { onlineUsers } = useAuthStore();
 
@@ -115,13 +115,13 @@ const ChatContainer = () => {
                 {messages.map((message) => (
                     <div
                         key={message._id}
-                        className={`flex items-end space-x-2 ${message.senderId === authUser._id ? "justify-end" : "justify-start"}`}
+                        className={`flex items-end space-x-2 ${message.senderId === user._id ? "justify-end" : "justify-start"}`}
                         ref={messageEndRef}
                     >
 
                         {/* Chat Bubble */}
                         <div
-                            className={`max-w-2xl px-4 py-2 rounded-xl shadow-md ${message.senderId === authUser._id
+                            className={`max-w-2xl px-4 py-2 rounded-xl shadow-md ${message.senderId === user._id
                                 ? "bg-blue-600 text-white rounded-br-none"
                                 : "bg-gray-300 text-black rounded-tl-none"
                                 }`}
@@ -162,7 +162,7 @@ const ChatContainer = () => {
                             />
                             <button
                                 onClick={removeImage}
-                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300 flex items-center justify-center"
+                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-400 flex items-center justify-center"
                                 type="button"
                             >
                                 <X className="size-3" />
@@ -186,6 +186,12 @@ const ChatContainer = () => {
                             placeholder="Type a message..."
                             value={text}
                             onChange={(e) => setText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSendMessage(e);
+                                }
+                            }}
                         />
                         <input
                             type="file"

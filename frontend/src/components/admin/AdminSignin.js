@@ -9,35 +9,31 @@ const AdminSignin = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    sportLevel: "Admin", // Default role set to Admin
+    sportLevel: "Admin",
   });
 
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Redirect based on selected role
-    if (name === "sportLevel") {
-      if (value === "SportPeople") {
-        navigate("/Signin");
-        return;
-      } else if (value === "Clubs") {
-        navigate("/Clubsignin");
-        return;
-      } else if (value === "Admin") {
-        navigate("/admin/signin");
-        return;
-      }
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-    setFormData({ ...formData, [name]: value });
+    // Redirect if other roles selected
+    if (name === "sportLevel") {
+      if (value === "SportPeople") navigate("/Signin");
+      else if (value === "Clubs") navigate("/Clubsignin");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const { username, password, sportLevel } = formData;
 
     if (!username || !password || !sportLevel) {
@@ -48,22 +44,38 @@ const AdminSignin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/admin/signin",
-        formData
-      );
+      const res = await axios.post("http://localhost:5000/api/admin/signin", {
+        username,
+        password,
+        sportLevel,
+      });
 
-      localStorage.setItem("token", response.data.token);
-      toast.success("Admin Sign In Successful!", { position: "top-center" });
+      console.log("Admin Signin response:", res);
 
-      setTimeout(() => {
-        navigate("/admin/home");
-      }, 2000);
+      // Check if the response is successful
+      if (res?.status === 200 && res.data?.message === "Login successful") {
+        toast.success("Admin Sign-in successful!", { position: "top-center" });
+        setTimeout(() => navigate("/admin/home"), 2000); // Redirect after 2 seconds
+      } else {
+        toast.error(res?.data?.message || "Admin Sign-in failed. Please check credentials.", {
+          position: "top-center",
+        });
+      }
     } catch (err) {
-      toast.error("Admin Signin error:", err);
-      console.error("Network error. Please try again.", err,
-        { position: "top-center" }
-      );
+      console.error("Admin Sign in error:", err);
+
+      // Special handling for network errors
+      if (err.message === "Network Error") {
+        toast.error(
+          "Network error: Unable to connect to the server. Please check if the server is running.",
+          { position: "top-center" }
+        );
+      } else {
+        toast.error(
+          err?.response?.data?.message || "Admin Sign-in failed. Please try again.",
+          { position: "top-center" }
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -75,20 +87,15 @@ const AdminSignin = () => {
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
         <h1 className="text-center text-2xl font-bold mb-8">Admin Sign In</h1>
         <div className="flex md:flex-row">
-          {/* Logo Section */}
           <div className="flex-1 flex items-center justify-center">
             <img src="/logo512.png" alt="logo" className="h-16 w-16" />
           </div>
 
-          {/* Divider */}
           <div className="w-px bg-blue-200 mx-8"></div>
 
           <div className="flex-1 w-full">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-1">
-                  Select Sport Level
-                </label>
                 <select
                   name="sportLevel"
                   className="block w-full bg-blue-900 text-white py-2 px-4 rounded"
@@ -96,17 +103,14 @@ const AdminSignin = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Role</option>
-                  <option value="SportPeople">Sport People</option>
+                  <option value="SportPeople">SportPeople</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
                 </select>
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-1">
-                  Username
-                </label>
+                <label className="block text-gray-700 font-medium mb-1">Username</label>
                 <input
                   type="text"
                   name="username"
@@ -119,9 +123,7 @@ const AdminSignin = () => {
               </div>
 
               <div className="mb-4 relative">
-                <label className="block text-gray-700 font-medium mb-1">
-                  Password
-                </label>
+                <label className="block text-gray-700 font-medium mb-1">Password</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -141,10 +143,7 @@ const AdminSignin = () => {
               </div>
 
               <div className="mb-4 text-right">
-                <a
-                  href="/forgotPassword"
-                  className="text-blue-900 font-semibold hover:text-gray-800"
-                >
+                <a href="/forgotPassword" className="text-blue-900 font-semibold hover:text-gray-800">
                   Forgot Password?
                 </a>
               </div>
@@ -159,7 +158,7 @@ const AdminSignin = () => {
                 </button>
               </div>
             </form>
-          </div>
+            </div>
         </div>
       </div>
     </div>
