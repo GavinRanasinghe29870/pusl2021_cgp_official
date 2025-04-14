@@ -62,10 +62,10 @@ const ChatSidebar = () => {
                         key={user._id}
                         onClick={() => setSelectedUser(user)}
                         className={`
-              w-full p-3 pl-8 flex items-center gap-3 border-b lg:border-none
-              hover:bg-primary-light transition-colors
-              ${selectedUser?._id === user._id ? "bg-primary-light ring-1 ring-base-300" : ""}
-            `}
+                            w-full p-3 pl-8 flex items-center gap-3 border-b lg:border-none
+                            hover:bg-primary-light transition-colors
+                            ${selectedUser?._id === user._id ? "bg-primary-light ring-1 ring-base-300" : ""}
+                        `}
                     >
                         <div className="relative mx-0">
                             <img
@@ -73,19 +73,23 @@ const ChatSidebar = () => {
                                 alt={user.name}
                                 className="size-12 object-cover rounded-full"
                             />
-                            {onlineUsers.includes(user._id) && (
+                            {onlineUsers.includes(user._id) ? (
                                 <span
                                     className="absolute bottom-0 right-0 size-3 bg-green-500 
-                  rounded-full ring-2 ring-white"
+                                    rounded-full ring-2 ring-white"
                                 />
-                            )}
+                            ) : (<span
+                                className="absolute bottom-0 right-0 size-3 bg-gray-400 
+                                    rounded-full ring-2 ring-white"
+                            />)
+                            }
                         </div>
 
                         {/* User info - only visible on larger screens */}
                         <div className="block text-left min-w-0">
                             <div className="font-medium truncate">{user.firstName}</div>
-                            <div className="text-sm text-zinc-400">
-                                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                            <div className="text-sm text-zinc-500 truncate">
+                                {user.lastMessage ? user.lastMessage.text : "No messages"}
                             </div>
                         </div>
                     </button>
