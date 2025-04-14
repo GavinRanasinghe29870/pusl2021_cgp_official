@@ -6,8 +6,8 @@ import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import SportPeopleNavbar from './components/sportPeople/SportPeopleNavbar.js';
 import SportPeopleFooter from './components/sportPeople/SportPeopleFooter.js';
 import { useAuthStore } from "./store/useAuthStore.js";
-import Home from "./pages/sportPeople/Home"
-//import ProductList from "./pages/clubs/ProductList";
+import Home from "./pages/sportPeople/Home";
+import AboutUs from './pages/sportPeople/AboutUs.js';
 import ProductManage from "./pages/admin/ProductManage";
 import Signin from "./components/sportPeople/SportSignin.js";
 import Signup from "./components/sportPeople/SportSignup.js";
@@ -32,7 +32,7 @@ import ClubChat from "./pages/clubs/ClubChat";
 import SalesManage from "./pages/admin/SalesManage.js"
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 import DonatingRequestForm from "./components/sportPeople/donating.js";//
-
+import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js"
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
 import FriendChat from './components/sportPeople/friendChat.js';//
@@ -112,7 +112,7 @@ function App() {
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/club/home" element={<ClubHome />} />
 
-        <Route path="/donatingReq" element={<DonatingRequestForm />} />//
+        <Route path="/donatingReq" element={<DonatingRequestForm />} />
 
 
 
@@ -125,7 +125,7 @@ function App() {
 
 
         <Route path="/salesManage" element={<SalesManage />} />
-
+        <Route path="/aboutus" element={<AboutUs />} />
 
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
@@ -133,7 +133,7 @@ function App() {
         {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
         <Route path="/club-chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
-        <Route path="/chat" element={<FriendChat />} />//
+        <Route path="/chat" element={<FriendChat />} />
 
       </Routes>
       {["/Signin", "/admin/signin", "/Clubsignin", "/Signup", "/Clubsignup", "/club-chat"].includes(location.pathname) ? null : (

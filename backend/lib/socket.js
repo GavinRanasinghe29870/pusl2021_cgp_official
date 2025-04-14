@@ -1,36 +1,37 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: ['http://localhost:3000'],
-  },
-});
-
-function getReceiverSocketId(userId) {
-    return userSocketMap[userId];
-}
-
 // Used to store online Users
 const userSocketMap = {};
 
-io.on('connection', (socket) => {
-    console.log('A user connected', socket.id);
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  },
+});
 
-    const userId = socket.handshake.query.userId;
-    if (userId) userSocketMap[userId] = socket.id;
+io.on("connection", (socket) => {
+  console.log("A user connected", socket.id);
 
-    // io.emit is used to send events to all connected clients
+  const userId = socket.handshake.query.userId;
+  if (userId) userSocketMap[userId] = socket.id;
+
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected", socket.id);
+    if (userId) delete userSocketMap[userId];
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  });
+});
 
-    socket.on('disconnect', () => {
-        console.log('A user disconnected', socket.id);
-    });
-})
+function getReceiverSocketId(userId) {
+  return userSocketMap[userId];
+}
 
 module.exports = { io, app, server, getReceiverSocketId };
