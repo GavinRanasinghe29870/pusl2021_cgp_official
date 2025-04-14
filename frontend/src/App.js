@@ -14,7 +14,7 @@ import Signup from "./components/sportPeople/SportSignup.js";
 import DonationRequestForm from "./components/sportPeople/donation";
 import InsertProduct from "./components/admin/InsertProduct";
 import AdminHome from "./pages/admin/AdminHome";
-import ClubHome from "./components/clubs/ClubHome";
+import ClubHome from "./pages/clubs/ClubHome";
 import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from "./pages/sportPeople/ProductsPage";
 import AdPost from "./components/clubs/adposting";
