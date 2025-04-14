@@ -19,6 +19,7 @@ import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from "./pages/sportPeople/ProductsPage";
 import AdPost from "./components/clubs/adposting";
 import SportPage from "./components/sportPeople/sportpage02";
+import SportPage03 from "./components/sportPeople/Sportpage03";
 import AdminSignin from "./components/admin/AdminSignin.js";
 import RequestedMembers from "./components/clubs/ReqMemberView";
 import Cart from "./components/sportPeople/cart";
@@ -31,6 +32,9 @@ import ClubSignIn from "./components/clubs/Clubsignin";
 import ClubChat from "./pages/clubs/ClubChat";
 import SalesManage from "./pages/admin/SalesManage.js"
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
+
+import DonatingRequestForm from "./components/sportPeople/donating.js";//
+import RegisteredClub from "./pages/clubs/RegisteredClub.js";
 
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2";
@@ -82,6 +86,11 @@ function App() {
 
         <Route path="/sport" element={<SportPage/>} />
         <Route path="/adpost" element={<AdPost/>} />
+
+        <Route path="/sport" element={<SportPage />} />
+        <Route path="/sportpage03" element={<SportPage03 />} />
+        <Route path="/adpost" element={<AdPost />} />
+
 
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
