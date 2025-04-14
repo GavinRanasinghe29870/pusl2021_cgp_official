@@ -106,6 +106,7 @@ export const useAuthStore = create((set, get) => ({
       }
 
       set({ user: null, isAuthenticated: false });
+      window.location.reload();
       return { success: true };
     } catch (error) {
       console.error("Logout error:", error);
