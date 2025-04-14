@@ -8,7 +8,7 @@ const ClubSignIn = () => {
   const [formData, setFormData] = useState({
       Clubusername: "",
       password: "",
-      sportLevel: "", 
+      sportLevel: "Clubs", 
   });
 
   const navigate = useNavigate();
@@ -19,7 +19,24 @@ const ClubSignIn = () => {
  
 
   const handleChange = (e) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Redirect based on selected role
+    // Redirect based on selected role
+    if (name === "sportLevel") {
+      if (value === "SportPeople") {
+        navigate("/Signin");
+        return;
+      } else if (value === "Clubs") {
+        navigate("/Clubsignin");
+        return;
+      } else if (value === "Admin") {
+        navigate("/admin/signin");
+        return;
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {

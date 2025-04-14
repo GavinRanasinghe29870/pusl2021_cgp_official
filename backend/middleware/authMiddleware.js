@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/sportPeople/User");
+const ClubUser = require("../models/clubs/Clubuser");
 
 const protectRoute = async (req, res, next) => {
     try {
-        const token = req.cookies.jwt;
+        const token = req.cookies.token;
 
         if (!token) {
             return res.status(401).json({ message: "Unauthorized - No Token Provided" });
@@ -15,10 +16,15 @@ const protectRoute = async (req, res, next) => {
             return res.status(401).json({ message: "Unauthorized - Invalid Token" });
         }
 
-        const user = await User.findById(decoded.userId).select("-password");
+        // Check for User
+        let user = await User.findById(decoded.userId).select("-password");
 
+        // If not found in User, check in ClubUser
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            user = await ClubUser.findById(decoded.userId).select("-password");
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
         }
 
         req.user = user;
