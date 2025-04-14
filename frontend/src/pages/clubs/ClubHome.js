@@ -3,9 +3,10 @@ import "../../App.css";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Link } from 'react-router-dom';
+import ShopSlider from "../../components/common/ShopSlider";
 
-const AdminHome = (props) => {
-  const adminhomeslider = {
+const ClubHome = () => {
+  const FirstSlider = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 1,
@@ -24,16 +25,16 @@ const AdminHome = (props) => {
   };
 
   const categories = [
-    { name: 'Product Manage', path: '/admin/productManaging', image: '/productmanage.png' },
-    { name: 'Sales Manage', path: '/salesManage', image: '/salesmanage.png' },
-    { name: 'Club Requests', path: '/ClubApprovingPage1', image: '/clubapprove.png' },
+    { name: 'Post Your Advertisement', path: '/adpost', image: '/postads.png' },
+    { name: 'Requested Members', path: '/RequestMember', image: '/requestmember.png' },
+    { name: 'Club Portfolio', path: '/ClubPortfolio', image: '/clubportfolio.png' },
   ]
 
   return (
-    <div className="">
+    <div>
       <Carousel
         showDots={false}
-        responsive={adminhomeslider}
+        responsive={FirstSlider}
         infinite={true}
         autoPlay={true}
         autoPlaySpeed={4000}
@@ -42,40 +43,37 @@ const AdminHome = (props) => {
         containerClass="carousel-container"
         removeArrowOnDeviceType={["tablet", "mobile"]}
       >
-        <div class="w-full object-cover flex items-center">
-          <img
-            src="/back.png"
-            className="w-full h-[550px] object-cover"
-          />
+        <div class="w-full object-cover flex items-center mb-8">
+          <img src="/back.png" className="w-full h-[600px] object-cover" />
         </div>
         <div>
-          <img
-            src="/sample.png"
-            className="w-full  object-cover h-[550px]"
-          />
+          <img src="/sample.png" className="w-full  object-cover h-[600px]" />
         </div>
         <div>
           <img
             src="/basketball.png"
-            className="w-full  object-cover h-[550px]"
+            className="w-full  object-cover h-[600px]"
           />
         </div>
       </Carousel>
-      {/* Categories */}
+      
+      <ShopSlider />
+
       <div className="container py-10">
-        <div className='bg-primary py-16 container flex justify-around place-items-center'>
+        <div className='bg-primary-light py-16 container flex justify-around place-items-center'>
           {
             categories.map(category => (
               <div>
                 <Link to={`${category.path}`} className="flex flex-col items-center">
-                  <div className="size-40 border-white border-8 bg-white rounded-2xl p-5 hover:scale-105 hover:border-primary-dark transition-transform duration-300">
+                  <div className="size-40 border-secondary border-8 bg-white rounded-2xl p-5 hover:scale-105 hover:border-primary-dark transition-transform duration-300">
                     <img
                       key={category.name}
                       src={category.image}
                       alt={category.name}
+                      className="border-secondary"
                     />
                   </div>
-                  <h4 className='font-body text-white pt-6 text-xl font-bold'>{category.name}</h4>
+                  <h4 className='font-body text-black pt-6 text-xl font-bold'>{category.name}</h4>
                 </Link>
               </div>
             ))
@@ -86,4 +84,4 @@ const AdminHome = (props) => {
   );
 };
 
-export default AdminHome;
+export default ClubHome;
