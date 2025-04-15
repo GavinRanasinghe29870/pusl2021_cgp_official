@@ -50,7 +50,7 @@ const ClubNavbar = () => {
                                 <NavLink to="/adpost" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Ad Post</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/RequestMember" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Reegisted Members</NavLink>
+                                <NavLink to="/RequestMember" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Requested Members</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/ClubPortfolio" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active">Club Portfolio</NavLink>

@@ -40,7 +40,7 @@ const memberRoutes = require("./routes/clubs/memberRoutes");
 const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
-const donatingRoutes = require("./routes/sportPeople/donatingRoutes");//
+const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
 
 const jwt = require("jsonwebtoken");
 
@@ -61,14 +61,13 @@ app.use("/public/uploads", express.static("uploads"));
 
 //Link Signin Authentication Routes
 app.use("/api/auth", authRoutes);
-
 // ✅ Mount Admin Auth Routes
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
-app.use("/api/donating", donatingRoutes);//
+app.use("/api/donating", donatingRoutes); //
 
 app.use("/api/message", messageRoutes);
 app.use("/api/ClubAuth", ClubAuth);
@@ -90,6 +89,8 @@ app.use("/uploads", express.static("uploads"));
 app.use((req, res, next) => {
   res.status(404).json({ message: "API endpoint not found" });
 });
+
+
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
