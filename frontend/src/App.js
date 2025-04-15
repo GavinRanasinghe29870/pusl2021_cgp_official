@@ -36,7 +36,7 @@ import ClubChat from "./pages/clubs/ClubChat";
 import SalesManage from "./pages/admin/SalesManage.js";
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 
-import DonatingRequestForm from "./components/sportPeople/donating.js"; //
+//import DonatingRequestForm from "./components/sportPeople/donating.js"; //
 
 import DonatingRequestForm from "./components/sportPeople/donating.js";//
 import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js"
@@ -49,11 +49,11 @@ import AdminFooter from './components/admin/AdminFooter.js';
 
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1.js";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2.js";
-import FriendChat from "./components/sportPeople/friendChat.js"; //
-import ClubNavbar from "./components/clubs/ClubNavbar.js";
-import AdminNavbar from "./components/admin/AdminNavbar.js";
-import ClubFooter from "./components/clubs/ClubFooter.js";
-import AdminFooter from "./components/admin/AdminFooter.js";
+// import FriendChat from "./components/sportPeople/friendChat.js"; //
+// import ClubNavbar from "./components/clubs/ClubNavbar.js";
+// import AdminNavbar from "./components/admin/AdminNavbar.js";
+// import ClubFooter from "./components/clubs/ClubFooter.js";
+// import AdminFooter from "./components/admin/AdminFooter.js";
 
 function App() {
   const { authUser, checkAuth, onlineUsers } = useAuthStore();
