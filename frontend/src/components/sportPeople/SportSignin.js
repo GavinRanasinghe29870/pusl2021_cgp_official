@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 // Ensure base URL is configured correctly - uncomment and adjust if needed
 // axios.defaults.baseURL = 'http://localhost:5000';
 
-const SignIn = () => {
+const SportSignin = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -197,4 +197,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SportSignin;
