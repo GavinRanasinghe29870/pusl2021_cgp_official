@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { IoNotifications } from "react-icons/io5";
@@ -17,6 +18,7 @@ const SportPeopleNavbar = () => {
     const { user, logout } = useAuthStore();
     const [animationParent] = useAutoAnimate();
     const [isSideMenuOpen, setSideMenue] = useState(false);
+    const [notifications, setNotifications] = useState([]);
     function openSideMenu() {
         setSideMenue(true);
     }
@@ -30,6 +32,23 @@ const SportPeopleNavbar = () => {
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
+    const fetchNotifications = async () => {
+        if (user) {
+            try {
+                const response = await axios.get('http://localhost:5000/api/notifications');
+                setNotifications(response.data);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
+    }, [user]);
+
+    const unreadNotificationCount = notifications?.data?.filter((notif) => !notif.read).length || 0;
 
     return (
         <nav className='sticky top-0 z-50 shadow-md'>
@@ -87,9 +106,19 @@ const SportPeopleNavbar = () => {
                         <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2' onClick={() => setSearchOpen(!searchOpen)}>
                             <LuSearch className='text-xl xl:text-2xl' />
                         </button>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                            <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                        </button>
+                        <NavLink to="/notifications" className='relative'>
+                            <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                                <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                                {unreadNotificationCount > 0 && (
+                                    <span
+                                        className='absolute top-1 right-1 bg-red-600 text-white text-xs 
+										rounded-full size-3 md:size-4 flex items-center justify-center'
+                                    >
+                                        {unreadNotificationCount}
+                                    </span>
+                                )}
+                            </button>
+                        </NavLink>
                         <NavLink to="/cart">
                             <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
                                 <FaShoppingCart className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
