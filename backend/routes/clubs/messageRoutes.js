@@ -4,6 +4,7 @@ const User = require('../../models/sportPeople/User.js');
 const Message = require('../../models/clubs/messageModel.js');
 const { protectRoute } = require('../../middleware/authMiddleware.js');
 const { getReceiverSocketId, io } = require('../../lib/socket.js');
+const Notification = require('../../models/sportPeople/Notification.js');
 
 const getUsersForSidebar = async (req, res) => {
     try {
@@ -70,7 +71,14 @@ const sendMessages = async (req, res) => {
 
         await newMessage.save();
 
-        //todo: realtime functionality goes here => socket.io
+        const newNotification = new Notification({
+            recipient: receiverId,
+            type: "message",
+            relatedUser: senderId,
+        });
+
+        await newNotification.save();
+
         const receiverSocketId = getReceiverSocketId(receiverId);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("newMessage", newMessage);
