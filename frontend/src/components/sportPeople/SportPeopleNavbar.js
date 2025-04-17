@@ -13,6 +13,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useAuthStore } from '../../store/useAuthStore';
+const logo = '/logo.png';
 
 const SportPeopleNavbar = () => {
     const { user, logout } = useAuthStore();
@@ -73,9 +74,7 @@ const SportPeopleNavbar = () => {
                     {isSideMenuOpen && <MobileNav closeSideMenu={closeSideMenu} />}
                     {/* Logo Section */}
                     <NavLink to="/">
-                        <div className='text-1xl xl:text-2xl flex items-center gap-2 font-bold py-4'>
-                            <a href='#' className='text-primary logo-txt'><span className='underline'>SPORT</span><span className='parallelogram-bg'>NEST</span></a>
-                        </div>
+                        <img src={logo} alt="SportNest" className='w-20 p-2 md:p-0' />
                     </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
