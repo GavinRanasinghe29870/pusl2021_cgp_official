@@ -1,26 +1,43 @@
 const express = require('express');
 const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 const controller = require('../../controllers/userProfileController');
-// const authMiddleware = require('../../middleware/authMiddleware'); // Enable if using auth
 
-// 🔹 Multer Storage Config
+// 🔹 Multer Storage Config with folder creation
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path =
-      file.fieldname === 'profilePhoto'
-        ? 'uploads/profile_photos'
-        : file.fieldname === 'coverPhoto'
-        ? 'uploads/cover_photos'
-        : 'uploads/post_images';
-    cb(null, path);
+    let folder = '';
+
+    if (file.fieldname === 'profilePhoto') {
+      folder = 'uploads/profile_photos';
+    } else if (file.fieldname === 'coverPhoto') {
+      folder = 'uploads/cover_photos';
+    } else {
+      folder = 'uploads/post_images';
+    }
+
+    const fullPath = path.join(__dirname, '../../', folder);
+
+    // ✅ Create folder if it doesn't exist
+    if (!fs.existsSync(fullPath)) {
+      fs.mkdirSync(fullPath, { recursive: true });
+    }
+
+    cb(null, fullPath);
   },
+
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
+
 const upload = multer({ storage });
 
+/* ===============================
+   🔗 USER + PROFILE ROUTES
+================================= */
 
 // 👤 Basic User
 router.get('/user/:id', controller.getUser);
@@ -30,8 +47,8 @@ router.put('/user/:id', controller.updateUser);
 router.put('/user/:id/friends/:friendId', controller.toggleFriend);
 
 // 📋 Profile (Extended UserProfile model)
-router.get('/user/:id/profile-data', controller.getProfile);      // GET full profile data (user + profile)
-router.put('/user/:id/profile-data', controller.upsertProfile);   // PUT to create/update profile
+router.get('/user/:id/profile-data', controller.getProfile);
+router.put('/user/:id/profile-data', controller.upsertProfile);
 
 // 📸 Uploads
 router.post('/user/:id/profile-photo', upload.single('profilePhoto'), controller.uploadProfilePhoto);
