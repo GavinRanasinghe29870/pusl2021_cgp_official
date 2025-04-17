@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/sportPeople/User');
 const Post = require('../models/sportPeople/Post');
 const UserProfile = require('../models/sportPeople/userProfile');
@@ -6,10 +7,16 @@ const path = require('path');
 // ✅ Get full user profile data (user + userProfile)
 exports.getProfile = async (req, res) => {
   try {
-    let profile = await UserProfile.findOne({ user: req.params.id }).populate('user');
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    let profile = await UserProfile.findOne({ user: id }).populate('user');
 
     if (!profile) {
-      profile = new UserProfile({ user: req.params.id });
+      profile = new UserProfile({ user: id });
       await profile.save();
       profile = await UserProfile.findById(profile._id).populate('user');
     }
@@ -17,16 +24,22 @@ exports.getProfile = async (req, res) => {
     res.json(profile);
   } catch (err) {
     console.error('Error in getProfile:', err.message);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error in getProfile' });
   }
 };
 
 // ✅ Update or create userProfile data
 exports.upsertProfile = async (req, res) => {
   try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
     const profileData = req.body;
     const profile = await UserProfile.findOneAndUpdate(
-      { user: req.params.id },
+      { user: id },
       { $set: profileData },
       { new: true, upsert: true }
     );
@@ -40,12 +53,18 @@ exports.upsertProfile = async (req, res) => {
 // ✅ Get basic user data
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    const user = await User.findById(id);
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
   } catch (err) {
     console.error('Error in getUser:', err.message);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error in getUser' });
   }
 };
 
