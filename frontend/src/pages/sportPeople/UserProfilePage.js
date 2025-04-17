@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuthStore } from '../../store/useAuthStore';
 
 import ProfileHeader from '../../components/sportPeople/UserProfile/ProfileHeader';
 import ProfileNavbar from '../../components/sportPeople/UserProfile/ProfileNavbar';
@@ -11,43 +12,57 @@ import ProfileVideos from '../../components/sportPeople/UserProfile/ProfileVideo
 import ProfilePosts from '../../components/sportPeople/UserProfile/ProfilePosts';
 
 function UserProfilePage() {
-  const { id: userId } = useParams();
+  const { id: userIdFromURL } = useParams();
   const navigate = useNavigate();
+  const { user: authUser, checkAuth } = useAuthStore(); // ✅ Fixed here
+  const loggedInUserId = authUser?._id;
 
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [activeTab, setActiveTab] = useState('home');
+  const [loading, setLoading] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const loggedInUserId = localStorage.getItem('userId');
-  const isOwner = userId === loggedInUserId;
+  const isOwner = loggedInUserId === userIdFromURL;
 
+  // ✅ Check authentication
   useEffect(() => {
-    if (!loggedInUserId) {
-      navigate('/login');
-      return;
-    }
+    const verify = async () => {
+      const result = await checkAuth();
+      setCheckingAuth(false);
+      if (!result.success) navigate('/Signin');
+    };
+    verify();
+  }, [checkAuth, navigate]);
+
+  // ✅ Fetch profile only after auth is confirmed
+  useEffect(() => {
+    if (checkingAuth || !authUser || !userIdFromURL) return;
 
     const fetchData = async () => {
       try {
         const [userRes, profileRes] = await Promise.all([
-          axios.get(`http://localhost:5000/api/user/${userId}`),
-          axios.get(`http://localhost:5000/api/user/${userId}/profile-data`)
+          axios.get(`http://localhost:5000/api/user/${userIdFromURL}`, {
+            withCredentials: true,
+          }),
+          axios.get(`http://localhost:5000/api/user/${userIdFromURL}/profile-data`, {
+            withCredentials: true,
+          }),
         ]);
 
-        const userData = userRes.data || {};
-        const profileData = profileRes.data || {};
-
-        setUser(userData);
-        setProfile(profileData);
+        setUser(userRes.data || {});
+        setProfile(profileRes.data || {});
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching user/profile data:', error);
+        console.error('❌ Error fetching profile:', error.response?.data || error.message);
+        navigate('/');
       }
     };
 
     fetchData();
-  }, [userId, loggedInUserId, navigate]);
+  }, [checkingAuth, authUser, userIdFromURL, navigate]);
 
-  if (!user) {
+  if (checkingAuth || loading) {
     return <div className="text-center mt-10 text-gray-500">Loading profile...</div>;
   }
 
