@@ -1,29 +1,18 @@
 // models/sportPeople/UserProfile.js
 const mongoose = require("mongoose");
 
-const postSchema = new mongoose.Schema({
-  description: String,
-  image: String,
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  comments: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      text: String,
-      timestamp: { type: Date, default: Date.now },
-    },
-  ],
-  reposts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  createdAt: { type: Date, default: Date.now },
-});
-
 const profileSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 
   // 🖼️ Media
   profilePhoto: String,
   coverPhoto: String,
-  photos: [String],
-  videos: [String],
+  photos: { type: [String], default: [] },
+  videos: { type: [String], default: [] },
 
   // 🧍 Basic Personal Info
   name: String,
@@ -35,7 +24,7 @@ const profileSchema = new mongoose.Schema({
   city: String,
 
   // 🏅 Sports Info
-  sports: [String],
+  sports: { type: [String], default: [] },
   skillLevel: String,
   positions: String,
   trainingBackground: String,
@@ -54,10 +43,10 @@ const profileSchema = new mongoose.Schema({
   otherSports: String,
   otherSkill: String,
   otherClubs: String,
-  otherAchievements: String,
-
-  // 📬 Posts
-  posts: [postSchema],
+  otherAchievements: String
+},
+{
+  timestamps: true // ✅ Automatically adds createdAt and updatedAt
 });
 
 module.exports = mongoose.model("UserProfile", profileSchema);
