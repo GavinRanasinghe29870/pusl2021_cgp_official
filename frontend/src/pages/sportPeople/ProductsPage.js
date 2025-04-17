@@ -46,13 +46,15 @@ export default function ProductsPage() {
 
     return (
         <div>
-            <h2 className="text-2xl text-center font-bold mb-1">Products</h2>
+            <div className="w-full bg-primary mt-[20px] p-[40px]">
+            <h2 className="text-2xl text-white text-center text-header-01 font-bold mb-1">Products</h2>
+            </div>
 
-        <div className="block md:flex sm:flex min-h-screen bg-gray-100 p-1 gap-1">
+        <div className="block md:flex sm:flex min-h-screen bg-gray-100 mt-0">
             
             {/* Desktop Sidebar for categories */}
-            <div className="hidden md:block sm:block w-[120px] md:w-[200px] sm:w-[150px] p-2 bg-primary shadow rounded-lg">
-                <div className="bg-primary-light pt-2 pb-2 pl-2 mt-1">
+            <div className="hidden md:block sm:block w-[120px] md:w-[200px] sm:w-[150px] p-2 bg-primary shadow">
+                <div className="bg-primary-light pt-2 pb-2 pl-2 mt-0">
                     <h2 className="text-sm md:text-xl sm:text-md text-black text-center font-bold">Categories</h2>
                 </div>
                 <div className="mt-4 text-white text-sm md:text-xl sm:text-md">
