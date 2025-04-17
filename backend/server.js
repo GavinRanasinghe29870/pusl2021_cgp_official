@@ -31,7 +31,12 @@ connection.once("open", () => {
   console.log("Mongodb Connection success!");
 });
 
+app.use("/uploads/profile_photos", express.static("uploads/profile_photos"));
+app.use("/uploads/cover_photos", express.static("uploads/cover_photos"));
+app.use("/uploads/post_images", express.static("uploads/post_images"));
+
 const authRoutes = require("./routes/sportPeople/authRoutes");
+const userProfileRoutes = require("./routes/sportPeople/userProfileRoutes");
 const productRoutes = require("./routes/sportPeople/productRoutes");
 const adminRoutes = require("./routes/admin/adminRoutes.js");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
@@ -58,6 +63,8 @@ app.post("/api/donation", (req, res) => {
 
 // Serve static files (for uploaded images)
 app.use("/public/uploads", express.static("uploads"));
+//mount routs
+app.use("/api", userProfileRoutes);
 
 //Link Signin Authentication Routes
 app.use("/api/auth", authRoutes);
