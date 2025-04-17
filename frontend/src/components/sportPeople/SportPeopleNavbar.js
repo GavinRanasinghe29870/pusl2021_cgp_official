@@ -12,9 +12,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+
 
 const SportPeopleNavbar = () => {
     const { user, logout } = useAuthStore();
+    const navigate = useNavigate();
     const [animationParent] = useAutoAnimate();
     const [isSideMenuOpen, setSideMenue] = useState(false);
     function openSideMenu() {
@@ -121,9 +124,11 @@ const SportPeopleNavbar = () => {
                                             <button
                                                 className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
                                                 onClick={() => {
-                                                    // Navigate to profile page
-                                                    window.location.href = '/profile';
-                                                }}
+                                                    if (user?._id) {
+                                                      navigate(`/profile/${user._id}`);
+                                                    }
+                                                  }}
+                                                  
                                             >
                                                 Profile
                                             </button>
