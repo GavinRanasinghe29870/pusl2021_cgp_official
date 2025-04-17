@@ -31,7 +31,7 @@ const ShopSlider = () => {
                     autoPlaySpeed={4000}
                     customTransition="all 1s ease-in-out"
                     transitionDuration={2000}
-                    containerClass="carousel-container"
+                    containerClass="carousel-container relative z-10"
                 >
                     <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
                     <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-36 sm:h-48 md:h-56 lg:h-56 xl:h-60 2xl:h-80 object-cover carousel-image' /></div>
