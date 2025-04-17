@@ -24,7 +24,7 @@ import ProductPage from "./components/admin/ProductManage.js";
 import AdPost from "./components/clubs/adposting";
 import SportPage from "./components/sportPeople/sportpage02";
 import AdminSignin from "./components/admin/AdminSignin.js";
-import RequestedMembers from "./components/clubs/ReqMemberView";
+import RequestedMembers from "./components/clubs/ReqMemberView";//
 import Cart from "./components/sportPeople/cart";
 import ClubPortfolio from "./components/clubs/ClubPortfolio";
 import Singleproduct from "./components/sportPeople/SingleProd";
@@ -125,7 +125,13 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
         <Route path="/RequestMember" element={<RequestedMembers />} />
+
+
+
+       <Route path="/RegisteredClubs" element={<RegisteredClub />} /> 
+
         {/* <Route path="/RegisteredClubs" element={<RegisteredClub />} /> */}
+
         <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
         <Route path="/donationReq" element={<DonationRequestForm />} />
