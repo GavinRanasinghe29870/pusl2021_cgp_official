@@ -5,6 +5,7 @@ import { ChevronLeft, X, Paperclip, Smile, SendHorizonal } from "lucide-react";
 import { useAuthStore } from '../../store/useAuthStore';
 import { formatMessageTime } from '../../lib/utils';
 import EmojiPicker from './EmojiPicker';
+import { format, isToday, isYesterday } from 'date-fns';
 
 const ChatContainer = () => {
     const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages, unsubscribeFromMessages } = useChatStore();
@@ -53,6 +54,25 @@ const ChatContainer = () => {
         }
     };
 
+    const groupMessagesByDate = (messages) => {
+        return messages.reduce((groups, message) => {
+            const messageDate = new Date(message.createdAt);
+            const dateKey = isToday(messageDate)
+                ? "Today"
+                : isYesterday(messageDate)
+                    ? "Yesterday"
+                    : format(messageDate, "M/d/yyyy");
+
+            if (!groups[dateKey]) {
+                groups[dateKey] = [];
+            }
+            groups[dateKey].push(message);
+            return groups;
+        }, {});
+    };
+
+    const groupedMessages = groupMessagesByDate(messages);
+
     const handleEmojiSelect = (emoji) => {
         setText((prevText) => prevText + emoji.native);
     };
@@ -85,7 +105,7 @@ const ChatContainer = () => {
         <div className='flex-1 flex flex-col overflow-auto'>
 
             {/* Chat Header */}
-            <div className="p-2.5 lg:p-5 border-b border-base-300 shadow-md bg-primary-light">
+            <div className="p-2.5 lg:p-3 border-b border-base-300 shadow-md bg-primary-light">
                 <div className="flex items-center gap-5">
                     {/* Close button */}
                     <button onClick={() => setSelectedUser(null)}>
@@ -112,40 +132,50 @@ const ChatContainer = () => {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 text-white h-screen">
-                {messages.map((message) => (
-                    <div
-                        key={message._id}
-                        className={`flex items-end space-x-2 ${message.senderId === user._id ? "justify-end" : "justify-start"}`}
-                        ref={messageEndRef}
-                    >
-
-                        {/* Chat Bubble */}
-                        <div
-                            className={`max-w-2xl px-4 py-2 rounded-xl shadow-md ${message.senderId === user._id
-                                ? "bg-blue-600 text-white rounded-br-none"
-                                : "bg-gray-300 text-black rounded-tl-none"
-                                }`}
-                        >
-
-                            {/* Image (if any) */}
-                            {message.image && (
-                                <img
-                                    src={message.image}
-                                    alt="Attachment"
-                                    className="max-w-[200px] rounded-md my-2"
-                                />
-                            )}
-
-                            <div className='flex justify-between items-center'>
-                                {/* Message Text */}
-                                {message.text && <p className="text-sm max-w-lg">{message.text}</p>}
-
-                                {/* Time */}
-                                <time className="mt-3 text-xs w-16 opacity-50 block text-right">
-                                    {formatMessageTime(message.createdAt)}
-                                </time>
+                {Object.entries(groupedMessages).map(([date, messages]) => (
+                    <div key={date}>
+                        {/* Date Header */}
+                        <div className="flex justify-center items-center my-10">
+                            <div className="text-center text-xs bg-primary rounded-md py-1 px-3">
+                                {date}
                             </div>
                         </div>
+
+                        {/* Messages for this date */}
+                        {messages.map((message) => (
+                            <div
+                                key={message._id}
+                                className={`flex items-end py-1 md:px-3 ${message.senderId === user._id ? "justify-end" : "justify-start"}`}
+                                ref={messageEndRef}
+                            >
+                                {/* Chat Bubble */}
+                                <div
+                                    className={`max-w-2xl px-4 py-2 rounded-xl shadow-md ${message.senderId === user._id
+                                        ? "bg-blue-600 text-white rounded-br-none"
+                                        : "bg-gray-300 text-black rounded-tl-none"
+                                        }`}
+                                >
+                                    {/* Image (if any) */}
+                                    {message.image && (
+                                        <img
+                                            src={message.image}
+                                            alt="Attachment"
+                                            className="max-w-[200px] rounded-md my-2"
+                                        />
+                                    )}
+
+                                    <div className='flex justify-between items-center'>
+                                        {/* Message Text */}
+                                        {message.text && <p className="text-sm max-w-lg">{message.text}</p>}
+
+                                        {/* Time */}
+                                        <time className="mt-3 text-xs w-16 opacity-50 block text-right">
+                                            {formatMessageTime(message.createdAt)}
+                                        </time>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ))}
             </div>

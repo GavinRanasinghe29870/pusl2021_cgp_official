@@ -17,38 +17,44 @@ import { useAuthStore } from '../../store/useAuthStore';
 const SportPeopleNavbar = () => {
     const { user, logout } = useAuthStore();
     const [animationParent] = useAutoAnimate();
-    const [isSideMenuOpen, setSideMenue] = useState(false);
+    const [isSideMenuOpen, setSideMenu] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+    const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
-    function openSideMenu() {
-        setSideMenue(true);
-    }
-    function closeSideMenu() {
-        setSideMenue(false);
-    }
-    const [searchOpen, setSearchOpen] = React.useState(false);
+    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const openSideMenu = () => {
+        setSideMenu(true);
+    };
+
+    const closeSideMenu = () => {
+        setSideMenu(false);
+    };
 
     const toggleDropdown = () => {
-        setDropdownOpen(!dropdownOpen);
+        setProfileDropdownOpen(!profileDropdownOpen);
+    };
+
+    const toggleNotificationDropdown = () => {
+        setNotificationDropdownOpen(!notificationDropdownOpen);
     };
 
     const fetchNotifications = async () => {
-        if (user) {
-            try {
-                const response = await axios.get('http://localhost:5000/api/notifications');
-                setNotifications(response.data);
-            } catch (error) {
-                console.error('Error fetching notifications:', error);
-            }
+        try {
+            const response = await axios.get('http://localhost:5000/api/notifications');
+            const notifications = response.data;
+            const unreadNotificationCount = notifications.filter((notif) => !notif.read).length || 0;
+            setNotifications(notifications);
+            setUnreadNotificationCount(unreadNotificationCount);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
         }
     };
 
     useEffect(() => {
         fetchNotifications();
-    }, [user]);
-
-    const unreadNotificationCount = notifications?.data?.filter((notif) => !notif.read).length || 0;
+    }, []);
 
     return (
         <nav className='sticky top-0 z-50 shadow-md'>
@@ -106,8 +112,11 @@ const SportPeopleNavbar = () => {
                         <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2' onClick={() => setSearchOpen(!searchOpen)}>
                             <LuSearch className='text-xl xl:text-2xl' />
                         </button>
-                        <NavLink to="/notifications" className='relative'>
-                            <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                        <div className='relative' ref={animationParent}>
+                            <button
+                                className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'
+                                onClick={toggleNotificationDropdown}
+                            >
                                 <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
                                 {unreadNotificationCount > 0 && (
                                     <span
@@ -118,7 +127,14 @@ const SportPeopleNavbar = () => {
                                     </span>
                                 )}
                             </button>
-                        </NavLink>
+                            {notificationDropdownOpen && (
+                                <div className='absolute right-0 mt-3 bg-white shadow-lg rounded-b-xl w-60 lg:w-80'>
+                                    <div className='flex flex-col items-start gap-3 px-4 py-3 text-sm text-gray-700 font-semibold'>
+                                        // Notification List
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <NavLink to="/cart">
                             <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
                                 <FaShoppingCart className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
@@ -134,11 +150,11 @@ const SportPeopleNavbar = () => {
                                         <img src={user.profilePic || "/defaultProfilePic.jpg"} alt={user.firstName} className='rounded-full' />
                                     </div>
                                     <IoIosArrowUp
-                                        className={`text-md xl:text-xl transition-transform duration-200 ${dropdownOpen ? 'rotate-0' : 'rotate-180'
+                                        className={`text-md xl:text-xl transition-transform duration-200 ${profileDropdownOpen ? 'rotate-0' : 'rotate-180'
                                             }`}
                                     />
                                 </div>
-                                {dropdownOpen && (
+                                {profileDropdownOpen && (
                                     <div className='absolute right-0 mt-2 bg-white shadow-lg rounded-b-xl'>
                                         <div className='flex flex-col items-center w-60 gap-3 px-6 py-4 text-sm text-gray-700 font-semibold border-b'>
                                             <div className="size-12 xl:size-16 rounded-full relative">

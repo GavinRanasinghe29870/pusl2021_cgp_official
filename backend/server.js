@@ -70,9 +70,7 @@ app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
 app.use("/api/donating", donatingRoutes); //
 app.use("/api/notifications", notificationRoutes);
-app.use("/api/message", messageRoutes);
 app.use("/api/ClubAuth", ClubAuth);
-
 app.use("/api/messages", messageRoutes);
 
 app.use("/api/singleproduct", SingleProductRoutes);
