@@ -10,11 +10,10 @@ import Home from "./pages/sportPeople/Home";
 
 //import ProductList from "./pages/clubs/ProductList";
 import ProductManage from "./components/admin/ProductManage.js";
-import AboutUs from './pages/sportPeople/AboutUs.js';
+import AboutUs from "./pages/sportPeople/AboutUs.js";
 
-
-import Signin from "./components/sportPeople/SportSignin.js";
-import Signup from "./components/sportPeople/SportSignup.js";
+import Signin from "./pages/sportPeople/SportSignin.js";
+import Signup from "./pages/sportPeople/SportSignup.js";
 import DonationRequestForm from "./components/sportPeople/donation";
 import InsertProduct from "./components/admin/InsertProduct.js";
 import AdminHome from "./pages/admin/AdminHome";
@@ -23,8 +22,8 @@ import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from "./components/admin/ProductManage.js";
 import AdPost from "./components/clubs/adposting";
 import SportPage from "./components/sportPeople/sportpage02";
-import AdminSignin from "./components/admin/AdminSignin.js";
-import RequestedMembers from "./components/clubs/ReqMemberView";//
+import AdminSignin from "./pages/admin/AdminSignin.js";
+import RequestedMembers from "./components/clubs/ReqMemberView"; //
 import Cart from "./components/sportPeople/cart";
 import ClubPortfolio from "./components/clubs/ClubPortfolio";
 import Singleproduct from "./components/sportPeople/SingleProd";
@@ -38,14 +37,13 @@ import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 
 //import DonatingRequestForm from "./components/sportPeople/donating.js"; //
 
-import DonatingRequestForm from "./components/sportPeople/donating.js";//
-import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js"
-import FriendChat from './components/sportPeople/friendChat.js';//
-import ClubNavbar from './components/clubs/ClubNavbar.js';
-import AdminNavbar from './components/admin/AdminNavbar.js';
-import ClubFooter from './components/clubs/ClubFooter.js';
-import AdminFooter from './components/admin/AdminFooter.js';
-
+import DonatingRequestForm from "./components/sportPeople/donating.js"; //
+import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js";
+import FriendChat from "./components/sportPeople/friendChat.js"; //
+import ClubNavbar from "./components/clubs/ClubNavbar.js";
+import AdminNavbar from "./components/admin/AdminNavbar.js";
+import ClubFooter from "./components/clubs/ClubFooter.js";
+import AdminFooter from "./components/admin/AdminFooter.js";
 
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1.js";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2.js";
@@ -126,9 +124,7 @@ function App() {
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
         <Route path="/RequestMember" element={<RequestedMembers />} />
 
-
-
-       <Route path="/RegisteredClubs" element={<RegisteredClub />} /> 
+        <Route path="/RegisteredClubs" element={<RegisteredClub />} />
 
         {/* <Route path="/RegisteredClubs" element={<RegisteredClub />} /> */}
 
@@ -141,11 +137,7 @@ function App() {
 
         <Route path="/donatingReq" element={<DonatingRequestForm />} />
 
-
         <Route path="/donatingReq" element={<DonatingRequestForm />} />
-
-
-
 
         <Route path="/product/:id" element={<Singleproduct />} />
         <Route path="/Clubsignup" element={<Clubsignup />} />
@@ -154,19 +146,18 @@ function App() {
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
         <Route path="/salesManage" element={<SalesManage />} />
 
-        
-
         <Route path="/aboutus" element={<AboutUs />} />
 
-        <Route path="/registrationApproval" element={<RegistrationApproval />} />
+        <Route
+          path="/registrationApproval"
+          element={<RegistrationApproval />}
+        />
 
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
         {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
         <Route path="/club-chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
         <Route path="/chat" element={<FriendChat />} />
-
-
       </Routes>
       {[
         "/Signin",
