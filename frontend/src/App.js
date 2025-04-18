@@ -132,8 +132,9 @@ function App() {
         <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
         <Route path="/profile:id" element={
-            authUser ? <Navigate to={`/profile/${authUser._id}`} /> : <Navigate to="/Signin" />
+          authUser ? <Navigate to={`/profile/${authUser._id}`} /> : <Navigate to="/Signin" />
         } />
+        <Route path="/profile/:id" element={<UserProfilePage />} />
 
        <Route path="/RegisteredClubs" element={<RegisteredClub />} /> 
 
