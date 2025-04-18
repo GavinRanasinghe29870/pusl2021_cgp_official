@@ -1,6 +1,6 @@
 import React from 'react';
 import ProfileAbout from './ProfileAbout';
-import ProfilePhotos from './ProfilePhotos';
+import ProfilePhotos from './ProfilePhoto';
 import ProfileVideos from './ProfileVideos';
 import ProfilePosts from './ProfilePosts';
 
