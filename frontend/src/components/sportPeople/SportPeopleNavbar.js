@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { NavLink } from 'react-router-dom';
+import { NavLink,  useNavigate } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { IoNotifications } from "react-icons/io5";
 import { MdOutlineShoppingBag } from "react-icons/md";
@@ -17,6 +17,7 @@ const logo = '/logo.png';
 
 const SportPeopleNavbar = () => {
     const { user, logout } = useAuthStore();
+    const navigate = useNavigate();
     const [animationParent] = useAutoAnimate();
     const [isSideMenuOpen, setSideMenu] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
@@ -165,9 +166,11 @@ const SportPeopleNavbar = () => {
                                             <button
                                                 className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
                                                 onClick={() => {
-                                                    // Navigate to profile page
-                                                    window.location.href = '/profile';
-                                                }}
+                                                    if (user?._id) {
+                                                      navigate(`/profile/${user._id}`);
+                                                    }
+                                                  }}
+                                                  
                                             >
                                                 Profile
                                             </button>

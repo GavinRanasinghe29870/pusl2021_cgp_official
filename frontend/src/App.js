@@ -41,6 +41,7 @@ import HelpCenterPage from "./pages/sportPeople/HelpCenter";
 import DonatingRequestForm from "./components/sportPeople/donating.js";//
 import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js"
 import FriendChat from './components/sportPeople/friendChat.js';//
+import UserProfilePage from './pages/sportPeople/UserProfilePage.js';
 import ClubNavbar from './components/clubs/ClubNavbar.js';
 import AdminNavbar from './components/admin/AdminNavbar.js';
 import ClubFooter from './components/clubs/ClubFooter.js';
@@ -127,6 +128,12 @@ function App() {
         <Route path="/RequestMember" element={<RequestedMembers />} />
 
 
+        <Route path="/RegisteredClubs" element={<RegisteredClub />} />
+        <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
+        <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
+        <Route path="/profile:id" element={
+            authUser ? <Navigate to={`/profile/${authUser._id}`} /> : <Navigate to="/Signin" />
+        } />
 
        <Route path="/RegisteredClubs" element={<RegisteredClub />} /> 
 
