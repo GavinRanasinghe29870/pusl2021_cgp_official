@@ -62,7 +62,7 @@ const ChatSidebar = () => {
                         key={user._id}
                         onClick={() => setSelectedUser(user)}
                         className={`
-                            w-full p-3 pl-8 flex items-center gap-3 border-b lg:border-none
+                            w-full p-3 pl-8 flex items-center gap-3 border-b
                             hover:bg-primary-light transition-colors
                             ${selectedUser?._id === user._id ? "bg-primary-light ring-1 ring-base-300" : ""}
                         `}
@@ -91,7 +91,13 @@ const ChatSidebar = () => {
                             <div className="text-sm text-zinc-500 truncate">
                                 {user.lastMessage ? user.lastMessage.text : "No messages"}
                             </div>
+
                         </div>
+                        {/* {unreadMessageCount > 0 && (
+                            <div className='ml-auto bg-red-600 text-white text-xs rounded-full size-3 md:size-4 flex items-center justify-center'>
+                                {unreadMessageCount}
+                            </div>
+                        )} */}
                     </button>
                 ))}
 

@@ -8,6 +8,7 @@ import { IoClose } from "react-icons/io5";
 import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+const logo = '/logo.png';
 
 const ClubNavbar = () => {
     const [animationParent] = useAutoAnimate();
@@ -36,13 +37,11 @@ const ClubNavbar = () => {
                     {isSideMenuOpen && <MobileNav closeSideMenu={closeSideMenu} />}
                     {/* Logo Section */}
                     <NavLink to="/club/home">
-                        <div className='text-1xl xl:text-2xl flex items-center gap-2 font-bold py-4'>
-                            <a href='#' className='text-primary logo-txt'><span className='underline'>SPORT</span><span className='parallelogram-bg'>NEST</span></a>
-                        </div>
+                        <img src={logo} alt="SportNest" className='w-20 p-2 md:p-0' />
                     </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
-                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8'>
+                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8 py-4'>
                             <li>
                                 <NavLink to="/club/home" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Home</NavLink>
                             </li>
@@ -50,7 +49,7 @@ const ClubNavbar = () => {
                                 <NavLink to="/adpost" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Ad Post</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/RequestMember" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Reegisted Members</NavLink>
+                                <NavLink to="/RequestMember" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Requested Members</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/ClubPortfolio" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active">Club Portfolio</NavLink>
