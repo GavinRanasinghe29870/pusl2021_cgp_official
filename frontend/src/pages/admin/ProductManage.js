@@ -5,12 +5,10 @@ import axios from "axios";
 export default function ProductManage() {
   const [showModal, setShowModal] = useState(false);
   const [products, setProducts] = useState([]);
+  const [editProduct, setEditProduct] = useState(null); // for edit mode
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchProducts();
-    };
-    fetchData();
+    fetchProducts();
   }, []);
 
   async function fetchProducts() {
@@ -22,12 +20,32 @@ export default function ProductManage() {
     }
   }
 
+  async function handleDelete(id) {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/products/${id}`);
+        setProducts(products.filter((p) => p._id !== id));
+      } catch (error) {
+        console.error("Error deleting product", error);
+      }
+    }
+  }
+
+  function handleEdit(product) {
+    setEditProduct(product);
+    setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    setEditProduct(null);
+    fetchProducts(); // refresh after add/edit
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Page Header */}
-      <h1 className="text-2xl font-bold mb-4 text-center">Products Managing</h1>
+      <h1 className="text-[60px] font-bold mb-4 text-center bg-yellow-200">Products Managing</h1>
 
-      {/* Add Product Button */}
       <div className="mb-4 text-right">
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
@@ -37,13 +55,12 @@ export default function ProductManage() {
         </button>
       </div>
 
-      {/* Modal for InsertProduct */}
-      {showModal && <InsertProduct onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <InsertProduct onClose={closeModal} existingProduct={editProduct} />
+      )}
 
-      {/* Responsive Table Wrapper */}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left">
-          {/* Table Head */}
           <thead className="bg-blue-800 text-white">
             <tr>
               <th className="py-3 px-4">ID</th>
@@ -58,8 +75,6 @@ export default function ProductManage() {
               <th className="py-3 px-4">Actions</th>
             </tr>
           </thead>
-
-          {/* Table Body */}
           <tbody>
             {products.length > 0 ? (
               products.map((product, index) => (
@@ -80,8 +95,10 @@ export default function ProductManage() {
                   <td className="py-3 px-4">test</td>
                   <td className="py-3 px-4">
                     <div className="flex space-x-2">
-                      {/* Edit Button */}
-                      <button className="flex items-center bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">
+                      <button
+                        className="flex items-center bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                        onClick={() => handleEdit(product)}
+                      >
                         <img
                           src="/edit-2-fill.svg"
                           alt="edit"
@@ -89,9 +106,10 @@ export default function ProductManage() {
                         />
                         Edit
                       </button>
-
-                      {/* Delete Button */}
-                      <button className="flex items-center bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                      <button
+                        className="flex items-center bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                        onClick={() => handleDelete(product._id)}
+                      >
                         <img
                           src="/delete-2-fill.svg"
                           alt="delete"
@@ -104,7 +122,6 @@ export default function ProductManage() {
                 </tr>
               ))
             ) : (
-              // Fallback if no products
               <tr>
                 <td colSpan="10" className="text-center py-4">
                   No Products Available
