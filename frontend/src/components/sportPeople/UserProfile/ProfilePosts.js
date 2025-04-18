@@ -1,90 +1,101 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { FiPlus } from 'react-icons/fi';
+import PostCard from './PostCard';
 
-function ProfileVideos({ user, isOwner }) {
-  const [videos, setVideos] = useState([]);
-  const [video, setVideo] = useState(null);
+function ProfilePosts({ user, isOwner }) {
+  const [posts, setPosts] = useState([]);
+  const [desc, setDesc] = useState('');
+  const [image, setImage] = useState(null);
   const backendURL = 'http://localhost:5000';
 
-  const fetchVideos = useCallback(async () => {
+  const fetchPosts = useCallback(async () => {
+    if (!user._id) return;
     try {
       const res = await axios.get(`${backendURL}/api/user/${user._id}/posts`);
-      const videoPosts = res.data.filter(post => {
-        const ext = post.image?.split('.').pop().toLowerCase();
-        return post.image && ['mp4', 'mov', 'webm'].includes(ext);
-      });
-      setVideos(videoPosts);
+      setPosts(res.data || []);
     } catch (err) {
-      console.error('Failed to load videos:', err);
+      console.error('Error fetching posts:', err);
     }
   }, [user._id]);
 
-  const handleUpload = async () => {
-    if (!video) return;
+  const handlePost = async () => {
+    if (!desc && !image) return;
+
     const formData = new FormData();
-    formData.append('image', video);
+    formData.append('description', desc);
+    if (image) formData.append('image', image);
 
     try {
       await axios.post(`${backendURL}/api/user/${user._id}/post`, formData);
-      setVideo(null);
-      fetchVideos();
+      setDesc('');
+      setImage(null);
+      fetchPosts(); // Refresh posts
     } catch (err) {
-      console.error('Upload failed:', err);
+      console.error('Error creating post:', err);
     }
   };
 
   useEffect(() => {
-    if (user?._id) fetchVideos();
-  }, [user._id, fetchVideos]);
+    fetchPosts();
+  }, [fetchPosts]);
 
   return (
-    <div className="bg-blue-100 p-6 rounded-xl shadow mb-6">
-      <div className="bg-yellow-200 inline-block px-4 py-2 mb-6 font-semibold text-lg rounded">
-        Videos
-      </div>
-
+    <div className="bg-blue-100 p-6 rounded-xl max-w-7xl mx-auto">
+      {/* ➕ Post Form for Owner */}
       {isOwner && (
-        <div className="mb-6">
-          <label className="inline-flex items-center bg-yellow-200 font-semibold px-4 py-2 rounded cursor-pointer hover:bg-yellow-300 transition">
-            <FiPlus className="mr-2" /> Add Videos
+        <>
+          <div className="bg-yellow-200 px-4 py-2 mb-4 w-fit font-semibold text-gray-800 rounded shadow">
+            + New Post
+          </div>
+
+          <div className="bg-white p-4 rounded shadow mb-6">
+            <textarea
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              placeholder="What's on your mind?"
+              className="w-full border p-2 rounded mb-2"
+            />
             <input
               type="file"
-              accept="video/mp4,video/webm,video/mov"
-              onChange={(e) => {
-                setVideo(e.target.files[0]);
-                setTimeout(handleUpload, 300);
-              }}
-              className="hidden"
+              accept="image/*,video/*"
+              onChange={(e) => setImage(e.target.files[0])}
+              className="block mb-2"
             />
-          </label>
-        </div>
+            <button
+              onClick={handlePost}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Post
+            </button>
+          </div>
+        </>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {videos.map((post) => (
-          <div key={post._id} className="rounded overflow-hidden shadow hover:scale-[1.01] transition-transform">
-            <video controls className="w-full h-48 object-cover rounded">
-              <source src={`${backendURL}${post.image}`} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        ))}
-
-        {isOwner && (
-          <div className="bg-gray-300 h-48 flex justify-center items-center rounded hover:bg-gray-400 cursor-pointer transition">
-            <FiPlus className="text-2xl text-gray-600" />
+      {/* 📬 Posts List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard
+              key={post._id}
+              post={post}
+              userId={user._id}
+              isOwner={isOwner}
+              onUpdate={fetchPosts}
+            />
+          ))
+        ) : (
+          <div className="col-span-2 bg-white rounded-xl shadow-md flex flex-col items-center justify-center text-center p-6">
+            <div className="text-4xl text-gray-300 mb-4">📝</div>
+            <p className="text-gray-700 font-medium mb-4">
+              {isOwner
+                ? 'You have not posted anything yet.'
+                : `${user.firstName || 'This user'} hasn't posted yet.`}
+            </p>
           </div>
         )}
       </div>
-
-      {videos.length > 6 && (
-        <div className="text-center mt-6 font-semibold text-gray-700">
-          More <FiPlus className="inline ml-1" />
-        </div>
-      )}
     </div>
   );
 }
 
-export default ProfileVideos;
+export default ProfilePosts;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { FiPlus } from 'react-icons/fi';
 
@@ -7,7 +7,7 @@ function ProfileVideos({ user, isOwner }) {
   const [video, setVideo] = useState(null);
   const backendURL = 'http://localhost:5000';
 
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     try {
       const res = await axios.get(`${backendURL}/api/user/${user._id}/posts`);
       const videoPosts = res.data.filter(post => {
@@ -18,7 +18,7 @@ function ProfileVideos({ user, isOwner }) {
     } catch (err) {
       console.error('Failed to load videos:', err);
     }
-  };
+  }, [user._id]);
 
   const handleUpload = async () => {
     if (!video) return;
@@ -28,7 +28,7 @@ function ProfileVideos({ user, isOwner }) {
     try {
       await axios.post(`${backendURL}/api/user/${user._id}/post`, formData);
       setVideo(null);
-      fetchVideos(); // Refresh video grid
+      fetchVideos();
     } catch (err) {
       console.error('Upload failed:', err);
     }
@@ -36,16 +36,14 @@ function ProfileVideos({ user, isOwner }) {
 
   useEffect(() => {
     if (user?._id) fetchVideos();
-  }, [user._id]);
+  }, [user._id, fetchVideos]);
 
   return (
     <div className="bg-blue-100 p-6 rounded-xl shadow mb-6">
-      {/* 🎥 Yellow Heading */}
       <div className="bg-yellow-200 inline-block px-4 py-2 mb-6 font-semibold text-lg rounded">
         Videos
       </div>
 
-      {/* Upload Video Button */}
       {isOwner && (
         <div className="mb-6">
           <label className="inline-flex items-center bg-yellow-200 font-semibold px-4 py-2 rounded cursor-pointer hover:bg-yellow-300 transition">
@@ -63,21 +61,16 @@ function ProfileVideos({ user, isOwner }) {
         </div>
       )}
 
-      {/* Video Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {videos.map((post) => (
           <div key={post._id} className="rounded overflow-hidden shadow hover:scale-[1.01] transition-transform">
-            <video
-              controls
-              className="w-full h-48 object-cover rounded"
-            >
+            <video controls className="w-full h-48 object-cover rounded">
               <source src={`${backendURL}${post.image}`} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
         ))}
 
-        {/* Upload Placeholder Slot */}
         {isOwner && (
           <div className="bg-gray-300 h-48 flex justify-center items-center rounded hover:bg-gray-400 cursor-pointer transition">
             <FiPlus className="text-2xl text-gray-600" />
@@ -85,7 +78,6 @@ function ProfileVideos({ user, isOwner }) {
         )}
       </div>
 
-      {/* "More" CTA */}
       {videos.length > 6 && (
         <div className="text-center mt-6 font-semibold text-gray-700">
           More <FiPlus className="inline ml-1" />

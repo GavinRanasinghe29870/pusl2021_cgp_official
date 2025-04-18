@@ -7,7 +7,7 @@ import ProfileHeader from '../../components/sportPeople/UserProfile/ProfileHeade
 import ProfileNavbar from '../../components/sportPeople/UserProfile/ProfileNavbar';
 import ProfileHome from '../../components/sportPeople/UserProfile/ProfileHome';
 import ProfileAbout from '../../components/sportPeople/UserProfile/ProfileAbout';
-import ProfilePhotos from '../../components/sportPeople/UserProfile/ProfilePhotos';
+import ProfilePhotos from '../../components/sportPeople/UserProfile/ProfilePhoto';
 import ProfileVideos from '../../components/sportPeople/UserProfile/ProfileVideos';
 import ProfilePosts from '../../components/sportPeople/UserProfile/ProfilePosts';
 
@@ -63,7 +63,12 @@ function UserProfilePage() {
   }, [checkingAuth, authUser, userIdFromURL, navigate]);
 
   if (checkingAuth || loading) {
-    return <div className="text-center mt-10 text-gray-500">Loading profile...</div>;
+    return <div className="flex flex-1 items-center justify-center">
+      <div
+        className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+        role="status"
+      ></div>
+    </div>
   }
 
   const mergedUser = {
