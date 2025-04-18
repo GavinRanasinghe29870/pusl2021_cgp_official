@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { IoNotifications } from "react-icons/io5";
@@ -11,17 +12,50 @@ import { IoIosArrowUp } from "react-icons/io";
 import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { useAuthStore } from '../../store/useAuthStore';
+const logo = '/logo.png';
 
 const SportPeopleNavbar = () => {
+    const { user, logout } = useAuthStore();
     const [animationParent] = useAutoAnimate();
-    const [isSideMenuOpen, setSideMenue] = useState(false);
-    function openSideMenu() {
-        setSideMenue(true);
-    }
-    function closeSideMenu() {
-        setSideMenue(false);
-    }
-    const [searchOpen, setSearchOpen] = React.useState(false);
+    const [isSideMenuOpen, setSideMenu] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+    const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+
+    const openSideMenu = () => {
+        setSideMenu(true);
+    };
+
+    const closeSideMenu = () => {
+        setSideMenu(false);
+    };
+
+    const toggleDropdown = () => {
+        setProfileDropdownOpen(!profileDropdownOpen);
+    };
+
+    const toggleNotificationDropdown = () => {
+        setNotificationDropdownOpen(!notificationDropdownOpen);
+    };
+
+    const fetchNotifications = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/notifications');
+            const notifications = response.data;
+            const unreadNotificationCount = notifications.filter((notif) => !notif.read).length || 0;
+            setNotifications(notifications);
+            setUnreadNotificationCount(unreadNotificationCount);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
 
     return (
         <nav className='sticky top-0 z-50 shadow-md'>
@@ -34,15 +68,13 @@ const SportPeopleNavbar = () => {
                 </div>
             </div>
             <div className='bg-primary-light'>
-                <div className='container flex justify-between items-center' ref={animationParent}>
+                <div className='px-3 lg:container flex justify-between items-center' ref={animationParent}>
                     {/* Mobile Hamburger Menu Section */}
                     <FiMenu onClick={openSideMenu} className='md:hidden text-3xl cursor-pointer' />
                     {isSideMenuOpen && <MobileNav closeSideMenu={closeSideMenu} />}
                     {/* Logo Section */}
                     <NavLink to="/">
-                        <div className='text-1xl xl:text-2xl flex items-center gap-2 font-bold py-4'>
-                            <a href='#' className='text-primary logo-txt'><span className='underline'>SPORT</span><span className='parallelogram-bg'>NEST</span></a>
-                        </div>
+                        <img src={logo} alt="SportNest" className='w-20 p-2 md:p-0' />
                     </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
@@ -51,10 +83,10 @@ const SportPeopleNavbar = () => {
                                 <NavLink to="/" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Home</NavLink>
                             </li>
                             <li className="relative group">
-                                <a className="relative cursor-pointer flex items-center gap-2 font-body text-sm xl:text-base py-2 px-3 text-gray-700 group-hover:text-primary font-semibold">
+                                <a className="relative cursor-pointer flex items-center gap-2 font-body text-sm xl:text-base py-5 px-3 text-gray-700 group-hover:text-primary font-semibold">
                                     Club Center <IoIosArrowUp className="text-xl rotate-180 transition-all group-hover:rotate-0" />
                                 </a>
-                                <div className="absolute top-full left-0 hidden w-44 xl:w-64 flex-col rounded-xl bg-white py-4 shadow-lg transition-all group-hover:flex">
+                                <div className="absolute top-full left-0 hidden w-44 xl:w-64 flex-col rounded-b-xl bg-white py-4 shadow-lg transition-all group-hover:flex">
                                     <NavLink to="/RegisteredClubs" className="flex items-center font-body text-sm xl:text-base gap-3 px-5 py-3 text-gray-700 hover:text-primary hover:bg-primary-light font-semibold" activeClassName="active">
                                         Registered Clubs
                                     </NavLink>
@@ -79,19 +111,83 @@ const SportPeopleNavbar = () => {
                         <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2' onClick={() => setSearchOpen(!searchOpen)}>
                             <LuSearch className='text-xl xl:text-2xl' />
                         </button>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                            <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                        </button>
+                        <div className='relative' ref={animationParent}>
+                            <button
+                                className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'
+                                onClick={toggleNotificationDropdown}
+                            >
+                                <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                                {unreadNotificationCount > 0 && (
+                                    <span
+                                        className='absolute top-1 right-1 bg-red-600 text-white text-xs 
+										rounded-full size-3 md:size-4 flex items-center justify-center'
+                                    >
+                                        {unreadNotificationCount}
+                                    </span>
+                                )}
+                            </button>
+                            {notificationDropdownOpen && (
+                                <div className='absolute right-0 mt-3 bg-white shadow-lg rounded-b-xl w-60 lg:w-80'>
+                                    <div className='flex flex-col items-start gap-3 px-4 py-3 text-sm text-gray-700 font-semibold'>
+                                        // Notification List
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <NavLink to="/cart">
                             <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
                                 <FaShoppingCart className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
                             </button>
                         </NavLink>
-                        <NavLink to="/Signin">
-                            <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                                <FiUser className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                            </button>
-                        </NavLink>
+                        {user ? (
+                            <div className='relative'>
+                                <div
+                                    className='gap-2 flex items-center hover:bg-opacity-15 hover:bg-primary rounded-full p-2'
+                                    onClick={toggleDropdown}
+                                >
+                                    <div className="size-6 xl:size-8 rounded-full relative">
+                                        <img src={user.profilePic || "/defaultProfilePic.jpg"} alt={user.firstName} className='rounded-full' />
+                                    </div>
+                                    <IoIosArrowUp
+                                        className={`text-md xl:text-xl transition-transform duration-200 ${profileDropdownOpen ? 'rotate-0' : 'rotate-180'
+                                            }`}
+                                    />
+                                </div>
+                                {profileDropdownOpen && (
+                                    <div className='absolute right-0 mt-2 bg-white shadow-lg rounded-b-xl'>
+                                        <div className='flex flex-col items-center w-60 gap-3 px-6 py-4 text-sm text-gray-700 font-semibold border-b'>
+                                            <div className="size-12 xl:size-16 rounded-full relative">
+                                                <img src={user.profilePic || "/defaultProfilePic.jpg"} alt={user.firstName} className='rounded-full' />
+                                            </div>
+                                            <div>{user.username}</div>
+                                        </div>
+                                        <div className='py-4'>
+                                            <button
+                                                className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
+                                                onClick={() => {
+                                                    // Navigate to profile page
+                                                    window.location.href = '/profile';
+                                                }}
+                                            >
+                                                Profile
+                                            </button>
+                                            <button
+                                                className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
+                                                onClick={logout}
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <NavLink to="/Signin">
+                                <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                                    <FiUser className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                                </button>
+                            </NavLink>
+                        )}
                     </div>
                 </div>
                 <div className='relative flex justify-center'>

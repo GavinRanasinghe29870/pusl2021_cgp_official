@@ -2,6 +2,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../../models/sportPeople/User");
+const { protectRoute } = require("../../middleware/authMiddleware.js");
+const { generateToken } = require("../../lib/utils.js");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 
@@ -105,20 +107,20 @@ router.post("/signin", async (req, res) => {
       return res.status(401).json({ error: "Unauthorized access" });
     }
 
-    const token = jwt.sign(
-      { id: user._id, username: user.username, sportLevel: user.sportLevel },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // set to true when in production with HTTPS
-      sameSite: "Lax",
-    });
+    const token = generateToken(user._id, res);
 
     res.json({
-      user: { username: user.username, sportLevel: user.sportLevel },
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        age: user.age,
+        username: user.username,
+        mobile: user.mobile,
+        address: user.address,
+        email: user.email,
+        sportLevel: user.sportLevel,
+        gender: user.gender,
+      },
       token,
     });
   } catch (err) {
@@ -133,36 +135,16 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
-// CHECK LOGIN STATUS
-router.get("/check", async (req, res) => {
+const checkAuth = async (req, res) => {
   try {
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findById(verified.id).select("-password");
-
-    if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
-    }
-
-    res.status(200).json({
-      success: true,
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      sportLevel: user.sportLevel,
-    });
-  } catch (err) {
-    console.error("Check Auth Error:", err);
-    res.status(401).json({ success: false, message: "Invalid token" });
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-});
+}
+
+// CHECK LOGIN STATUS
+router.get("/check", protectRoute, checkAuth);
 
 module.exports = router;

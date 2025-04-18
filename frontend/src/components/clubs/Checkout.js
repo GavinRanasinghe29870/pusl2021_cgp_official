@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const CheckoutPage = () => {
+  const [showCardFields, setShowCardFields] = useState(false);
+
+  const handleAddCardClick = () => {
+    setShowCardFields(true);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg flex">
       {/* Left Side - Customer Details */}
@@ -25,9 +31,22 @@ const CheckoutPage = () => {
         {/* Payment Method */}
         <div className="p-4 bg-yellow-200 rounded-lg">
           <h2 className="font-bold">Payment Method</h2>
-          <button className="p-2 mt-2 w-full bg-white flex justify-between">
+          <button
+            className="p-2 mt-2 w-full bg-white flex justify-between items-center"
+            onClick={handleAddCardClick}
+          >
             Add Card <span className="ml-2">💳</span>
           </button>
+
+          {/* Conditional Rendering of Card Inputs */}
+          {showCardFields && (
+            <div className="mt-4 flex flex-col">
+              <input type="text" placeholder="Card Number" className="p-2 mt-2 bg-white" />
+              <input type="text" placeholder="Expiry Date (MM/YY)" className="p-2 mt-2 bg-white" />
+              <input type="text" placeholder="CVV" className="p-2 mt-2 bg-white" />
+              <input type="text" placeholder="Cardholder Name" className="p-2 mt-2 bg-white" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -50,4 +69,4 @@ const CheckoutPage = () => {
   );
 };
 
-export default CheckoutPage;
+export default CheckoutPage;
