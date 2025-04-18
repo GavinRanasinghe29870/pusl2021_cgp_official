@@ -9,7 +9,7 @@ import { useAuthStore } from "./store/useAuthStore.js";
 import Home from "./pages/sportPeople/Home";
 
 //import ProductList from "./pages/clubs/ProductList";
-import ProductManage from "./components/admin/ProductManage.js";
+import ProductManage from "./pages/admin/ProductManage.js";
 import AboutUs from './pages/sportPeople/AboutUs.js';
 
 
@@ -20,7 +20,7 @@ import InsertProduct from "./components/admin/InsertProduct.js";
 import AdminHome from "./pages/admin/AdminHome";
 import ClubHome from "./pages/clubs/ClubHome";
 import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
-import ProductPage from "./components/admin/ProductManage.js";
+import ProductPage from "./pages/sportPeople/ProductsPage.js";
 import AdPost from "./components/clubs/adposting";
 import SportPage from "./components/sportPeople/sportpage02";
 import AdminSignin from "./components/admin/AdminSignin.js";
