@@ -2,50 +2,50 @@ import React, { useState } from 'react';
 import '../../App.css';
 import 'react-multi-carousel/lib/styles.css';
 
-const SportPage02 = () => {
-  const persons = [
+const SportPage01 = () => {
+  const clubs = [
     {
-      name: "John Doe",
+      name: "Falcons Football Club",
       location: "New York, USA",
-      bio: "Passionate about sports and community events. Always looking for new friends and challenges!",
-      image: "https://via.placeholder.com/80",
+      description: "Dedicated to promoting youth football and teamwork spirit.",
+      logo: "https://via.placeholder.com/80",
     },
     {
-      name: "Emily Smith",
+      name: "London Runners",
       location: "London, UK",
-      bio: "Avid football fan and marathon runner. Loves connecting with other sport enthusiasts.",
-      image: "https://via.placeholder.com/80",
+      description: "Marathon and sprint training for all ages and levels.",
+      logo: "https://via.placeholder.com/80",
     },
     {
-      name: "Raj Patel",
+      name: "Mumbai Cricket Legends",
       location: "Mumbai, India",
-      bio: "Cricket lover and social volunteer. Promotes sportsmanship among youth.",
-      image: "https://via.placeholder.com/80",
+      description: "Uniting cricket lovers and nurturing new talent.",
+      logo: "https://via.placeholder.com/80",
     },
     {
-      name: "Sofia González",
+      name: "Madrid Gymnastics Club",
       location: "Madrid, Spain",
-      bio: "Gymnast and fitness coach. Passionate about a healthy lifestyle and teamwork.",
-      image: "https://via.placeholder.com/80",
+      description: "Professional gymnastics coaching and competitions.",
+      logo: "https://via.placeholder.com/80",
     },
     {
-      name: "Chen Wei",
+      name: "Beijing Table Tennis Hub",
       location: "Beijing, China",
-      bio: "Table tennis champion and motivational speaker. Encourages perseverance through sports.",
-      image: "https://via.placeholder.com/80",
+      description: "World-class table tennis training and tournaments.",
+      logo: "https://via.placeholder.com/80",
     },
     {
-      name: "Liam Brown",
+      name: "Toronto Ice Warriors",
       location: "Toronto, Canada",
-      bio: "Ice hockey player and community leader. Believes sports bring people together.",
-      image: "https://via.placeholder.com/80",
+      description: "Ice hockey training and friendly matches for enthusiasts.",
+      logo: "https://via.placeholder.com/80",
     },
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredPersons = persons.filter(person =>
-    person.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredClubs = clubs.filter(club =>
+    club.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -74,38 +74,38 @@ const SportPage02 = () => {
           <div className="relative bg-yellow-100 p-8 rounded-2xl shadow-xl">
             {/* Header with Title and Search */}
             <div className="flex justify-between items-center mb-8">
-              <h2 className="font-bold text-3xl text-gray-800">Person Details</h2>
+              <h2 className="font-bold text-3xl text-gray-800">Club Details</h2>
               <input
                 type="text"
-                placeholder="Search by Name"
+                placeholder="Search by Club Name"
                 className="p-2 w-56 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            {/* Person Cards */}
+            {/* Club Cards */}
             <div className="grid gap-6 md:grid-cols-2">
-              {filteredPersons.length > 0 ? (
-                filteredPersons.map((person, idx) => (
+              {filteredClubs.length > 0 ? (
+                filteredClubs.map((club, idx) => (
                   <div
                     key={idx}
                     className="flex items-center bg-yellow-200 rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300"
                   >
                     <img
-                      src={person.image}
-                      alt={person.name}
+                      src={club.logo}
+                      alt={club.name}
                       className="w-20 h-20 rounded-full object-cover border-4 border-yellow-300 mr-6"
                     />
                     <div>
-                      <h3 className="font-bold text-xl text-gray-800 mb-1">{person.name}</h3>
-                      <p className="text-gray-600 text-sm mb-1">📍 {person.location}</p>
-                      <p className="text-gray-700 text-xs">{person.bio}</p>
+                      <h3 className="font-bold text-xl text-gray-800 mb-1">{club.name}</h3>
+                      <p className="text-gray-600 text-sm mb-1">📍 {club.location}</p>
+                      <p className="text-gray-700 text-xs">{club.description}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-600 text-center col-span-2">No person found.</p>
+                <p className="text-gray-600 text-center col-span-2">No club found.</p>
               )}
             </div>
           </div>
@@ -118,4 +118,4 @@ const SportPage02 = () => {
   );
 };
 
-export default SportPage02;
+export default SportPage01;

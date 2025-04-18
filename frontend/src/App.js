@@ -23,6 +23,7 @@ import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from "./components/admin/ProductManage.js";
 import AdPost from "./components/clubs/adposting";
 import SportPage from "./components/sportPeople/sportpage02";
+import SportPage01 from "./components/sportPeople/sportspage01";
 import AdminSignin from "./components/admin/AdminSignin.js";
 import RequestedMembers from "./components/clubs/ReqMemberView";//
 import Cart from "./components/sportPeople/cart";
@@ -122,6 +123,7 @@ function App() {
         />
         <Route path="/admin/signin" element={<AdminSignin />} />
         <Route path="/sport" element={<SportPage />} />
+        <Route path="/sport01" element={<SportPage01 />} />
         <Route path="/adpost" element={<AdPost />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
