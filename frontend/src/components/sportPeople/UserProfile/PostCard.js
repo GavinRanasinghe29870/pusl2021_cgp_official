@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import {
   FaThumbsUp,
@@ -15,11 +15,11 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const socket = io(backendURL, { autoConnect: false });
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    socket.connect();
+    socketRef.current = io(backendURL);
+    const socket = socketRef.current;
 
     socket.on('receiveComment', (data) => {
       if (data.postId === post._id) {
@@ -30,7 +30,7 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
     return () => {
       socket.disconnect();
     };
-  }, [post._id, onUpdate, socket]);
+  }, [post._id, onUpdate]);
 
   const toggleLike = async () => {
     await axios.put(`${backendURL}/api/post/${post._id}/like`, { userId });
@@ -49,8 +49,7 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
         userId,
         text: commentText,
       });
-
-      socket.emit('sendComment', { postId: post._id });
+      socketRef.current.emit('sendComment', { postId: post._id });
       setCommentText('');
       onUpdate();
     } catch (err) {
@@ -69,6 +68,7 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden relative">
+      {/* Header */}
       <div className="flex items-center gap-3 p-4">
         <img
           src={
@@ -80,7 +80,7 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
           className="w-12 h-12 rounded-full object-cover"
         />
         <div>
-          <p className="font-semibold text-sm">{post.userId?.name || 'User Name'}</p>
+          <p className="font-semibold text-sm">{post.userId?.firstName || 'User Name'}</p>
           <p className="text-xs text-gray-500">{new Date(post.createdAt).toLocaleString()}</p>
         </div>
 
@@ -103,12 +103,14 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
         )}
       </div>
 
+      {/* Description */}
       {post.description && (
         <div className="px-4 text-sm text-gray-800 leading-relaxed mb-2">
           {post.description}
         </div>
       )}
 
+      {/* Image */}
       {post.image && (
         <div className="px-4">
           <img
@@ -119,6 +121,7 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
         </div>
       )}
 
+      {/* Likes & Stats */}
       <div className="px-4 py-2 text-xs text-gray-700 flex items-center gap-4 border-t border-gray-200">
         <span className="text-blue-600 flex items-center gap-1">
           <FaThumbsUp className="text-xs" /> {post.likes?.length || 0}
@@ -127,11 +130,15 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
         <span>{post.reposts?.length || 0} reposts</span>
       </div>
 
+      {/* Action Buttons */}
       <div className="grid grid-cols-4 text-sm text-gray-600 px-4 py-3 border-t">
         <button onClick={toggleLike} className="flex flex-col items-center hover:text-blue-600">
           <FaThumbsUp className="mb-1" /> Like
         </button>
-        <button onClick={() => setShowComments(!showComments)} className="flex flex-col items-center hover:text-blue-600">
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="flex flex-col items-center hover:text-blue-600"
+        >
           <FaCommentAlt className="mb-1" /> Comment
         </button>
         <button onClick={handleRepost} className="flex flex-col items-center hover:text-green-600">
@@ -142,12 +149,13 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
         </div>
       </div>
 
+      {/* Comments */}
       {showComments && (
         <div className="px-4 pb-4">
           <div className="mt-2 space-y-2 max-h-40 overflow-y-auto pr-2">
             {post.comments?.map((comment, idx) => (
               <div key={idx} className="text-sm border-b pb-1">
-                <span className="font-medium">{comment.userId?.name || 'User'}: </span>
+                <span className="font-medium">{comment.userId?.firstName || 'User'}: </span>
                 <span>{comment.text}</span>
               </div>
             ))}

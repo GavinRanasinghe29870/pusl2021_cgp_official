@@ -83,7 +83,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// ✅ Upload profile photo
+// ✅ Upload profile photo (sync to User)
 exports.uploadProfilePhoto = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -97,6 +97,11 @@ exports.uploadProfilePhoto = async (req, res) => {
 
     profile.profilePhoto = filePath;
     await profile.save();
+
+    // 🔄 Sync to User collection
+    await User.findByIdAndUpdate(req.params.id, {
+      $set: { profilePhoto: filePath }
+    });
 
     const populated = await profile.populate('user');
     res.json({ success: true, profilePhoto: filePath, profile: populated });
@@ -139,7 +144,12 @@ exports.createPost = async (req, res) => {
       image: imagePath,
     });
     await newPost.save();
-    res.json(newPost);
+
+    const populatedPost = await Post.findById(newPost._id)
+      .populate('userId', 'firstName profilePhoto')
+      .populate('comments.userId', 'firstName profilePhoto');
+
+    res.json(populatedPost);
   } catch (err) {
     console.error('Error creating post:', err.message);
     res.status(500).json({ error: 'Post creation failed' });
