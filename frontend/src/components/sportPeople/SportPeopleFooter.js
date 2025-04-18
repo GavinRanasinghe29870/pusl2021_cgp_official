@@ -5,6 +5,7 @@ import { FaLinkedinIn } from "react-icons/fa6";
 import { FaFacebookF } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
+const logo = '/logo.png';
 
 const SportPeopleFooter = () => {
   const today = new Date();
@@ -12,8 +13,8 @@ const SportPeopleFooter = () => {
     <footer className="bg-primary-light text-gray-700 py-12 md:py-24">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 xl:gap-0">
         <div className='col-span-12 lg:col-span-3 xl:col-span-3 content-center'>
-          <div className='text-xl lg:text-3xl flex gap-2 font-bold py-4'>
-            <a href='#' className='text-primary logo-txt'><span className='underline'>SPORT</span><span className='parallelogram-bg'>NEST</span></a>
+          <div className='py-4'>
+            <img src={logo} alt="logo" className='w-44' />
           </div>
           <p className="mt-4 font-body">011-123-4567</p>
           <p className='font-body'>info@sportnest.com</p>
@@ -76,7 +77,7 @@ const SportPeopleFooter = () => {
 
       <div className="container mx-auto mt-10 flex flex-col md:flex-row justify-between items-center font-body gap-5">
         <p>&copy; {today.getFullYear()} Sport Nest. All rights reserved</p>
-        <p>A Product of <span className="font-bold">LOGO</span></p>
+        <p className='flex items-center gap-2'>A Product of <img src={logo} className='w-10' /></p>
         <div className="flex space-x-4">
           <a href="#" className="text-primary border border-primary border-opacity-20 rounded-full p-2"><FaLinkedinIn /></a>
           <a href="#" className="text-primary border border-primary border-opacity-20 rounded-full p-2"><FaFacebookF /></a>

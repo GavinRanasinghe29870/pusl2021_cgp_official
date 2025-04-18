@@ -39,7 +39,7 @@ const AdminHome = (props) => {
         autoPlaySpeed={4000}
         customTransition="all 1s ease-in-out"
         transitionDuration={2000}
-        containerClass="carousel-container"
+        containerClass="carousel-container relative z-10"
         removeArrowOnDeviceType={["tablet", "mobile"]}
       >
         <div class="w-full object-cover flex items-center">
