@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { BsFillChatDotsFill } from "react-icons/bs";
-import { AiOutlineSend } from "react-icons/ai";
 
 const FriendChat = () => {
   const [messages, setMessages] = useState([
@@ -8,6 +6,7 @@ const FriendChat = () => {
     { from: "friend", text: "Hey! How are you?" },
   ]);
   const [input, setInput] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleSend = () => {
     if (input.trim() !== "") {
@@ -17,34 +16,64 @@ const FriendChat = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gradient-to-r from-indigo-100 via-blue-100 to-purple-100">
+    <div
+      className={`min-h-screen flex transition-all duration-500 ${
+        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
+      }`}
+    >
       {/* Sidebar */}
-      <div className="md:w-64 w-full bg-white p-4 border-b md:border-b-0 md:border-r shadow-sm">
-        <h2 className="text-xl font-bold text-indigo-600 mb-4 flex items-center gap-2">
-          <BsFillChatDotsFill /> Friends
-        </h2>
+      <div
+        className={`w-64 p-4 border-r transition-all duration-300 ${
+          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Friends</h2>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className={`rounded-full px-3 py-1 text-sm font-medium transition ${
+              darkMode
+                ? "bg-yellow-300 text-gray-900"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
+          >
+            {darkMode ? "☀️" : "🌙"}
+          </button>
+        </div>
         <ul className="space-y-3">
-          <li className="p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 cursor-pointer shadow">
-            Alice
-          </li>
-          <li className="p-3 rounded-xl bg-white hover:bg-indigo-50 cursor-pointer shadow">
-            Bob
-          </li>
-          <li className="p-3 rounded-xl bg-white hover:bg-indigo-50 cursor-pointer shadow">
-            Charlie
-          </li>
+          {["Alice", "Bob", "Charlie"].map((friend, index) => (
+            <li
+              key={index}
+              className={`flex items-center gap-3 p-3 rounded-lg shadow-sm cursor-pointer transition hover:scale-105 ${
+                darkMode
+                  ? "bg-gray-700 hover:bg-gray-600"
+                  : "bg-gray-200 hover:bg-gray-300"
+              }`}
+            >
+              <span className="h-3 w-3 bg-green-400 rounded-full animate-pulse shadow" />
+              <span className="font-semibold">{friend}</span>
+            </li>
+          ))}
         </ul>
       </div>
 
       {/* Chat Section */}
       <div className="flex flex-col flex-1">
         {/* Header */}
-        <div className="bg-white p-5 border-b shadow-sm">
-          <h3 className="text-xl font-semibold text-indigo-700">Chat with Alice</h3>
+        <div
+          className={`p-5 border-b transition ${
+            darkMode ? "bg-gray-800 border-gray-700" : "bg-white"
+          }`}
+        >
+          <h3 className="text-xl font-semibold">Chat with Alice</h3>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-3">
+        <div
+          className={`flex-1 overflow-y-auto p-6 space-y-4 transition ${
+            darkMode ? "bg-gray-900" : "bg-gray-50"
+          }`}
+        >
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -53,10 +82,12 @@ const FriendChat = () => {
               }`}
             >
               <div
-                className={`max-w-xs px-4 py-2 rounded-2xl shadow ${
+                className={`max-w-xs px-4 py-3 rounded-2xl shadow transition transform ${
                   msg.from === "me"
-                    ? "bg-indigo-500 text-white"
-                    : "bg-white text-gray-800 border"
+                    ? "bg-blue-600 text-white"
+                    : darkMode
+                    ? "bg-purple-500 text-white"
+                    : "bg-pink-200 text-gray-800"
                 }`}
               >
                 {msg.text}
@@ -66,20 +97,27 @@ const FriendChat = () => {
         </div>
 
         {/* Message Input */}
-        <div className="p-4 bg-white border-t flex items-center gap-2">
+        <div
+          className={`p-4 border-t flex items-center gap-2 transition ${
+            darkMode ? "bg-gray-800 border-gray-700" : "bg-white"
+          }`}
+        >
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-1 p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-300"
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Type a message..."
+            className={`flex-1 p-3 rounded-2xl text-sm outline-none shadow-sm ${
+              darkMode
+                ? "bg-gray-700 text-white placeholder-gray-400"
+                : "bg-gray-100 placeholder-gray-600"
+            }`}
           />
           <button
             onClick={handleSend}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white p-3 rounded-full transition"
+            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-2 rounded-2xl font-semibold shadow-md hover:opacity-90 transition"
           >
-            <AiOutlineSend size={20} />
+            Send
           </button>
         </div>
       </div>

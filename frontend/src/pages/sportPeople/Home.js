@@ -92,7 +92,7 @@ const Home = (props) => {
           autoPlaySpeed={4000}
           customTransition="all 1s ease-in-out"
           transitionDuration={2000}
-          containerClass="carousel-container"
+          containerClass="carousel-container relative z-10"
         >
           <div style={{ padding: '0 10px' }}><img src='/Cricket.png' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
           <div style={{ padding: '0 10px' }}><img src='/swimming.jpeg' className='w-full h-44 md:h-60 lg:h-64 xl:h-72 2xl:h-96 object-cover carousel-image' /></div>
