@@ -31,7 +31,12 @@ connection.once("open", () => {
   console.log("Mongodb Connection success!");
 });
 
+app.use("/uploads/profile_photos", express.static("uploads/profile_photos"));
+app.use("/uploads/cover_photos", express.static("uploads/cover_photos"));
+app.use("/uploads/post_images", express.static("uploads/post_images"));
+
 const authRoutes = require("./routes/sportPeople/authRoutes");
+const userProfileRoutes = require("./routes/sportPeople/userProfileRoutes");
 const productRoutes = require("./routes/sportPeople/productRoutes");
 const adminRoutes = require("./routes/admin/adminRoutes.js");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
@@ -40,8 +45,12 @@ const memberRoutes = require("./routes/clubs/memberRoutes");
 const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
-const donatingRoutes = require("./routes/sportPeople/donatingRoutes");//
+
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
+
+const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
+const notificationRoutes = require("./routes/sportPeople/notificationRoutes.js");
+
 const jwt = require("jsonwebtoken");
 
 const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
@@ -58,6 +67,8 @@ app.post("/api/donation", (req, res) => {
 
 // Serve static files (for uploaded images)
 app.use("/public/uploads", express.static("uploads"));
+//mount routs
+app.use("/api", userProfileRoutes);
 
 //Link Signin Authentication Routes
 app.use("/api/auth", authRoutes);
@@ -68,11 +79,16 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
-app.use("/api/donating", donatingRoutes);//
+
 
 app.use("/api/message", messageRoutes);
-app.use("/api/ClubAuth", ClubAuth);
+
 app.use("/api/friendmsg",friendRoutes);
+
+app.use("/api/donating", donatingRoutes); //
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/ClubAuth", ClubAuth);
+
 app.use("/api/messages", messageRoutes);
 
 app.use("/api/singleproduct", SingleProductRoutes);
