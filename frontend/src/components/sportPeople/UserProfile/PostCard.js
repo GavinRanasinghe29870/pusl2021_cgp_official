@@ -16,6 +16,8 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
   const [commentText, setCommentText] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const socketRef = useRef(null);
+  const [isLiked, setIsLiked] = useState(post.likes?.includes(userId));
+  const [likeCount, setLikeCount] = useState(post.likes?.length || 0);
 
   useEffect(() => {
     socketRef.current = io(backendURL);
@@ -33,8 +35,14 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
   }, [post._id, onUpdate]);
 
   const toggleLike = async () => {
-    await axios.put(`${backendURL}/api/post/${post._id}/like`, { userId });
-    onUpdate();
+    try {
+      const response = await axios.put(`${backendURL}/api/post/${post._id}/like`, { userId });
+      setIsLiked(!isLiked); // Toggle the like state
+      setLikeCount(isLiked ? likeCount - 1 : likeCount + 1); // Update the like count
+      onUpdate(); // Refresh the post data
+    } catch (err) {
+      console.error('Error toggling like:', err);
+    }
   };
 
   const handleRepost = async () => {
@@ -132,8 +140,12 @@ function PostCard({ post, userId, isOwner, onUpdate }) {
 
       {/* Action Buttons */}
       <div className="grid grid-cols-4 text-sm text-gray-600 px-4 py-3 border-t">
-        <button onClick={toggleLike} className="flex flex-col items-center hover:text-blue-600">
-          <FaThumbsUp className="mb-1" /> Like
+        <button
+          onClick={toggleLike}
+          className={`flex flex-col items-center ${isLiked ? 'text-blue-600' : 'hover:text-blue-600'
+            }`}
+        >
+          <FaThumbsUp className="mb-1" /> {isLiked ? 'Liked' : 'Like'}
         </button>
         <button
           onClick={() => setShowComments(!showComments)}
