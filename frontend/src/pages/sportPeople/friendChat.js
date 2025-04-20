@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import FriendSidebar from "./FriendSidebar";
-import FriendChatContainer from "./FriendChatContainer";
+import FriendSidebar from "../../components/sportPeople/FriendSidebar";
+import FriendChatContainer from "../../components/sportPeople/FriendChatContainer";
 import { useFriendChatStore } from "../../store/useFriendChatStore";
-import NoFriendSelected from "./NoFriendSelected";
+import NoFriendSelected from "../../components/sportPeople/NoFriendSelected";
 
 const FriendChat = () => {
   const { selectedUser } = useFriendChatStore();
