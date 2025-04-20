@@ -35,7 +35,7 @@ import ClubSignIn from "./components/clubs/Clubsignin";
 import ClubChat from "./pages/clubs/ClubChat";
 import SalesManage from "./pages/admin/SalesManage.js";
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
-
+import UserProfilePage from "./pages/sportPeople/UserProfilePage";
 //import DonatingRequestForm from "./components/sportPeople/donating.js"; //
 
 import DonatingRequestForm from "./components/sportPeople/donating.js";//
@@ -153,7 +153,10 @@ function App() {
         <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
         <Route path="/salesManage" element={<SalesManage />} />
-
+        <Route path="/profile:id" element={
+          authUser ? <Navigate to={`/profile/${authUser._id}`} /> : <Navigate to="/Signin" />
+        } />
+        <Route path="/profile/:id" element={<UserProfilePage />} />
         
 
         <Route path="/aboutus" element={<AboutUs />} />

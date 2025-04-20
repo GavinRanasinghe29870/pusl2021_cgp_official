@@ -90,7 +90,7 @@ function ProfileAbout({ user, isOwner }) {
               {editing && (
                 <button
                   onClick={handleSave}
-                  className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+                  className="bg-blue-500 text-white px-6 py-1 rounded hover:bg-blue-600"
                 >
                   Save
                 </button>
@@ -115,7 +115,12 @@ function ProfileAbout({ user, isOwner }) {
             Sports Interests and Skills
           </div>
           <div className="space-y-4">
-            {renderField('Favorite Sports', 'sports', profileInfo.sports?.join(', '), 'profile')}
+            {renderField(
+              'Favorite Sports',
+              'sports',
+              Array.isArray(profileInfo.sports) ? profileInfo.sports.join(', ') : profileInfo.sports || '—',
+              'profile'
+            )}
             {renderField('Skill level', 'skillLevel', profileInfo.skillLevel, 'profile')}
             {renderField('Preferred Positions/Disciplines', 'positions', profileInfo.positions, 'profile')}
           </div>
