@@ -109,6 +109,22 @@ router.post("/signin", async (req, res) => {
 
     const token = generateToken(user._id, res);
 
+    console.log("Login Successful:", {
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        age: user.age,
+        username: user.username,
+        mobile: user.mobile,
+        address: user.address,
+        email: user.email,
+        sportLevel: user.sportLevel,
+        gender: user.gender,
+        profilePhoto: user.profilePhoto,
+      },
+      token,
+    });
+
     res.json({
       user: {
         _id: user._id,
@@ -120,6 +136,7 @@ router.post("/signin", async (req, res) => {
         email: user.email,
         sportLevel: user.sportLevel,
         gender: user.gender,
+        profilePhoto: user.profilePhoto,
       },
       token,
     });

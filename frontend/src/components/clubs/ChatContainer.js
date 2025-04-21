@@ -16,6 +16,7 @@ const ChatContainer = () => {
     const { user } = useAuthStore();
     const messageEndRef = useRef(null);
     const { onlineUsers } = useAuthStore();
+    const backendURL = 'http://localhost:5000';
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -115,7 +116,7 @@ const ChatContainer = () => {
                         {/* Avatar */}
                         <div className="avatar">
                             <div className="size-10 rounded-full relative">
-                                <img src={selectedUser.profilePic || "/defaultProfilePic.jpg"} alt={selectedUser.firstName} className='rounded-full' />
+                                <img src={selectedUser.profilePhoto? `${backendURL}${selectedUser.profilePhoto}` : '/defaultProfilePic.jpg'} alt={selectedUser.firstName} className='rounded-full' />
                             </div>
                         </div>
 

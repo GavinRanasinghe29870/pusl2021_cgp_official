@@ -39,14 +39,14 @@ function ProfileVideos({ user, isOwner }) {
   }, [user._id, fetchVideos]);
 
   return (
-    <div className="bg-blue-100 p-6 rounded-xl shadow mb-6">
-      <div className="bg-yellow-200 inline-block px-4 py-2 mb-6 font-semibold text-lg rounded">
+    <div className="bg-primary-light p-6 rounded-xl shadow mb-6">
+      <div className="bg-secondary-light inline-block px-4 py-2 mb-6 font-semibold text-lg rounded">
         Videos
       </div>
 
       {isOwner && (
         <div className="mb-6">
-          <label className="inline-flex items-center bg-yellow-200 font-semibold px-4 py-2 rounded cursor-pointer hover:bg-yellow-300 transition">
+          <label className="inline-flex items-center bg-secondary-light font-semibold px-4 py-2 rounded cursor-pointer hover:bg-yellow-300 transition">
             <FiPlus className="mr-2" /> Add Videos
             <input
               type="file"
