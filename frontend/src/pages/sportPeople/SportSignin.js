@@ -3,49 +3,48 @@ import { FaGoogle, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useClubAuthStore } from "../../store/useClubAuthStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Configure axios globally
 axios.defaults.withCredentials = true;
+// Ensure base URL is configured correctly - uncomment and adjust if needed
+// axios.defaults.baseURL = 'http://localhost:5000';
 
-const ClubSignIn = () => {
+const SportSignin = () => {
   const [formData, setFormData] = useState({
-    Clubusername: "",
+    username: "",
     password: "",
-    sportLevel: "Clubs",
+    sportLevel: "", // Start with an empty value
   });
 
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signin } = useClubAuthStore();
+  const { signin } = useAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
 
-    // Redirect based on selected role
+    // Navigate based on selected sportLevel
     if (name === "sportLevel") {
       if (value === "SportPeople") {
         navigate("/Signin");
-        return;
       } else if (value === "Clubs") {
         navigate("/Clubsignin");
-        return;
       } else if (value === "Admin") {
         navigate("/admin/signin");
-        return;
       }
     }
-
-    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Check if sportLevel is selected
+    // Check if sportLevel is selected, if not show an error
     if (!formData.sportLevel) {
       toast.error("Please select a Sport Level", { position: "top-center" });
       setLoading(false);
@@ -53,14 +52,17 @@ const ClubSignIn = () => {
     }
 
     try {
-      console.log("Attempting to sign in with:", formData);
+      console.log("Attempting to sign in with:", {
+        username: formData.username,
+        sportLevel: formData.sportLevel,
+      });
 
       const response = await signin(formData);
       console.log("Signin response:", response);
 
       if (response?.success) {
         toast.success("Sign in successful!", { position: "top-center" });
-        setTimeout(() => navigate("/registrationApproval"), 2000);
+        setTimeout(() => navigate("/"), 2000);
       } else {
         toast.error(response?.error || "Sign in failed. Please check credentials.", {
           position: "top-center",
@@ -69,6 +71,7 @@ const ClubSignIn = () => {
     } catch (err) {
       console.error("Sign in error:", err);
 
+      // Special handling for network errors
       if (err.message === "Network Error") {
         toast.error(
           "Network error: Unable to connect to the server. Please check if the server is running.",
@@ -89,7 +92,7 @@ const ClubSignIn = () => {
     <div className="bg-blue-100 flex items-center justify-center min-h-screen">
       <ToastContainer />
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
-        <h1 className="text-center text-2xl font-bold mb-8">Club Sign In</h1>
+        <h1 className="text-center text-2xl font-bold mb-8">Sign In</h1>
         <div className="flex md:flex-row">
           <div className="flex-1 flex items-center justify-center">
             <img src="/logo512.png" alt="logo" className="h-16 w-16" />
@@ -107,23 +110,21 @@ const ClubSignIn = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="" disabled>
-                    Select Sport Level
-                  </option>
-                  <option value="SportPeople">Sports People</option>
+                  <option value="">Select Sport Level</option> {/* No default selection */}
+                  <option value="SportPeople">SportPeople</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
                 </select>
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700">Club Username</label>
+                <label className="block text-gray-700">Username</label>
                 <input
                   type="text"
-                  name="Clubusername"
-                  placeholder="Club Username"
+                  name="username"
+                  placeholder="Username"
                   className="w-full px-4 py-2 border rounded bg-blue-100"
-                  value={formData.Clubusername}
+                  value={formData.username}
                   onChange={handleChange}
                   required
                 />
@@ -182,10 +183,10 @@ const ClubSignIn = () => {
               <span className="text-gray-700">
                 New Member?{" "}
                 <a
-                  href="Clubsignup"
+                  href="signup"
                   className="text-blue-900 font-bold hover:underline"
                 >
-                  Club Sign Up
+                  Sign Up
                 </a>
               </span>
             </div>
@@ -196,4 +197,4 @@ const ClubSignIn = () => {
   );
 };
 
-export default ClubSignIn;
+export default SportSignin;
