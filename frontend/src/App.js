@@ -86,6 +86,7 @@ function App() {
         "/Signup",
         "/Clubsignup",
       ].includes(location.pathname) ? null : [
+          "/registrationApproval",
           "/club/home",
           "/ClubPortfolio",
           "/adpost",
