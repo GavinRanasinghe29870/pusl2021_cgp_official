@@ -60,7 +60,7 @@ const DonorPortfolio = () => {
           <div className="absolute inset-0 bg-black opacity-20"></div>
           <div className="relative z-10">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center font-header">
-              Donor Portfolio
+              Donor Portfolio List
             </h1>
             <p className="text-xl text-center max-w-3xl mx-auto font-body mb-8">
               We connect generous donors with those in need. Browse our list of donors who are ready to support athletic development.
