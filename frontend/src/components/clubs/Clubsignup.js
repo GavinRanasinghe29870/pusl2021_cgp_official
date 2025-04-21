@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Eye, EyeOff } from "react-feather";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ClubSignup = () => {
   const [formData, setFormData] = useState({
@@ -16,11 +18,11 @@ const ClubSignup = () => {
   });
 
   const navigate = useNavigate();
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     console.log("Form Data Updated:", formData);
   }, [formData]);
@@ -32,24 +34,24 @@ const ClubSignup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     if (!formData.sportLevel) {
-        alert("Please select a Sport Level.");
-        setLoading(false);
-        return;
+      toast.error("Please select a Sport Level.", { position: "top-center" });
+      setLoading(false);
+      return;
     }
 
     if (!formData.ClubName || !formData.Clubusername || !formData.password ||
-        !formData.confirmPassword || !formData.mobile || !formData.email) {
-        alert("All required fields must be filled.");
-        setLoading(false);
-        return;
+      !formData.confirmPassword || !formData.mobile || !formData.email) {
+      toast.error("All required fields must be filled.", { position: "top-center" });
+      setLoading(false);
+      return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-        alert("Passwords do not match!");
-        setLoading(false);
-        return;
+      toast.error("Passwords do not match!", { position: "top-center" });
+      setLoading(false);
+      return;
     }
 
     try {
@@ -59,19 +61,19 @@ const ClubSignup = () => {
       );
 
       if (response.status === 201) {
-        alert("Signup successful!");
-        navigate("/registrationApproval");
+        toast.success("Signup successful!", { position: "top-center" });
+        setTimeout(() => navigate("/Clubsignin"), 2000);
       }
     } catch (error) {
       if (error.response) {
         console.error("Signup Error:", error.response.data);
         if (error.response.status === 409) {
-          alert("Club username or email already exists. Please choose a different one.");
+          toast.error("Club username or email already exists. Please choose a different one.", { position: "top-center" });
         } else {
-          alert(`Signup failed: ${error.response.data.message}`);
+          toast.error(`Signup failed: ${error.response.data.message}`, { position: "top-center" });
         }
       } else {
-        alert("Network error. Please try again later.");
+        toast.error("Network error. Please try again later.", { position: "top-center" });
       }
     } finally {
       setLoading(false);
@@ -88,6 +90,7 @@ const ClubSignup = () => {
 
   return (
     <div className="bg-blue-100 flex items-center justify-center min-h-screen p-4">
+      <ToastContainer />
       {/* Increased max-width from max-w-md to max-w-xl */}
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl mx-auto">
         <h1 className="text-center text-2xl font-bold mb-8">Club Sign Up</h1>
@@ -99,7 +102,7 @@ const ClubSignup = () => {
           </div>
 
           {/* Sign-up Form */}
-          <div className="w-full">                
+          <div className="w-full">
             <form onSubmit={handleSubmit}>
               <div className="mb-5">
                 <label className="block text-gray-700 text-sm font-medium mb-2">Club Name</label>
@@ -113,20 +116,20 @@ const ClubSignup = () => {
                   required
                 />
               </div>
-              
+
               <div className="mb-5">
                 <label className="block text-gray-700 text-sm font-medium mb-2">Club Username</label>
-                <input 
-                  type="text" 
-                  name="Clubusername" 
+                <input
+                  type="text"
+                  name="Clubusername"
                   placeholder="Club Username"
                   className="w-full px-4 py-3 border rounded bg-blue-50 text-sm"
                   value={formData.Clubusername}
-                  onChange={handleChange} 
+                  onChange={handleChange}
                   required
                 />
               </div>
-              
+
               <div className="mb-5">
                 <label className="block text-gray-700 text-sm font-medium mb-2">Password</label>
                 <div className="relative">
@@ -139,16 +142,16 @@ const ClubSignup = () => {
                     onChange={handleChange}
                     required
                   />
-                  <button 
-                    type="button" 
-                    className="absolute right-3 top-3" 
+                  <button
+                    type="button"
+                    className="absolute right-3 top-3"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
-          
+
               {/* Confirm Password */}
               <div className="mb-5">
                 <label className="block text-gray-700 text-sm font-medium mb-2">Confirm Password</label>
@@ -162,16 +165,16 @@ const ClubSignup = () => {
                     onChange={handleChange}
                     required
                   />
-                  <button 
-                    type="button" 
-                    className="absolute right-3 top-3" 
+                  <button
+                    type="button"
+                    className="absolute right-3 top-3"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
-          
+
               {/* Mobile */}
               <div className="mb-5">
                 <label className="block text-gray-700 text-sm font-medium mb-2">Mobile</label>
@@ -185,7 +188,7 @@ const ClubSignup = () => {
                   required
                 />
               </div>
-          
+
               {/* Email */}
               <div className="mb-5">
                 <label className="block text-gray-700 text-sm font-medium mb-2">Email</label>
@@ -199,7 +202,7 @@ const ClubSignup = () => {
                   required
                 />
               </div>
-          
+
               {/* Address */}
               <div className="mb-5">
                 <label className="block text-gray-700 text-sm font-medium mb-2">Address</label>
@@ -213,7 +216,7 @@ const ClubSignup = () => {
                   required
                 />
               </div>
-          
+
               {/* Sport Level */}
               <div className="mb-5">
                 <select
@@ -228,10 +231,10 @@ const ClubSignup = () => {
                   <option value="Admin">Admin</option>
                 </select>
               </div>
-              
+
               {/* Forgot Password Link */}
               <div className="mb-2 text-right">
-                <button 
+                <button
                   type="button"
                   className="text-blue-600 hover:text-blue-800 text-sm"
                   onClick={handleForgotPassword}
@@ -239,7 +242,7 @@ const ClubSignup = () => {
                   Forgot Password?
                 </button>
               </div>
-              
+
               <button
                 type="submit"
                 className="w-full bg-blue-900 text-white py-3 px-4 rounded hover:bg-blue-800 transition duration-300 text-sm mb-6 mt-4"
@@ -247,12 +250,12 @@ const ClubSignup = () => {
               >
                 {loading ? "Signing up..." : "Sign Up"}
               </button>
-              
+
               {/* Social Login Options */}
               <div className="text-center mb-5">
                 <p className="text-sm text-gray-600 mb-3">Or Sign in using</p>
                 <div className="flex justify-center space-x-6">
-                  <button 
+                  <button
                     type="button"
                     className="p-2 rounded-full hover:bg-gray-100"
                     onClick={() => alert("Google sign-in not implemented")}
@@ -276,7 +279,7 @@ const ClubSignup = () => {
                       />
                     </svg>
                   </button>
-                  <button 
+                  <button
                     type="button"
                     className="p-2 rounded-full hover:bg-gray-100"
                     onClick={() => alert("Facebook sign-in not implemented")}
@@ -285,7 +288,7 @@ const ClubSignup = () => {
                       <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C18.34 21.21 22 17.06 22 12.06C22 6.53 17.5 2.04 12 2.04Z" />
                     </svg>
                   </button>
-                  <button 
+                  <button
                     type="button"
                     className="p-2 rounded-full hover:bg-gray-100"
                     onClick={() => alert("LinkedIn sign-in not implemented")}
@@ -296,12 +299,12 @@ const ClubSignup = () => {
                   </button>
                 </div>
               </div>
-              
+
               {/* Already have an account */}
               <div className="text-center">
                 <p className="text-sm text-gray-600">
                   Already have an account?{" "}
-                  <button 
+                  <button
                     type="button"
                     className="text-blue-600 hover:text-blue-800 font-medium"
                     onClick={navigateToSignIn}
@@ -310,7 +313,7 @@ const ClubSignup = () => {
                   </button>
                 </p>
               </div>
-            </form>    
+            </form>
           </div>
         </div>
       </div>

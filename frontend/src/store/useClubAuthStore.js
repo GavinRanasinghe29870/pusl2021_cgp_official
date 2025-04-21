@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 export const useClubAuthStore = create((set, get) => ({
     club: null,
@@ -10,7 +10,18 @@ export const useClubAuthStore = create((set, get) => ({
     onlineClubs: [],
     socket: null,
 
+    handleError: (error) => {
+        console.error("❌ Error:", error.response?.data || error.message);
+        return {
+            success: false,
+            error: error.response?.data?.error || "An unexpected error occurred",
+        };
+    },
+
     signin: async (formData) => {
+        const validation = validateFormData(formData, ["Clubusername", "password"]);
+        if (!validation.success) return validation;
+
         try {
             const dataToSend = {
                 Clubusername: formData.Clubusername,
@@ -35,44 +46,32 @@ export const useClubAuthStore = create((set, get) => ({
                 return { success: false, error: "Invalid response" };
             }
         } catch (error) {
-            console.error("❌ Signin error:", error.response?.data || error.message);
-            return {
-                success: false,
-                error: error.response?.data?.error || error.message,
-            };
+            return get().handleError(error);
         }
     },
 
     signup: async (formData) => {
+        set({ isSigningUp: true });
         try {
-            set({ isSigningUp: true });
             console.log("🟢 Sending Sign-Up Data:", formData);
 
             const response = await axios.post(`${BASE_URL}/api/ClubAuth/Clubsignup`, formData, {
                 withCredentials: true,
             });
 
-            set({ isSigningUp: false });
-
             if (response.data?.club) {
                 set({
                     club: response.data.club,
                     isAuthenticated: true,
                 });
-
-                get().connectSocket();
-
                 return { success: true, ...response.data };
             } else {
                 return { success: false, error: "Invalid response" };
             }
         } catch (error) {
+            return get().handleError(error);
+        } finally {
             set({ isSigningUp: false });
-            console.error("❌ Signup error:", error.response?.data || error.message);
-            return {
-                success: false,
-                error: error.response?.data?.error || error.message,
-            };
         }
     },
 
@@ -89,11 +88,9 @@ export const useClubAuthStore = create((set, get) => ({
             }
 
             set({ club: null, isAuthenticated: false });
-            window.location.reload();
             return { success: true };
         } catch (error) {
-            console.error("❌ Logout error:", error.message);
-            return { success: false, error: error.message };
+            return get().handleError(error);
         }
     },
 
@@ -124,3 +121,12 @@ export const useClubAuthStore = create((set, get) => ({
         }
     },
 }));
+
+const validateFormData = (formData, requiredFields) => {
+    for (const field of requiredFields) {
+        if (!formData[field]) {
+            return { success: false, error: `${field} is required` };
+        }
+    }
+    return { success: true };
+};
