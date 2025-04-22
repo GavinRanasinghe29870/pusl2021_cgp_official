@@ -35,12 +35,12 @@ import ClubSignIn from "./components/clubs/Clubsignin";
 import ClubChat from "./pages/clubs/ClubChat";
 import SalesManage from "./pages/admin/SalesManage.js";
 import HelpCenterPage from "./pages/sportPeople/HelpCenter";
-
+import UserProfilePage from "./pages/sportPeople/UserProfilePage";
 //import DonatingRequestForm from "./components/sportPeople/donating.js"; //
 
 import DonatingRequestForm from "./components/sportPeople/donating.js";//
 import RegisteredClub from "./pages/sportPeople/ReegistedMembers.js"
-import FriendChat from './components/sportPeople/friendChat.js';//
+import FriendChat from './pages/sportPeople/friendChat.js';//
 import ClubNavbar from './components/clubs/ClubNavbar.js';
 import AdminNavbar from './components/admin/AdminNavbar.js';
 import ClubFooter from './components/clubs/ClubFooter.js';
@@ -86,6 +86,7 @@ function App() {
         "/Signup",
         "/Clubsignup",
       ].includes(location.pathname) ? null : [
+          "/registrationApproval",
           "/club/home",
           "/ClubPortfolio",
           "/adpost",
@@ -153,7 +154,10 @@ function App() {
         <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
         <Route path="/salesManage" element={<SalesManage />} />
-
+        <Route path="/profile:id" element={
+          authUser ? <Navigate to={`/profile/${authUser._id}`} /> : <Navigate to="/Signin" />
+        } />
+        <Route path="/profile/:id" element={<UserProfilePage />} />
         
 
         <Route path="/aboutus" element={<AboutUs />} />
@@ -164,7 +168,7 @@ function App() {
         {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
         <Route path="/club-chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
-        <Route path="/chat" element={<FriendChat />} />
+        <Route path="/friend-chat" element={<FriendChat />} />
 
 
       </Routes>
