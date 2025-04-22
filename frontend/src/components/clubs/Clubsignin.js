@@ -1,28 +1,29 @@
-import React, { useState } from 'react'; // Add useState to the import//import axios from "axios"
-import { FaGoogle,FaFacebook,FaLinkedin } from 'react-icons/fa'
-import { Eye, EyeOff } from "lucide-react"; // Import eye icons
-import axios from 'axios';
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useState } from "react";
+import { FaGoogle, FaFacebook, FaLinkedin } from "react-icons/fa";
+import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useClubAuthStore } from "../../store/useClubAuthStore";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+axios.defaults.withCredentials = true;
 
 const ClubSignIn = () => {
   const [formData, setFormData] = useState({
-      Clubusername: "",
-      password: "",
-      sportLevel: "Clubs", 
+    Clubusername: "",
+    password: "",
+    sportLevel: "Clubs",
   });
 
   const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
- 
+  const { signin } = useClubAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Redirect based on selected role
-    // Redirect based on selected role
     if (name === "sportLevel") {
       if (value === "SportPeople") {
         navigate("/Signin");
@@ -41,142 +42,172 @@ const ClubSignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
 
-    try {
-        console.log("Sending request with:", formData);
-        const response = await axios.post("http://localhost:5000/api/ClubAuth/Clubsignin", formData, {
-            headers: { "Content-Type": "application/json" }
-        });
-        localStorage.setItem("token", response.data.token);
-        alert("Club Sign In Successful!");
-        console.log("Club Sign in success:", response.data);
-        navigate("/registrationApproval")
-    } catch (err) {
-        console.error("Sign in error:", err);
-        if (err.response) {
-            setError(err.response.data.message || "Sign in failed");
-        } else if (err.request) {
-          setError("Server is not responding. Please try again later.");
-        } else {
-          setError("Unexpected error occurred.");
-        }
-      } finally {
-        setLoading(false);
-      }
-};
+    if (!formData.sportLevel) {
+      toast.error("Please select a Sport Level", { position: "top-center" });
+      setLoading(false);
+      return;
+    }
 
-      return (
-        <div className="bg-blue-100 flex items-center justify-center min-h-screen">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
-        <h1 className="text-center text-2xl font-bold mb-8">Club Sign In</h1>
-        <div className="flex md:flex-row">
-          {/* Logo Section */}
-          <div className="flex-1 flex items-center justify-center">
-            <img src="/logo512.png" alt="logo" className="h-16 w-16" />
+    try {
+      const response = await signin(formData);
+      if (response?.success) {
+        toast.success("Sign in successful!", { position: "top-center" });
+        setTimeout(() => navigate("/registrationApproval"), 2000);
+      } else {
+        toast.error(response?.error || "Sign in failed. Please check credentials.", {
+          position: "top-center",
+        });
+      }
+    } catch (err) {
+      if (err.message === "Network Error") {
+        toast.error(
+          "Network error: Unable to connect to the server. Please check if the server is running.",
+          { position: "top-center" }
+        );
+      } else {
+        toast.error(
+          err?.response?.data?.error || "Sign in failed. Please try again.",
+          { position: "top-center" }
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-primary-light flex items-center justify-center font-body py-8">
+      <ToastContainer />
+      <div className="bg-white shadow-xl rounded-2xl p-6 md:p-8 w-full max-w-screen-lg mx-4">
+        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+          {/* Left Side: Logo + Title */}
+          <div className="flex-1 flex flex-col items-center space-y-6 text-center">
+            <div className="text-center mb-3">
+              <div className="bg-gradient-to-r from-primary to-blue-800 px-6 py-4 rounded-lg shadow-md">
+                <h2 className="text-header-02 font-header font-bold text-white">Club Sign In</h2>
+                <p className="text-secondary-light font-medium mt-1">Manage Your Sports Organization</p>
+              </div>
+            </div>
+            
+            <img 
+              src="/logo.png" 
+              alt="Sport Nest Logo" 
+              className="h-40 w-auto object-contain" 
+            />
+            <p className="text-gray-600 max-w-xs hidden md:block">
+              Access your club dashboard to manage registrations and more
+            </p>
           </div>
 
-    
-            {/* Divider */}
-          <div className="w-px bg-blue-200 mx-8"></div>
+          {/* Divider */}
+          <div className="hidden md:block w-px h-96 bg-primary-light"></div>
 
-{/* club Sign-in Form */}
-<div className="flex-1">
-  <form onSubmit={handleSubmit}>
-    {/* Role Dropdown */}
-    <div className="mb-4">
-      <select
-        name="sportLevel"
-        className="block w-full bg-blue-900 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-blue-800"
-        value={formData.sportLevel}
-        onChange={handleChange}>
-        
-        <option value="" disabled>Select Sport Level</option>
-        <option value="SportPeople">Sports People</option>
+          {/* Right Side: Form */}
+          <div className="flex-1 w-full">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="mb-6">
+                <select
+                  name="sportLevel"
+                  className="block w-full bg-primary text-white py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800 transition-all duration-300"
+                  value={formData.sportLevel}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled>Select Sport Level</option>
+                  <option value="SportPeople">Sports People</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
                 </select>
               </div>
 
-              {/* Username Input */}
-              <div className="mb-4">
-                <label className="block text-gray-700">Club Username</label>
+              <div>
+                <label className="block text-gray-700 mb-2 font-medium">Club Username</label>
                 <input
                   type="text"
                   name="Clubusername"
-                  placeholder="Club Username"
-                  className="w-full px-4 py-2 border rounded bg-blue-100"
+                  placeholder="Enter club username"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-blue-100 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300"
                   value={formData.Clubusername}
                   onChange={handleChange}
                   required
                 />
               </div>
 
-             {/* Password Input */}
-             <div className="mb-4 relative">
-                <label className="block text-gray-700">Password</label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Password"
-                  className="w-full px-4 py-2 border rounded bg-blue-100"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              
-              {/* Toggle Eye Icon */}
-              <button type="button" className="absolute right-3 top-10 text-gray-600" onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
+              <div className="relative">
+                <label className="block text-gray-700 mb-2 font-medium">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Enter password"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-blue-100 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-primary transition-colors duration-300"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
-    
-              {/* Forgot Password */}
-              <div className="mb-4 text-right font-semibold">
-                <a href="forgotPassword" className="text-blue-900 font-bold hover:text-gray-800">
+
+              <div className="text-right">
+                <a 
+                  href="forgotPassword" 
+                  className="text-primary font-semibold hover:underline transition-all duration-300"
+                >
                   Forgot Password?
                 </a>
               </div>
-    
-              {/* Sign In Button */}
-              <div className="mb-4">
-                <button
-                  type="submit"
-                  className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88] transition duration-300"
-                  disabled={loading}
-                >
-                  {loading ? "Signing in..." : "Sign In"}
+
+              <button
+                type="submit"
+                className="w-full bg-primary text-white py-3 rounded-lg hover:bg-blue-800 transition-all duration-300 font-medium text-lg flex items-center justify-center"
+                disabled={loading}
+              >
+                {loading ? "Signing in..." : "Sign In"}
+              </button>
+
+              <div className="relative flex items-center justify-center my-6">
+                <div className="border-t border-gray-300 w-full"></div>
+                <span className="bg-white px-3 text-gray-600 text-sm absolute">Or sign in using</span>
+              </div>
+
+              <div className="flex justify-center space-x-6 mb-6">
+                <button type="button" className="text-blue-700 hover:scale-110 transition-transform duration-300">
+                  <FaGoogle className="text-2xl" />
+                </button>
+                <button type="button" className="text-blue-700 hover:scale-110 transition-transform duration-300">
+                  <FaFacebook className="text-2xl" />
+                </button>
+                <button type="button" className="text-blue-700 hover:scale-110 transition-transform duration-300">
+                  <FaLinkedin className="text-2xl" />
                 </button>
               </div>
+
+              <div className="text-center pt-2">
+                <span className="text-gray-700">
+                  New Member?{" "}
+                  <a
+                    href="Clubsignup"
+                    className="text-primary font-bold hover:underline transition-all duration-300"
+                  >
+                    Club Sign Up
+                  </a>
+                </span>
+              </div>
             </form>
-            
-    
-            {/* Social Sign In */}
-            <div className="text-center mb-4">
-              <span className="text-gray-700">Or Sign in using</span>
-            <div className="flex justify-center space-x-4 mt-2">
-              <FaGoogle className="text-2xl text-blue-700 cursor-pointer" />
-              <FaFacebook className="text-2xl text-blue-700 cursor-pointer" />
-              <FaLinkedin className="text-2xl text-blue-700 cursor-pointer" />
-            </div>
-            </div>
-    
-            {/* Sign Up Link */}
-            <div className="text-center">
-            <span className="text-gray-700">New Member?{" "}
-              <a href="Clubsignup" className="text-blue-900  font-bold hover:underline">Club Sign Up
-              </a>
-            </span>
-            </div>
-            </div>
-            </div>
-            </div>
           </div>
-          
-      
-      )
-}
-  
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default ClubSignIn;

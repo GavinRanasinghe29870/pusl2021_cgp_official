@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { FiEdit } from 'react-icons/fi';
+import { FaCamera } from "react-icons/fa";
 
 function ProfileHeader({ user, isOwner }) {
   const [coverPhoto, setCoverPhoto] = useState('');
   const [profilePhoto, setProfilePhoto] = useState('');
   const [editableInfo, setEditableInfo] = useState({
-    name: '',
+    firstName: '',
     city: '',
     sports: '',
   });
@@ -21,7 +22,7 @@ function ProfileHeader({ user, isOwner }) {
     setCoverPhoto(user.coverPhoto || '');
     setProfilePhoto(user.profilePhoto || '');
     setEditableInfo({
-      name: user.firstName || user.name || '',
+      firstName: user.firstName || '',
       city: user.city || '',
       sports: Array.isArray(user.sports) ? user.sports.join(', ') : user.sports || '',
     });
@@ -29,7 +30,7 @@ function ProfileHeader({ user, isOwner }) {
     if (!isOwner && user.friends?.includes(viewerId)) {
       setIsFriend(true);
     }
-  }, [user, isOwner, viewerId]); // ✅ Added viewerId
+  }, [user, isOwner, viewerId]);
 
   const handleCoverChange = async (e) => {
     const file = e.target.files[0];
@@ -96,9 +97,9 @@ function ProfileHeader({ user, isOwner }) {
         />
         <div className="absolute top-2 right-2 flex gap-2">
           {isOwner && (
-            <label className="bg-white bg-opacity-80 text-black text-sm px-3 py-1 rounded shadow cursor-pointer hover:bg-opacity-100">
-              <FiEdit className="inline-block mr-1" />
-              Change Cover
+            <label className="flex items-center gap-1 bg-white bg-opacity-80 text-black text-sm px-3 py-1 rounded shadow cursor-pointer hover:bg-opacity-100">
+              <FaCamera size={16} />
+              Add Cover Photo
               <input type="file" onChange={handleCoverChange} className="hidden" />
             </label>
           )}
@@ -124,8 +125,8 @@ function ProfileHeader({ user, isOwner }) {
               className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white object-cover shadow-lg"
             />
             {isOwner && (
-              <label className="absolute bottom-0 right-0 bg-black bg-opacity-60 text-white text-xs p-1 rounded-full cursor-pointer hover:bg-opacity-80">
-                ✏️
+              <label className="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white text-xs p-2 rounded-full cursor-pointer hover:bg-opacity-80">
+                <FaCamera size={16} />
                 <input type="file" onChange={handleProfileChange} className="hidden" />
               </label>
             )}
@@ -136,8 +137,8 @@ function ProfileHeader({ user, isOwner }) {
             {editing ? (
               <>
                 <input
-                  name="name"
-                  value={editableInfo.name}
+                  name="firstName"
+                  value={editableInfo.firstName}
                   onChange={handleInfoChange}
                   className="text-xl font-bold border p-1 rounded w-full md:w-[300px]"
                 />
@@ -167,7 +168,7 @@ function ProfileHeader({ user, isOwner }) {
             ) : (
               <>
                 <h2 className="text-xl md:text-2xl font-semibold text-black flex items-center gap-2">
-                  {editableInfo.name || 'Unnamed User'}
+                  {editableInfo.firstName || 'Unnamed User'}
                   {isOwner && (
                     <FiEdit className="text-gray-600 cursor-pointer" onClick={() => setEditing(true)} />
                   )}

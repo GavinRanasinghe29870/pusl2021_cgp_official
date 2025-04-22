@@ -4,7 +4,7 @@ const tabs = ['home', 'about', 'photos', 'videos', 'posts'];
 
 function ProfileNavbar({ activeTab, onTabChange }) {
   return (
-    <div className="bg-blue-100 py-4 px-6">
+    <div className="bg-primary-light py-4 px-6">
       <div className="flex justify-center gap-8 font-semibold text-lg">
         {tabs.map((tab) => (
           <button
