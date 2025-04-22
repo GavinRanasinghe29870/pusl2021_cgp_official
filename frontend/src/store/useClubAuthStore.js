@@ -94,13 +94,13 @@ export const useClubAuthStore = create((set, get) => ({
         }
     },
 
-    checkAuth: async () => {
+    checkClubAuth: async () => {
         try {
             const response = await axios.get(`${BASE_URL}/api/ClubAuth/check`, {
                 withCredentials: true,
             });
 
-            console.log("✅ checkAuth response:", response.data);
+            console.log("✅ checkClubAuth response:", response.data);
 
             if (response.data?._id) {
                 set({
@@ -108,14 +108,12 @@ export const useClubAuthStore = create((set, get) => ({
                     isAuthenticated: true,
                 });
 
-                if (!get().socket) get().connectSocket();
-
                 return { success: true };
             }
 
             return { success: false };
         } catch (error) {
-            console.error("❌ checkAuth failed:", error.response?.data || error.message);
+            console.error("❌ checkClubAuth failed:", error.response?.data || error.message);
             set({ club: null, isAuthenticated: false });
             return { success: false };
         }
