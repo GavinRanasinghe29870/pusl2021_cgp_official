@@ -28,11 +28,11 @@ export default function SingleProduct() {
         setProduct(data);
 
         if (data.pd_colors && data.pd_colors.length > 0) {
-          setSelectedColor(data.pd_colors[0]); // Default to first color
+          setSelectedColor(data.pd_colors[0]);
         }
 
         if (data.pd_image) {
-          setMainImage(data.pd_image);
+          setMainImage(`/uploads/${data.pd_image}`);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -47,56 +47,56 @@ export default function SingleProduct() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-5xl bg-white rounded-lg shadow-lg">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">{product.pd_name}</h1>
+    <div className="container mx-auto p-6 max-w-screen-2xl bg-blue-50 rounded-2xl shadow-xl font-body">
+      <h1 className="text-header-02 font-header text-center text-primary mb-8">{product.pd_name}</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Product Images Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* Product Images */}
         <div className="flex flex-col items-center">
-          {/* Main Image */}
           <motion.img
             src={mainImage}
             alt={product.pd_name}
-            className="w-full h-96 object-cover rounded-lg shadow-md hover:scale-105 transition-transform"
+            className="w-full h-96 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
           />
-
-          {/* Side Images */}
           <div className="flex justify-center gap-4 mt-4">
-            {product.pd_side_images?.map((img, index) => (
-              <motion.img
-                key={index}
-                src={img}
-                alt={`Side view ${index + 1}`}
-                className="w-20 h-20 object-cover rounded-lg shadow-md cursor-pointer hover:scale-110 transition"
-                onClick={() => setMainImage(img)}
-              />
-            ))}
+            {product.pd_side_images?.map((img, index) => {
+              const fullUrl = `/uploads/${img}`;
+              return (
+                <motion.img
+                  key={index}
+                  src={fullUrl}
+                  alt={`Side view ${index + 1}`}
+                  className="w-20 h-20 object-cover rounded-xl shadow-md cursor-pointer hover:scale-110 transition-transform duration-200"
+                  onClick={() => setMainImage(fullUrl)}
+                />
+              );
+            })}
           </div>
         </div>
 
         {/* Product Details */}
-        <div className="flex flex-col justify-between h-full space-y-6">
-          <div className="bg-gray-50 p-6 rounded-md shadow-md">
-            <h3 className="text-lg font-semibold mb-3">Description</h3>
-            <p className="text-gray-700">{product.pd_description}</p>
+        <div className="flex flex-col justify-between space-y-6">
+          <div className="bg-primary-light p-6 rounded-xl shadow-md">
+            <h3 className="text-header-04 font-semibold text-primary mb-3">Description</h3>
+            <p className="text-gray-800">{product.pd_description}</p>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-3">Category</h3>
-            <p className="text-gray-600">{product.pd_category}</p>
+          <div className="bg-secondary-light p-4 rounded-xl shadow-md">
+            <h3 className="text-header-04 font-semibold text-primary mb-3">Category</h3>
+            <p className="text-gray-800">{product.pd_category}</p>
           </div>
 
           {/* Color Selection */}
           {product.pd_colors && (
             <div className="flex items-center gap-4">
-              <h3 className="text-lg font-semibold">Choose Color:</h3>
+              <h3 className="text-header-05 font-semibold text-primary">Choose Color:</h3>
               <div className="flex gap-3">
                 {product.pd_colors.map((color, index) => (
                   <button
                     key={index}
-                    className={`w-8 h-8 rounded-full border-2 ${
-                      selectedColor === color ? "border-blue-500 scale-110" : "border-gray-300"
-                    } transition`}
+                    className={`w-8 h-8 rounded-full border-2 transition-transform duration-200 ${
+                      selectedColor === color ? "border-primary scale-110" : "border-gray-300"
+                    }`}
                     style={{ backgroundColor: color }}
                     onClick={() => setSelectedColor(color)}
                   ></button>
@@ -105,18 +105,35 @@ export default function SingleProduct() {
             </div>
           )}
 
-          {/* Quantity Selector */}
+          {/* Sizes */}
+          {product.pd_size && (
+            <div className="flex items-center gap-4">
+              <h3 className="text-header-05 font-semibold text-primary">Available Sizes:</h3>
+              <div className="flex gap-2 flex-wrap">
+                {product.pd_size.map((size, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-gray-50 font-medium"
+                  >
+                    {size}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Quantity */}
           <div className="flex items-center gap-6">
-            <h3 className="text-lg font-semibold">Quantity:</h3>
+            <h3 className="text-header-05 font-semibold text-primary">Quantity:</h3>
             <button
               className="w-10 h-10 flex items-center justify-center bg-gray-300 rounded-full hover:bg-gray-400 transition"
               onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
             >
               -
             </button>
-            <span className="text-lg font-semibold">{quantity}</span>
+            <span className="text-header-05 font-semibold">{quantity}</span>
             <button
-              className="w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
+              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-blue-800 transition"
               onClick={() => setQuantity((prev) => prev + 1)}
             >
               +
@@ -124,16 +141,16 @@ export default function SingleProduct() {
           </div>
 
           {/* Price */}
-          <p className="text-lg font-semibold text-gray-700">
-            Price: <span className="text-blue-500">LKR {product.pd_price.toFixed(2)}</span>
+          <p className="text-header-05 font-semibold text-primary">
+            Price: <span className="text-blue-700 font-bold">LKR {product.pd_price.toFixed(2)}</span>
           </p>
 
           {/* Buttons */}
-          <div className="mt-6 flex gap-4">
-            <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          <div className="mt-4 flex gap-4">
+            <button className="flex items-center gap-2 bg-secondary text-gray-900 px-5 py-3 rounded-xl font-semibold hover:bg-yellow-400 transition">
               <FaBolt /> Buy Now
             </button>
-            <button className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900">
+            <button className="flex items-center gap-2 bg-primary text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-800 transition">
               <FaShoppingCart /> Add to Cart
             </button>
           </div>
