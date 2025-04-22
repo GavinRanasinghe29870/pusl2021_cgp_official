@@ -1,0 +1,25 @@
+const mongoose = require("mongoose");
+
+const friendMessageSchema = new mongoose.Schema(
+  {
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // or 'SportPerson' if your model is named differently
+      required: true,
+    },
+    receiverId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // same as above
+      required: true,
+    },
+    text: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("FriendMessage", friendMessageSchema);

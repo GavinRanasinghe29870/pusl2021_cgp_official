@@ -8,12 +8,8 @@ export default function ProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [isOpen, setIsOpen] = useState(false);
 
-
     useEffect(() => {
-        const fetchData = async () => {
-            await fetchProducts();
-        };
-        fetchData();
+        fetchProducts();
     }, []);
 
     async function fetchProducts() {
@@ -52,31 +48,28 @@ export default function ProductsPage() {
             </div>
 
             <div className="block md:flex sm:flex min-h-screen bg-gray-100 mt-0">
-
-                {/* Desktop Sidebar for categories */}
+                {/* Desktop Sidebar */}
                 <div className="hidden md:block sm:block w-[120px] md:w-[200px] sm:w-[150px] p-2 bg-primary shadow">
                     <div className="bg-primary-light pt-2 pb-2 pl-2 mt-0">
                         <h2 className="text-sm md:text-xl sm:text-md text-black text-center font-bold">Categories</h2>
                     </div>
-                    <div className="mt-4 text-white text-sm md:text-xl sm:text-md">
-                        <ul>
+                    <ul className="mt-4 text-white text-sm md:text-xl sm:text-md">
+                        <li
+                            className={`cursor-pointer p-2 ${selectedCategory === "All" ? "bg-blue-500 text-black" : ""}`}
+                            onClick={() => filterProducts("All")}
+                        >
+                            All
+                        </li>
+                        {categories.map((category, index) => (
                             <li
-                                className={`cursor-pointer p-2 ${selectedCategory === "All" ? "bg-blue-500 text-black" : ""}`}
-                                onClick={() => filterProducts("All")}
+                                key={index}
+                                className={`cursor-pointer p-2 ${selectedCategory === category ? "bg-blue-500 text-black" : ""}`}
+                                onClick={() => filterProducts(category)}
                             >
-                                All
+                                {category}
                             </li>
-                            {categories.map((category, index) => (
-                                <li
-                                    key={index}
-                                    className={`cursor-pointer p-2 ${selectedCategory === category ? "bg-blue-500 text-black" : ""}`}
-                                    onClick={() => filterProducts(category)}
-                                >
-                                    {category}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                        ))}
+                    </ul>
                 </div>
 
                 {/* Mobile Sidebar */}
@@ -88,20 +81,25 @@ export default function ProductsPage() {
                     onSelectCategory={filterProducts}
                 />
 
-
-
                 {/* Product Display Section */}
                 <div className="w-full p-4">
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {products.length > 0 ? (
                             products.map((product) => (
-                                <div key={product._id} className="bg-primary-light shadow rounded-lg p-4">
-                                    <img src={product.pd_image} alt={product.pd_name} className="w-full h-40 object-cover rounded" />
-                                    <h3 className="text-lg font-semibold mt-2">{product.pd_name}</h3>
-                                    <p className="text-gray-600">{product.pd_category}</p>
-                                    <p className="text-blue-600 font-bold">${product.pd_price}</p>
-                                    <p className="text-gray-700 mt-1">{product.pd_description}</p>
+                                <div
+                                    key={product._id}
+                                    className="bg-white shadow-md rounded-lg overflow-hidden transition-transform hover:scale-105 duration-200"
+                                >
+                                    <img
+                                        src={`/uploads/${product.pd_image}`}
+                                        alt={product.pd_name}
+                                        className="w-full h-48 object-cover"
+                                    />
+                                    <div className="p-4">
+                                        <h3 className="text-lg font-semibold text-gray-800">{product.pd_name}</h3>
+                                        <p className="text-sm text-gray-600">{product.pd_category}</p>
+                                        <p className="text-blue-600 font-bold mt-1">${product.pd_price}</p>
+                                    </div>
                                 </div>
                             ))
                         ) : (

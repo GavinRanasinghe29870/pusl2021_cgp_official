@@ -11,6 +11,8 @@ const ChatSidebar = () => {
 
     const skeletonContacts = Array(8).fill(null);
 
+    const backendURL = 'http://localhost:5000';
+
     useEffect(() => {
         getUsers()
     }, [getUsers])
@@ -69,7 +71,7 @@ const ChatSidebar = () => {
                     >
                         <div className="relative mx-0">
                             <img
-                                src={user.profilePic || "/defaultProfilePic.jpg"}
+                                src={user.profilePhoto? `${backendURL}${user.profilePhoto}` : '/defaultProfilePic.jpg'}
                                 alt={user.name}
                                 className="size-12 object-cover rounded-full"
                             />
