@@ -51,14 +51,6 @@ const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
 const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
 const notificationRoutes = require("./routes/sportPeople/notificationRoutes.js");
 
-const jwt = require("jsonwebtoken");
-
-const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
-  expiresIn: "1h",
-});
-
-console.log("Generated Token:", token);
-
 app.post("/api/donation", (req, res) => {
   console.log("Received donation request:", req.body); // Log the request body
   // Process the donation data here...
