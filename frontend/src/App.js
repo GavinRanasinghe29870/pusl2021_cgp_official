@@ -6,6 +6,7 @@ import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import SportPeopleNavbar from "./components/sportPeople/SportPeopleNavbar.js";
 import SportPeopleFooter from "./components/sportPeople/SportPeopleFooter.js";
 import { useAuthStore } from "./store/useAuthStore.js";
+import { useClubAuthStore } from "./store/useClubAuthStore.js";
 import Home from "./pages/sportPeople/Home";
 
 //import ProductList from "./pages/clubs/ProductList";
@@ -56,15 +57,16 @@ import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2.js";
 // import AdminFooter from "./components/admin/AdminFooter.js";
 
 function App() {
-  const { authUser, checkAuth, onlineUsers } = useAuthStore();
+  const { user, checkAuth, onlineUsers } = useAuthStore();
+  const { club, checkClubAuth } = useClubAuthStore();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
 
   console.log({ onlineUsers });
 
   useEffect(() => {
-    checkAuth().finally(() => setLoading(false));
-  }, [checkAuth]);
+    Promise.all([checkAuth(), checkClubAuth()]).finally(() => setLoading(false));
+  }, [checkAuth, checkClubAuth]);
 
   if (loading) {
     return (
@@ -86,21 +88,22 @@ function App() {
         "/Signup",
         "/Clubsignup",
       ].includes(location.pathname) ? null : [
-          "/registrationApproval",
-          "/club/home",
-          "/ClubPortfolio",
-          "/adpost",
-          "/RequestMember",
-          "/Clubmaker",
-        ].includes(location.pathname) ? (
+        "/registrationApproval",
+        "/club/home",
+        "/club/chat",
+        "/ClubPortfolio",
+        "/adpost",
+        "/RequestMember",
+        "/Clubmaker",
+      ].includes(location.pathname) ? (
         <ClubNavbar />
       ) : [
-          "/admin/home",
-          "/admin/productManaging",
-          "/salesManage",
-          "/ClubApprovingPage1",
-          "/ClubApprovingPage2",
-        ].includes(location.pathname) ? (
+        "/admin/home",
+        "/admin/productManaging",
+        "/salesManage",
+        "/ClubApprovingPage1",
+        "/ClubApprovingPage2",
+      ].includes(location.pathname) ? (
         <AdminNavbar />
       ) : (
         <SportPeopleNavbar />
@@ -112,14 +115,8 @@ function App() {
         <Route path="/Checkout" element={<CheckoutPage />} />
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
-        <Route
-          path="/Signin"
-          element={!authUser ? <Signin /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/Signup"
-          element={!authUser ? <Signup /> : <Navigate to="/" />}
-        />
+        <Route path="/Signin" element={<Signin />} />
+        <Route path="/Signup" element={<Signup />} />
         <Route path="/admin/signin" element={<AdminSignin />} />
         <Route path="/sport" element={<SportPage />} />
         <Route path="/adpost" element={<AdPost />} />
@@ -129,7 +126,7 @@ function App() {
 
 
 
-       <Route path="/RegisteredClubs" element={<RegisteredClub />} /> 
+        <Route path="/RegisteredClubs" element={<RegisteredClub />} />
 
         {/* <Route path="/RegisteredClubs" element={<RegisteredClub />} /> */}
 
@@ -155,18 +152,18 @@ function App() {
         <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
         <Route path="/salesManage" element={<SalesManage />} />
         <Route path="/profile:id" element={
-          authUser ? <Navigate to={`/profile/${authUser._id}`} /> : <Navigate to="/Signin" />
+          user ? <Navigate to={`/profile/${user._id}`} /> : <Navigate to="/Signin" />
         } />
         <Route path="/profile/:id" element={<UserProfilePage />} />
-        
+
 
         <Route path="/aboutus" element={<AboutUs />} />
 
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
 
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
-        {/* <Route path="/club/chat" element={authUser ? <ClubChat /> : <Navigate to="/Signin" />} />         */}
         <Route path="/club-chat" element={<ClubChat />} />
+        <Route path="/club/chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
         <Route path="/friend-chat" element={<FriendChat />} />
 
@@ -179,21 +176,22 @@ function App() {
         "/Signup",
         "/Clubsignup",
         "/club-chat",
+        "/club/chat",
       ].includes(location.pathname) ? null : [
-          "/club/home",
-          "/ClubPortfolio",
-          "/adpost",
-          "/RequestMember",
-          "/Clubmaker",
-        ].includes(location.pathname) ? (
+        "/club/home",
+        "/ClubPortfolio",
+        "/adpost",
+        "/RequestMember",
+        "/Clubmaker",
+      ].includes(location.pathname) ? (
         <ClubFooter />
       ) : [
-          "/admin/home",
-          "/admin/productManaging",
-          "/salesManage",
-          "/ClubApprovingPage1",
-          "/ClubApprovingPage2",
-        ].includes(location.pathname) ? (
+        "/admin/home",
+        "/admin/productManaging",
+        "/salesManage",
+        "/ClubApprovingPage1",
+        "/ClubApprovingPage2",
+      ].includes(location.pathname) ? (
         <AdminFooter />
       ) : (
         <SportPeopleFooter />

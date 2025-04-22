@@ -9,6 +9,14 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    pd_image: {
+        type: String,
+        required: true
+    },
+    pd_side_images: {
+        type: [String], // Array of image URLs for the side images
+        default: []
+    },
     pd_price: {
         type: Number,
         required: true
