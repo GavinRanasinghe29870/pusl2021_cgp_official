@@ -113,17 +113,17 @@ router.post("/logout", (req, res) => {
     res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
-const checkAuth = async (req, res) => {
+const checkClubAuth = async (req, res) => {
     try {
         res.status(200).json(req.club);
     } catch (error) {
-        console.log("Error in checkAuth controller", error.message);
+        console.log("Error in checkClubAuth controller", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
 // CHECK LOGIN STATUS
-router.get("/check", protectRoute, checkAuth);
+router.get("/check", protectRoute, checkClubAuth);
 
 
 module.exports = router;
