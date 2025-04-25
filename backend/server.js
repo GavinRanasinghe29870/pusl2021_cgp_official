@@ -45,7 +45,7 @@ const memberRoutes = require("./routes/clubs/memberRoutes");
 const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
-
+const salesRoutes = require('./routes/admin/salesRoute.js');
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
 
 const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
@@ -82,7 +82,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/ClubAuth", ClubAuth);
 
 app.use("/api/messages", messageRoutes);
-
+app.use("/api/sales", salesRoutes);
 app.use("/api/singleproduct", SingleProductRoutes);
 
 // Serve uploaded PDFs
