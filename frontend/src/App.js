@@ -48,8 +48,10 @@ import ClubFooter from './components/clubs/ClubFooter.js';
 import AdminFooter from './components/admin/AdminFooter.js';
 
 
+
 import ClubApprovingPage1 from "./components/admin/ClubApprovingPage1.js";
 import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2.js";
+import DoneePortfolio from "./components/sportPeople/Doneeportfolio.js";
 // import FriendChat from "./components/sportPeople/friendChat.js"; //
 // import ClubNavbar from "./components/clubs/ClubNavbar.js";
 // import AdminNavbar from "./components/admin/AdminNavbar.js";
@@ -142,7 +144,7 @@ function App() {
 
         <Route path="/donatingReq" element={<DonatingRequestForm />} />
 
-
+        <Route path="/donations/:id" element={<DoneePortfolio />} />
 
 
         <Route path="/product/:id" element={<Singleproduct />} />
