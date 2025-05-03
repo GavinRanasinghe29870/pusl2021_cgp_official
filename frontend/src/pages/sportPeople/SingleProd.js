@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaBolt } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useAuthStore } from "../../store/useAuthStore"; // ✅ Import useAuthStore
 
 export default function SingleProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuthStore(); // ✅ Get user from store
+
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("");
@@ -50,9 +53,7 @@ export default function SingleProduct() {
   }, [id]);
 
   const createOrder = async (navigateTo) => {
-    // For testing, hardcode a userId if needed
-    // Change this based on your actual authentication implementation
-    const userId = localStorage.getItem("userId") || "64a55a910c5a04d61c0b6e48"; // Temporarily hardcoded for testing
+    const userId = user?._id; // ✅ Use user ID from store
     
     if (!product || !product.pd_price) {
       setOrderStatus({
@@ -61,7 +62,7 @@ export default function SingleProduct() {
       });
       return;
     }
-    
+
     console.log("Order Details:", {
       userId,
       productId: id,
@@ -70,9 +71,8 @@ export default function SingleProduct() {
       selectedSize,
       price: product.pd_price
     });
-    
+
     if (!userId) {
-      // If user is not logged in, redirect to login page
       setOrderStatus({
         message: "Please log in to place an order",
         type: "error"
@@ -97,11 +97,11 @@ export default function SingleProduct() {
         quantity,
         selectedColor,
         selectedSize,
-        price: product.pd_price // Add the unit price
+        price: product.pd_price
       };
-      
+
       console.log("Order payload:", orderData);
-      
+
       const response = await fetch("http://localhost:5000/api/orders", {
         method: "POST",
         headers: {
@@ -112,7 +112,7 @@ export default function SingleProduct() {
 
       const responseText = await response.text();
       console.log("Raw API response:", responseText);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to create order: ${response.status} - ${responseText}`);
       }
@@ -124,18 +124,17 @@ export default function SingleProduct() {
       } catch (e) {
         console.warn("Could not parse response as JSON:", e);
       }
-      
+
       setOrderStatus({
         message: "Order placed successfully!",
         type: "success"
       });
 
-      // Navigate after successful order creation
       setTimeout(() => {
         if (navigateTo) {
           navigate(navigateTo);
         }
-      }, 1500); // Give user time to see success message
+      }, 1500);
     } catch (error) {
       console.error("Error creating order:", error);
       setOrderStatus({
@@ -168,7 +167,6 @@ export default function SingleProduct() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Product Images */}
         <div className="flex flex-col items-center">
           <motion.img
             src={mainImage}
@@ -191,7 +189,6 @@ export default function SingleProduct() {
           </div>
         </div>
 
-        {/* Product Details */}
         <div className="flex flex-col justify-between space-y-6">
           <div className="bg-primary-light p-6 rounded-xl shadow-md">
             <h3 className="text-header-04 font-semibold text-primary mb-3">Description</h3>
@@ -203,7 +200,6 @@ export default function SingleProduct() {
             <p className="text-gray-800">{product.pd_category}</p>
           </div>
 
-          {/* Color Selection */}
           {product.pd_colors && (
             <div className="flex items-center gap-4">
               <h3 className="text-header-05 font-semibold text-primary">Choose Color:</h3>
@@ -223,7 +219,6 @@ export default function SingleProduct() {
             </div>
           )}
 
-          {/* Sizes - Updated to make selectable */}
           {product.pd_size && (
             <div className="flex flex-col gap-3">
               <h3 className="text-header-05 font-semibold text-primary">Select Size:</h3>
@@ -245,7 +240,6 @@ export default function SingleProduct() {
             </div>
           )}
 
-          {/* Quantity */}
           <div className="flex items-center gap-6">
             <h3 className="text-header-05 font-semibold text-primary">Quantity:</h3>
             <button
@@ -263,12 +257,10 @@ export default function SingleProduct() {
             </button>
           </div>
 
-          {/* Price */}
           <p className="text-header-05 font-semibold text-primary">
             Price: <span className="text-blue-700 font-bold">LKR {product.pd_price.toFixed(2)}</span>
           </p>
 
-          {/* Selected Options Summary */}
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <h3 className="text-header-05 font-semibold text-primary mb-2">Your Selection</h3>
             <div className="flex gap-4 flex-wrap text-sm">
@@ -279,7 +271,6 @@ export default function SingleProduct() {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="mt-4 flex gap-4">
             <button 
               className="flex items-center gap-2 bg-secondary text-gray-900 px-5 py-3 rounded-xl font-semibold hover:bg-yellow-400 transition"
