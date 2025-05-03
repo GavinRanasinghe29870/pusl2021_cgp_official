@@ -49,6 +49,11 @@ export default function SingleProduct() {
     navigate('/cart');
   };
 
+  const handleBuyNow = () => {
+    // You can add logic here before navigating directly to checkout
+    navigate('/checkout');
+  };
+
   if (!product) {
     return <p className="text-center text-gray-500">Loading product...</p>;
   }
@@ -154,7 +159,10 @@ export default function SingleProduct() {
 
           {/* Buttons */}
           <div className="mt-4 flex gap-4">
-            <button className="flex items-center gap-2 bg-secondary text-gray-900 px-5 py-3 rounded-xl font-semibold hover:bg-yellow-400 transition">
+            <button 
+              className="flex items-center gap-2 bg-secondary text-gray-900 px-5 py-3 rounded-xl font-semibold hover:bg-yellow-400 transition"
+              onClick={handleBuyNow}
+            >
               <FaBolt /> Buy Now
             </button>
             <button 
