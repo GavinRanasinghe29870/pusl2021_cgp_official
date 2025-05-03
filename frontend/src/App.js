@@ -77,9 +77,10 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/ClubPortfolio" element={<ClubPortfolio />} />
-        <Route path="/Clubmaker" element={<ClubMakerPage />} />
-        <Route path="/Checkout" element={<CheckoutPage />} />
+        {/* Dynamic Route for ClubPortfolio */}
+      <Route path="/ClubPortfolio/:id" element={<ClubPortfolio />} />
+        <Route path="/Clubmaker" element={<ClubMakerPage />}/>
+        <Route path="/Checkout" element={<CheckoutPage />}/>
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route

@@ -41,6 +41,11 @@ const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
 const donatingRoutes = require("./routes/sportPeople/donatingRoutes");//
+const checkoutRoutes = require("./routes/clubs/checkoutRoutes.js");
+const ClubRoutes = require("./routes/clubs/Clubs.js");
+
+app.use("/api/club", ClubRoutes);
+
 
 const jwt = require("jsonwebtoken");
 
@@ -84,6 +89,7 @@ app.use("/api/registrationApproval", registrationApprovalRoutes);
 
 // Middleware to serve product images (if using an "uploads" folder)
 app.use("/uploads", express.static("uploads"));
+app.use("/api/checkout", checkoutRoutes);
 
 // Fallback route for undefined API endpoints
 app.use((req, res, next) => {
