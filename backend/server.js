@@ -45,19 +45,11 @@ const memberRoutes = require("./routes/clubs/memberRoutes");
 const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
-
+const salesRoutes = require('./routes/admin/salesRoute.js');
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
 
 const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
 const notificationRoutes = require("./routes/sportPeople/notificationRoutes.js");
-
-const jwt = require("jsonwebtoken");
-
-const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
-  expiresIn: "1h",
-});
-
-console.log("Generated Token:", token);
 
 app.post("/api/donation", (req, res) => {
   console.log("Received donation request:", req.body); // Log the request body
@@ -90,7 +82,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/ClubAuth", ClubAuth);
 
 app.use("/api/messages", messageRoutes);
-
+app.use("/api/sales", salesRoutes);
 app.use("/api/singleproduct", SingleProductRoutes);
 
 // Serve uploaded PDFs
