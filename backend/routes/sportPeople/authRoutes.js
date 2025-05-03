@@ -109,6 +109,22 @@ router.post("/signin", async (req, res) => {
 
     const token = generateToken(user._id, res);
 
+    console.log("Login Successful:", {
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        age: user.age,
+        username: user.username,
+        mobile: user.mobile,
+        address: user.address,
+        email: user.email,
+        sportLevel: user.sportLevel,
+        gender: user.gender,
+        profilePhoto: user.profilePhoto,
+      },
+      token,
+    });
+
     res.json({
       user: {
         _id: user._id,
@@ -120,6 +136,7 @@ router.post("/signin", async (req, res) => {
         email: user.email,
         sportLevel: user.sportLevel,
         gender: user.gender,
+        profilePhoto: user.profilePhoto,
       },
       token,
     });
@@ -135,7 +152,16 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
+const checkAuth = async (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 // CHECK LOGIN STATUS
-router.get("/check", protectRoute);
+router.get("/check", protectRoute, checkAuth);
 
 module.exports = router;

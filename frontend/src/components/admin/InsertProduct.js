@@ -1,146 +1,199 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-export default function InsertProduct({ onClose }) {
+export default function InsertProduct({ onClose, existingProduct }) {
+  const [product, setProduct] = useState({
+    pd_name: "",
+    pd_category: "",
+    pd_price: "",
+    pd_description: "",
+    pd_colors: [],
+    pd_size: [],
+  });
 
-    const [product, setProduct] = useState({
-        pd_name: "",
-        pd_category: "",
-        pd_price: "",
-        pd_image: "",
-        pd_description: "",
-    });
-    const [imagePreview, setImagePreview] = useState(null);
-    const fileInputRef = useRef(null);
-    const [imageName, setImageName] = useState("No File Choosed");
-    const navigate = useNavigate();
+  const [coverPhoto, setCoverPhoto] = useState(null);
+  const [sideImages, setSideImages] = useState([]);
 
-    const categories = ["Cricket", "Volleyball", "Badminton", "Basket Ball", "Table Tenis", "Tenis", "Football", "Chess", "Netball", "Swimming"];
-    function handleChange(e) {
-        const { name, value } = e.target;
-        setProduct({ ...product, [name]: value });
+  useEffect(() => {
+    if (existingProduct) {
+      setProduct(existingProduct);
     }
+  }, [existingProduct]);
 
-    function handleCategorySelect(category) {
-        setProduct({ ...product, pd_category: category });
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setProduct((prev) => ({ ...prev, [name]: value }));
+  }
+
+  const handleColorChange = (e) => {
+    setProduct((prev) => ({
+      ...prev,
+      pd_colors: e.target.value.split(",").map(c => c.trim()),
+    }));
+  };
+
+  const handleSizeChange = (e) => {
+    setProduct((prev) => ({
+      ...prev,
+      pd_size: e.target.value.split(",").map(c => c.trim()),
+    }));
+  };
+
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("pd_name", product.pd_name);
+    formData.append("pd_category", product.pd_category);
+    formData.append("pd_price", product.pd_price);
+    formData.append("pd_description", product.pd_description);
+    formData.append("pd_colors", JSON.stringify(product.pd_colors));
+    formData.append("pd_size", JSON.stringify(product.pd_size));
+    
+
+    if (coverPhoto) formData.append("pd_image", coverPhoto);
+    sideImages.forEach((img) => formData.append("pd_side_images", img));
+
+    const url = existingProduct
+      ? `http://localhost:5000/api/products/${existingProduct._id}`
+      : "http://localhost:5000/api/products/add";
+
+    const method = existingProduct ? "put" : "post";
+
+    try {
+      const response = await axios({
+        method,
+        url,
+        data: formData,
+      });
+
+      console.log("Upload response:", response.data);
+
+      alert(`Product ${existingProduct ? "updated" : "added"} successfully!`);
+      onClose();
+    } catch (err) {
+      console.error("Upload failed:", err.response?.data || err.message);
+      alert("Failed to add product. Check all fields.");
     }
+  }
 
-    function handleImageChange(e) {
-        const file = e.target.files[0];
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg w-[500px] max-h-[90vh] overflow-y-auto">
+        <h2 className="text-xl font-semibold mb-4">
+          {existingProduct ? "Edit Product" : "Add New Product"}
+        </h2>
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
+          <div>
+            <label className="block mb-1 font-medium">Product Name</label>
+            <input
+              type="text"
+              name="pd_name"
+              value={product.pd_name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Category</label>
+            <input
+              type="text"
+              name="pd_category"
+              value={product.pd_category}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Price</label>
+            <input
+              type="number"
+              name="pd_price"
+              value={product.pd_price}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              required
+            />
+          </div>
 
-        if (file) {
-            setImageName(file.name)
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProduct({ ...product, pd_image: reader.result });
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    }
+          <div>
+            <label className="block mb-1 font-medium">Description</label>
+            <textarea
+              name="pd_description"
+              value={product.pd_description}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
+              rows={3}
+              required
+            />
+          </div>
 
-    function handleChooseImageClick() {
-        fileInputRef.current.click(); // Trigger file input click
-    }
+          <div>
+            <label className="block mb-1 font-medium">Cover Photo</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setCoverPhoto(e.target.files[0])}
+              className="w-full"
+              required
+            />
+          </div>
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        try {
-            const response = await fetch("http://localhost:5000/api/products/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(product),
-            });
-            if (response.ok) {
-                alert("Product added successfully!");
-                navigate("/shop");
-            } else {
-                const errorData = await response.json();
-                console.error("Error adding product:", errorData);
-                alert("Failed to add Product!");
-            }
-        } catch (err) {
-            console.error("Error!", err);
-        }
-    }
+          <div>
+            <label className="block mb-1 font-medium">Other Photos</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => setSideImages([...e.target.files])}
+              className="w-full"
+            />
+          </div>
 
-    return (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-screen bg-white bg-opacity-90 grid place-items-center">
-            <button className="absolute top-2 right-2 text-red-500 text-2xl" onClick={onClose}>
-                &times;
+          <div>
+            <label className="block mb-1 font-medium">Colors (comma separated)</label>
+            <input
+              type="text"
+              name="pd_colors"
+              placeholder="#ff0000, #00ff00"
+              value={product.pd_colors.join(", ")}
+              onChange={handleColorChange}
+              className="w-full px-3 py-2 border rounded"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Sizes (comma separated)</label>
+            <input
+              type="text"
+              name="pd_size"
+              placeholder="Xl, L"
+              value={product.pd_size.join(", ")}
+              onChange={handleSizeChange}
+              className="w-full px-3 py-2 border rounded"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+              onClick={onClose}
+            >
+              Cancel
             </button>
-            <h1 className="text-2xl text-center font-bold font-header mb-4">Add New Product</h1>
-            <form onSubmit={handleSubmit} className="space-y-4 ">
-                <div className="item-center justify-center">
-                    <label className=" item-center justify-center block text-lg font-header">
-                        Product Name
-                    </label>
-                    <input type="text" name="pd_name" className="w-80 p-2 border border-black" value={product.pd_name}
-                        onChange={handleChange} required></input>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium">
-                        Category
-                    </label>
-                    <select className="w-60 p-2 mt-3 border border-black" value={product.pd_category}
-                        onChange={(e) => handleCategorySelect(e.target.value)} required>
-                        <option value="" className="text-center ">
-                            Select a Category
-                        </option>
-                        {categories.map((category, index) => (
-                            <option key={index} value={category}>
-                                {category}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium">
-                        Price(LKR)
-                    </label>
-                    <input className="w-80 p-2 border border-black" type="number" name="pd_price"
-                        value={product.pd_price} onChange={handleChange} required>
-                    </input>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium">
-                        Product Image
-                    </label>
-                    <div className="flex items-center gap-4 mt-2">
-                        <div className="border-2 border-black-900 p-2">
-                        <span className="text-gray-600">
-                            {imageName}
-                        </span>
-                        </div>
-                        
-                        <button type="button" onClick={handleChooseImageClick} className="w-40 p-2 bg-secondary-light cursor-pointer text-black hover:bg-secondary transition">
-                        Choose Image
-                    </button>
-                    </div>
-                    <input className="hidden" type="file" accept="image/*"
-                        onChange={handleImageChange} required ref={fileInputRef}>
-                    </input>
-                    
-                    {imagePreview && (
-                        <img src={imagePreview} alt="Preview" className="mt-2 w-40 h-40 object-cover border rounded" />
-                    )}
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium">
-                        Product Description
-                    </label>
-                    <textarea className="w-80 p-2 border border-black" type="text" name="pd_description"
-                        value={product.pd_description} onChange={handleChange} required>
-                    </textarea>
-                </div>
-                <button type="submit" className="w-40 h-10 bg-blue-600 text-white p-2 rounded ">
-                    Add Product
-                </button>
-            </form>
-        </div>
-    );
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            >
+              {existingProduct ? "Update" : "Add"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

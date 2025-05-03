@@ -19,15 +19,11 @@ export const useAuthStore = create((set, get) => ({
         sportLevel: formData.sportLevel || "SportPeople",
       };
 
-      console.log("Sending Sign-In Data:", dataToSend);
+      console.log("🟢 Sending Sign-In Data:", dataToSend);
 
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/signin",
-        dataToSend,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/auth/signin`, dataToSend, {
+        withCredentials: true,
+      });
 
       if (response.data?.user) {
         set({
@@ -35,7 +31,6 @@ export const useAuthStore = create((set, get) => ({
           isAuthenticated: true,
         });
 
-        // Connect socket after successful sign-in
         get().connectSocket();
 
         return { success: true, ...response.data };
@@ -43,7 +38,7 @@ export const useAuthStore = create((set, get) => ({
         return { success: false, error: "Invalid response" };
       }
     } catch (error) {
-      console.error("Authentication error:", error);
+      console.error("❌ Signin error:", error.response?.data || error.message);
       return {
         success: false,
         error: error.response?.data?.error || error.message,
@@ -54,16 +49,11 @@ export const useAuthStore = create((set, get) => ({
   signup: async (formData) => {
     try {
       set({ isSigningUp: true });
+      console.log("🟢 Sending Sign-Up Data:", formData);
 
-      console.log("Sending Sign-Up Data:", formData);
-
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/signup",
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/auth/signup`, formData, {
+        withCredentials: true,
+      });
 
       set({ isSigningUp: false });
 
@@ -73,7 +63,6 @@ export const useAuthStore = create((set, get) => ({
           isAuthenticated: true,
         });
 
-        // Connect socket after successful sign-up
         get().connectSocket();
 
         return { success: true, ...response.data };
@@ -82,7 +71,7 @@ export const useAuthStore = create((set, get) => ({
       }
     } catch (error) {
       set({ isSigningUp: false });
-      console.error("Signup error:", error);
+      console.error("❌ Signup error:", error.response?.data || error.message);
       return {
         success: false,
         error: error.response?.data?.error || error.message,
@@ -92,13 +81,10 @@ export const useAuthStore = create((set, get) => ({
 
   logout: async () => {
     try {
-      await axios.post(
-        "http://localhost:5000/api/auth/logout",
-        {},
-        { withCredentials: true }
-      );
+      await axios.post(`${BASE_URL}/api/auth/logout`, {}, {
+        withCredentials: true,
+      });
 
-      // Disconnect socket on logout
       const socket = get().socket;
       if (socket) {
         socket.disconnect();
@@ -106,34 +92,36 @@ export const useAuthStore = create((set, get) => ({
       }
 
       set({ user: null, isAuthenticated: false });
+      window.location.reload();
       return { success: true };
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("❌ Logout error:", error.message);
       return { success: false, error: error.message };
     }
   },
 
   checkAuth: async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/auth/check", {
+      const response = await axios.get(`${BASE_URL}/api/auth/check`, {
         withCredentials: true,
       });
 
-      if (response.data) {
+      console.log("✅ checkAuth response:", response.data);
+
+      if (response.data?._id) {
         set({
           user: response.data,
           isAuthenticated: true,
         });
 
-        // Connect socket after successful auth check
-        get().connectSocket();
+        if (!get().socket) get().connectSocket();
 
         return { success: true };
       }
 
       return { success: false };
     } catch (error) {
-      console.error("Auth check error:", error);
+      console.error("❌ checkAuth failed:", error.response?.data || error.message);
       set({ user: null, isAuthenticated: false });
       return { success: false };
     }
@@ -141,7 +129,8 @@ export const useAuthStore = create((set, get) => ({
 
   connectSocket: () => {
     const { user, socket } = get();
-    if (!user || socket?.connected) return;
+
+    if (!user || (socket && socket.connected)) return;
 
     const newSocket = io(BASE_URL, {
       query: {
@@ -149,16 +138,23 @@ export const useAuthStore = create((set, get) => ({
       },
     });
 
-    newSocket.connect();
-
     set({ socket: newSocket });
 
+    newSocket.on("connect", () => {
+      console.log("🟢 Socket connected:", newSocket.id);
+    });
+
     newSocket.on("getOnlineUsers", (userIds) => {
-      set({ onlineUsers: userIds });
+      set((state) => {
+        if (JSON.stringify(state.onlineUsers) !== JSON.stringify(userIds)) {
+          return { onlineUsers: userIds };
+        }
+        return state;
+      });
     });
 
     newSocket.on("disconnect", () => {
-      console.log("Socket disconnected");
+      console.log("🟡 Socket disconnected");
       set({ socket: null });
     });
   },

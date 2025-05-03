@@ -11,6 +11,8 @@ const ChatSidebar = () => {
 
     const skeletonContacts = Array(8).fill(null);
 
+    const backendURL = 'http://localhost:5000';
+
     useEffect(() => {
         getUsers()
     }, [getUsers])
@@ -62,14 +64,14 @@ const ChatSidebar = () => {
                         key={user._id}
                         onClick={() => setSelectedUser(user)}
                         className={`
-                            w-full p-3 pl-8 flex items-center gap-3 border-b lg:border-none
+                            w-full p-3 pl-8 flex items-center gap-3 border-b
                             hover:bg-primary-light transition-colors
                             ${selectedUser?._id === user._id ? "bg-primary-light ring-1 ring-base-300" : ""}
                         `}
                     >
                         <div className="relative mx-0">
                             <img
-                                src={user.profilePic || "/defaultProfilePic.jpg"}
+                                src={user.profilePhoto? `${backendURL}${user.profilePhoto}` : '/defaultProfilePic.jpg'}
                                 alt={user.name}
                                 className="size-12 object-cover rounded-full"
                             />
@@ -91,7 +93,13 @@ const ChatSidebar = () => {
                             <div className="text-sm text-zinc-500 truncate">
                                 {user.lastMessage ? user.lastMessage.text : "No messages"}
                             </div>
+
                         </div>
+                        {/* {unreadMessageCount > 0 && (
+                            <div className='ml-auto bg-red-600 text-white text-xs rounded-full size-3 md:size-4 flex items-center justify-center'>
+                                {unreadMessageCount}
+                            </div>
+                        )} */}
                     </button>
                 ))}
 
