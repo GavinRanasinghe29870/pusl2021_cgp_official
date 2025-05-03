@@ -42,7 +42,6 @@ const adminRoutes = require("./routes/admin/adminRoutes.js");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
 const donationRoutes = require("./routes/sportPeople/donationRoutes");
 const memberRoutes = require("./routes/clubs/memberRoutes");
-const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
 const salesRoutes = require('./routes/admin/salesRoute.js');
@@ -85,7 +84,7 @@ app.use("/api/ClubAuth", ClubAuth);
 
 app.use("/api/messages", messageRoutes);
 app.use("/api/sales", salesRoutes);
-app.use("/api/singleproduct", SingleProductRoutes);
+
 
 // Serve uploaded PDFs
 app.use("/uploads/pdfs", express.static("uploads/pdfs"));
