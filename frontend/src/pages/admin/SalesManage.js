@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "../../App.css";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { FaMapLocation } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
 
 const SalesManage = () => {
+  const [sales, setSales] = useState([]);
+
+  useEffect(() => {
+    const fetchSales = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/sales");
+        setSales(response.data);
+      } catch (error) {
+        console.error("Error fetching sales:", error);
+      }
+    };
+
+    fetchSales();
+  }, []);
+
   return (
     <div className="bg-white min-h-screen font-sans">
       <div className="p-6 mt-8">
@@ -14,85 +30,28 @@ const SalesManage = () => {
             <thead className="bg-white">
               <tr className="border-b bg-blue-100">
                 <th className="py-2 px-4 border text-left border-black">#</th>
-                <th className="py-2 px-4 border text-left border-black">
-                  Order ID
-                </th>
-                <th className="py-2 px-4 border text-left border-black">
-                  Product Name
-                </th>
-                <th className="py-2 px-4 border text-left border-black">
-                  Address
-                </th>
-                <th className="py-2 px-4 border text-left border-black">
-                  Date
-                </th>
-                <th className="py-2 px-4 border text-left border-black">
-                  Price
-                </th>
-                <th className="py-2 px-4 border text-left border-black">
-                  Status
-                </th>
+                <th className="py-2 px-4 border text-left border-black">Order ID</th>
+                <th className="py-2 px-4 border text-left border-black">Product Name</th>
+                <th className="py-2 px-4 border text-left border-black">Address</th>
+                <th className="py-2 px-4 border text-left border-black">Date</th>
+                <th className="py-2 px-4 border text-left border-black">Price</th>
+                <th className="py-2 px-4 border text-left border-black">Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b table-fixed bg-blue-100 border-black">
-                <td className="py-3 px-4 border border-black">2</td>
-                <td className="py-3 px-4 border font-bold border-black">
-                  1866
-                </td>
-                <td className="py-3 px-4 border border-black">
-                  <div className="font-bold border-black">
-                    Leather white ball
-                  </div>
-                </td>
-                <td className="py-3 px-4 border border-black">
-                  Rajapaksha Trade Center, Mahena, Warakapola
-                </td>
-                <td className="py-3 px-4 border border-black">6/12/2024</td>
-                <td className="py-3 px-4 border border-black">4000/=</td>
-                <td className="py-3 px-4 border border-black">Delivered</td>
-              </tr>
-              <tr className="border-b bg-blue-100 border-black">
-                <td className="py-3 px-4 border border-black">3</td>
-                <td className="py-3 px-4 border font-bold border-black">
-                  1867
-                </td>
-                <td className="py-3 px-4 border border-black">
-                  <div className="font-bold border-black">MRF Cricket bat</div>
-                </td>
-                <td className="py-3 px-4 border border-black">
-                  C 12/3 Kandy road, Mahena, Warakapola
-                </td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-              </tr>
-              <tr className="border-b bg-blue-100 border-black">
-                <td className="py-3 px-4 border border-black">4</td>
-                <td className="py-3 px-4 border font-bold border-black">
-                  test
-                </td>
-                <td className="py-3 px-4 border border-black">
-                  <div className="font-bold border-black">test</div>
-                </td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-              </tr>
-              <tr className="border-b bg-blue-100 border-black">
-                <td className="py-3 px-4 border border-black">3</td>
-                <td className="py-3 px-4 border font-bold border-black">
-                  test
-                </td>
-                <td className="py-3 px-4 border border-black">
-                  <div className="font-bold border-black">test</div>
-                </td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-                <td className="py-3 px-4 border border-black">test</td>
-              </tr>
+              {sales.map((sale, index) => (
+                <tr key={sale._id} className="border-b bg-blue-100 border-black">
+                  <td className="py-3 px-4 border border-black">{index + 1}</td>
+                  <td className="py-3 px-4 border font-bold border-black">{sale.orderId}</td>
+                  <td className="py-3 px-4 border border-black">
+                    <div className="font-bold border-black">{sale.productName}</div>
+                  </td>
+                  <td className="py-3 px-4 border border-black">{sale.address}</td>
+                  <td className="py-3 px-4 border border-black">{new Date(sale.date).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 border border-black">{sale.price}/=</td>
+                  <td className="py-3 px-4 border border-black">{sale.status}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

@@ -1,5 +1,6 @@
 const express = require("express");
 const Product = require("../../models/sportPeople/Product");
+const upload = require("../../uploads");
 const router = express.Router();
 
 //Get all Products in loading
@@ -37,15 +38,42 @@ router.get("/:category", async (req, res) => {
 });
 
 //Insert Product
-router.post("/add", async (req, res) => {
+router.post("/add", upload.fields([
+  { name: "pd_image", maxCount: 1 },
+  { name: "pd_side_images", maxCount: 10 },
+]), async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
-    const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);
+    const {
+      pd_name,
+      pd_category,
+      pd_price,
+      pd_description,
+      pd_colors,
+      pd_size
+    } = req.body;
+
+    const coverPhoto = req.files?.pd_image?.[0]?.filename || "";
+    const sideImages = req.files?.pd_side_images?.map(file => file.filename) || [];
+
+    const newProduct = new Product({
+      pd_name,
+      pd_category,
+      pd_price,
+      pd_image: coverPhoto,
+      pd_side_images: sideImages,
+      pd_description,
+      pd_colors: pd_colors ? JSON.parse(pd_colors) : [],
+      pd_size: pd_size ? JSON.parse(pd_size) : [],
+    });
+
+    const saved = await newProduct.save();
+    res.status(201).json(saved);
   } catch (error) {
+    console.error("Error saving product:", error);
     res.status(400).json({ message: error.message });
   }
 });
+
 
 // Delete Product
 router.delete("/:id", async (req, res) => {

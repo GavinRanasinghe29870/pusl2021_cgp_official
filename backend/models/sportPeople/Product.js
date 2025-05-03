@@ -9,10 +9,6 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    pd_price: {
-        type: Number,
-        required: true
-    },
     pd_image: {
         type: String,
         required: true
@@ -21,12 +17,20 @@ const productSchema = new mongoose.Schema({
         type: [String], // Array of image URLs for the side images
         default: []
     },
+    pd_price: {
+        type: Number,
+        required: true
+    },
     pd_description: { 
         type: String, 
         required: true 
     },
     pd_colors: {
-        type: [String], // Array of color hex codes (e.g., ["#ff0000", "#0000ff"])
+        type: [String],
+        default: []
+    },
+    pd_size: {
+        type: [String], 
         default: []
     }
 });
