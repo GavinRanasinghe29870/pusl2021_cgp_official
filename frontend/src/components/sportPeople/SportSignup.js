@@ -44,13 +44,11 @@ const SportPeopleSignUp = () => {
     if (name === "sportLevel") {
       if (value === "SportPeople") {
         navigate("/Signup");
-      } else 
-       {
+      } else {
         navigate("/Clubsignup");
-      
+      }
     }
   };
-}
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -87,45 +85,52 @@ const SportPeopleSignUp = () => {
 
     try {
       const response = await signup(formData);
-            console.log("Signup response:", response);
-      
-            if (response?.success) {
-              toast.success("Sign up successful!", { position: "top-center" });
-              setTimeout(() => navigate("/Signin"), 2000);
-            } else {
-              toast.error(response?.error || "Sign in failed. Please check credentials.", {
-                position: "top-center",
-              });
-            }
-          } catch (err) {
-            console.error("Sign up error:", err);
-      
-            // Special handling for network errors
-            if (err.message === "Network Error") {
-              toast.error(
-                "Network error: Unable to connect to the server. Please check if the server is running.",
-                { position: "top-center" }
-              );
-            } else {
-              toast.error(
-                err?.response?.data?.error || "Sign up failed. Please try again.",
-                { position: "top-center" }
-              );
-            }
-          } finally {
-            setLoading(false);
+      console.log("Signup response:", response);
+
+      if (response?.success) {
+        toast.success("Sign up successful!", { position: "top-center" });
+        setTimeout(() => navigate("/Signin"), 2000);
+      } else {
+        toast.error(
+          response?.error || "Sign in failed. Please check credentials.",
+          {
+            position: "top-center",
           }
-        };
+        );
+      }
+    } catch (err) {
+      console.error("Sign up error:", err);
+
+      // Special handling for network errors
+      if (err.message === "Network Error") {
+        toast.error(
+          "Network error: Unable to connect to the server. Please check if the server is running.",
+          { position: "top-center" }
+        );
+      } else {
+        toast.error(
+          err?.response?.data?.error || "Sign up failed. Please try again.",
+          { position: "top-center" }
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="bg-blue-100 flex items-center justify-center min-h-screen overflow-hidden">
-       <ToastContainer />
+      <ToastContainer />
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl h-[96vh]">
         <h1 className="text-center text-2xl font-bold mb-6">Sign Up</h1>
 
         <div className="flex md:flex-row">
           {/* Logo Section */}
           <div className="flex-1 flex items-center justify-center">
-            <img src="/logo512.png" alt="logo" className="h-16 w-16" />
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="h-40 w-auto object-contain"
+            />
           </div>
 
           {/* Divider */}
