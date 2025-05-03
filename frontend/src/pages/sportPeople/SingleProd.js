@@ -2,14 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaBolt } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useAuthStore } from "../../store/useAuthStore"; // ✅ Import useAuthStore
 
 export default function SingleProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuthStore(); // ✅ Get user from store
+
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
   const [mainImage, setMainImage] = useState("");
+  const [orderStatus, setOrderStatus] = useState({ message: "", type: "" });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -32,6 +37,10 @@ export default function SingleProduct() {
           setSelectedColor(data.pd_colors[0]);
         }
 
+        if (data.pd_size && data.pd_size.length > 0) {
+          setSelectedSize(data.pd_size[0]);
+        }
+
         if (data.pd_image) {
           setMainImage(`/uploads/${data.pd_image}`);
         }
@@ -43,15 +52,104 @@ export default function SingleProduct() {
     fetchProduct();
   }, [id]);
 
-  const handleAddToCart = () => {
-    // You can add logic here to store the product in cart state/context or localStorage
-    // before navigating to the cart page
-    navigate('/cart');
+  const createOrder = async (navigateTo) => {
+    const userId = user?._id; // ✅ Use user ID from store
+    
+    if (!product || !product.pd_price) {
+      setOrderStatus({
+        message: "Product information is missing",
+        type: "error"
+      });
+      return;
+    }
+
+    console.log("Order Details:", {
+      userId,
+      productId: id,
+      quantity,
+      selectedColor,
+      selectedSize,
+      price: product.pd_price
+    });
+
+    if (!userId) {
+      setOrderStatus({
+        message: "Please log in to place an order",
+        type: "error"
+      });
+      navigate("/login", { state: { from: `/product/${id}` } });
+      return;
+    }
+
+    if (!selectedColor || !selectedSize) {
+      setOrderStatus({
+        message: "Please select color and size",
+        type: "error"
+      });
+      return;
+    }
+
+    try {
+      console.log("Sending order to API...");
+      const orderData = {
+        userId,
+        productId: id,
+        quantity,
+        selectedColor,
+        selectedSize,
+        price: product.pd_price
+      };
+
+      console.log("Order payload:", orderData);
+
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      const responseText = await response.text();
+      console.log("Raw API response:", responseText);
+
+      if (!response.ok) {
+        throw new Error(`Failed to create order: ${response.status} - ${responseText}`);
+      }
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log("Order created successfully:", data);
+      } catch (e) {
+        console.warn("Could not parse response as JSON:", e);
+      }
+
+      setOrderStatus({
+        message: "Order placed successfully!",
+        type: "success"
+      });
+
+      setTimeout(() => {
+        if (navigateTo) {
+          navigate(navigateTo);
+        }
+      }, 1500);
+    } catch (error) {
+      console.error("Error creating order:", error);
+      setOrderStatus({
+        message: `Failed to place order: ${error.message}`,
+        type: "error"
+      });
+    }
   };
 
-  const handleBuyNow = () => {
-    // You can add logic here before navigating directly to checkout
-    navigate('/checkout');
+  const handleAddToCart = async () => {
+    await createOrder('/cart');
+  };
+
+  const handleBuyNow = async () => {
+    await createOrder('/checkout');
   };
 
   if (!product) {
@@ -62,8 +160,13 @@ export default function SingleProduct() {
     <div className="container mx-auto p-6 max-w-screen-2xl bg-blue-50 rounded-2xl shadow-xl font-body">
       <h1 className="text-header-02 font-header text-center text-primary mb-8">{product.pd_name}</h1>
 
+      {orderStatus.message && (
+        <div className={`mb-4 p-3 rounded-md text-center ${orderStatus.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+          {orderStatus.message}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Product Images */}
         <div className="flex flex-col items-center">
           <motion.img
             src={mainImage}
@@ -86,7 +189,6 @@ export default function SingleProduct() {
           </div>
         </div>
 
-        {/* Product Details */}
         <div className="flex flex-col justify-between space-y-6">
           <div className="bg-primary-light p-6 rounded-xl shadow-md">
             <h3 className="text-header-04 font-semibold text-primary mb-3">Description</h3>
@@ -98,7 +200,6 @@ export default function SingleProduct() {
             <p className="text-gray-800">{product.pd_category}</p>
           </div>
 
-          {/* Color Selection */}
           {product.pd_colors && (
             <div className="flex items-center gap-4">
               <h3 className="text-header-05 font-semibold text-primary">Choose Color:</h3>
@@ -111,30 +212,34 @@ export default function SingleProduct() {
                     }`}
                     style={{ backgroundColor: color }}
                     onClick={() => setSelectedColor(color)}
+                    aria-label={`Select ${color} color`}
                   ></button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Sizes */}
           {product.pd_size && (
-            <div className="flex items-center gap-4">
-              <h3 className="text-header-05 font-semibold text-primary">Available Sizes:</h3>
+            <div className="flex flex-col gap-3">
+              <h3 className="text-header-05 font-semibold text-primary">Select Size:</h3>
               <div className="flex gap-2 flex-wrap">
                 {product.pd_size.map((size, idx) => (
-                  <span
+                  <button
                     key={idx}
-                    className="px-3 py-1 border border-gray-300 rounded-md text-sm bg-gray-50 font-medium"
+                    className={`px-3 py-1 border rounded-md text-sm font-medium transition-all duration-200 ${
+                      selectedSize === size 
+                        ? "bg-primary text-white border-primary" 
+                        : "bg-gray-50 border-gray-300 hover:bg-gray-100"
+                    }`}
+                    onClick={() => setSelectedSize(size)}
                   >
                     {size}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Quantity */}
           <div className="flex items-center gap-6">
             <h3 className="text-header-05 font-semibold text-primary">Quantity:</h3>
             <button
@@ -152,12 +257,20 @@ export default function SingleProduct() {
             </button>
           </div>
 
-          {/* Price */}
           <p className="text-header-05 font-semibold text-primary">
             Price: <span className="text-blue-700 font-bold">LKR {product.pd_price.toFixed(2)}</span>
           </p>
 
-          {/* Buttons */}
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <h3 className="text-header-05 font-semibold text-primary mb-2">Your Selection</h3>
+            <div className="flex gap-4 flex-wrap text-sm">
+              <p><span className="font-medium">Color:</span> {selectedColor || "Not selected"}</p>
+              <p><span className="font-medium">Size:</span> {selectedSize || "Not selected"}</p>
+              <p><span className="font-medium">Quantity:</span> {quantity}</p>
+              <p><span className="font-medium">Total:</span> LKR {(product.pd_price * quantity).toFixed(2)}</p>
+            </div>
+          </div>
+
           <div className="mt-4 flex gap-4">
             <button 
               className="flex items-center gap-2 bg-secondary text-gray-900 px-5 py-3 rounded-xl font-semibold hover:bg-yellow-400 transition"
