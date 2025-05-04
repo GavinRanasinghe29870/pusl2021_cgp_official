@@ -5,31 +5,31 @@ const ClubuserSchema = new mongoose.Schema({
   Clubusername: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   email: { type: String, unique: true, required: true },
-  mobile: { type: String },
-  address: { type: String },
+  mobile: { type: String, required: true },
+  address: { type: String, required: true },
   sportLevel: { type: String, required: true, enum: ["SportPeople", "Admin", "Clubs"] },
 
-  location: { type: String, default: "" },
-  description: { type: String, default: "" },
-  logo: { type: String, default: "" },
-  photos: { type: [String], default: [] },
+  location: { type: String, default: null },
+  description: { type: String, default: null },
+  logo: { type: String, default: null },
+  photos: { type: [String], default: null },
   boardMembers: {
     type: [
       {
-        name: { type: String },
-        image: { type: String }
+        name: { type: String, default: null },
+        image: { type: String, default: null }
       }
     ],
-    default: []
+    default: null
   },
   headCoach: {
-    information: { type: String, default: "" },
-    image: { type: String, default: "" }
+    information: { type: String, default: null },
+    image: { type: String, default: null }
   },
-  facilities: { type: [String], default: [] },
-  events: { type: [String], default: [] },
-  matchHistory: { type: String, default: "" },
-  registrationFee: { type: String, default: "" }
+  facilities: { type: [String], default: null },
+  events: { type: [String], default: null },
+  matchHistory: { type: String, default: null },
+  registrationFee: { type: String, default: null }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Clubuser', ClubuserSchema);
