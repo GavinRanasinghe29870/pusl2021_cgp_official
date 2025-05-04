@@ -64,9 +64,12 @@ const SportSignin = () => {
         toast.success("Sign in successful!", { position: "top-center" });
         setTimeout(() => navigate("/"), 2000);
       } else {
-        toast.error(response?.error || "Sign in failed. Please check credentials.", {
-          position: "top-center",
-        });
+        toast.error(
+          response?.error || "Sign in failed. Please check credentials.",
+          {
+            position: "top-center",
+          }
+        );
       }
     } catch (err) {
       console.error("Sign in error:", err);
@@ -95,7 +98,11 @@ const SportSignin = () => {
         <h1 className="text-center text-2xl font-bold mb-8">Sign In</h1>
         <div className="flex md:flex-row">
           <div className="flex-1 flex items-center justify-center">
-            <img src="/logo512.png" alt="logo" className="h-16 w-16" />
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="h-40 w-auto object-contain"
+            />
           </div>
 
           <div className="w-px bg-blue-200 mx-8"></div>
@@ -110,7 +117,8 @@ const SportSignin = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Sport Level</option> {/* No default selection */}
+                  <option value="">Select Sport Level</option>{" "}
+                  {/* No default selection */}
                   <option value="SportPeople">SportPeople</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
