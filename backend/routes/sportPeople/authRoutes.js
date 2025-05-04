@@ -28,6 +28,7 @@ router.post(
       email,
       password,
       sportLevel,
+      sportcategory,
       mobile,
       address,
       gender,
@@ -62,6 +63,7 @@ router.post(
         email,
         password,
         sportLevel,
+        sportcategory,
         mobile,
         address,
         gender,
@@ -119,6 +121,7 @@ router.post("/signin", async (req, res) => {
         address: user.address,
         email: user.email,
         sportLevel: user.sportLevel,
+        sportcategory: user.sportcategory,
         gender: user.gender,
         profilePhoto: user.profilePhoto,
       },
@@ -135,6 +138,7 @@ router.post("/signin", async (req, res) => {
         address: user.address,
         email: user.email,
         sportLevel: user.sportLevel,
+        sportcategory: user.sportcategory,
         gender: user.gender,
         profilePhoto: user.profilePhoto,
       },
@@ -159,7 +163,7 @@ const checkAuth = async (req, res) => {
     console.log("Error in checkAuth controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // CHECK LOGIN STATUS
 router.get("/check", protectRoute, checkAuth);
