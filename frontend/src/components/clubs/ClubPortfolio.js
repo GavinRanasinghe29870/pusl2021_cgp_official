@@ -11,6 +11,7 @@ const ClubPortfolio = () => {
     const fetchClubData = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/club/clubs/${id}`);
+        console.log('Fetched Club Data:', response.data);
         setClubData(response.data);
       } catch (error) {
         console.error('Error fetching club data:', error);

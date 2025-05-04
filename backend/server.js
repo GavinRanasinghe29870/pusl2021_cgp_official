@@ -62,7 +62,7 @@ console.log("Generated Token:", token);
 const salesRoutes = require('./routes/admin/salesRoute.js');
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
 
-const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
+
 const notificationRoutes = require("./routes/sportPeople/notificationRoutes.js");
 
 app.post("/api/donation", (req, res) => {
