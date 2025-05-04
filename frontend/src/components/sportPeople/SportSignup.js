@@ -1,17 +1,26 @@
 import { useState, useEffect } from "react";
-//import axios from "axios";
 import { Eye, EyeOff } from "react-feather";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Configure axios globally
-//axios.defaults.withCredentials = true;
-
-const SportPeopleSignUp = () => {
+const SportSignUp = () => {
   const navigate = useNavigate();
   const { signup, isSigningUp } = useAuthStore();
+
+  const sportCategories = [
+    "Cricket",
+    "Badminton",
+    "Volleyball",
+    "Basketball",
+    "Table Tennis",
+    "Tennis",
+    "Football",
+    "Chess",
+    "Netball",
+    "Swimming",
+  ];
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -23,6 +32,7 @@ const SportPeopleSignUp = () => {
     address: "",
     email: "",
     sportLevel: "",
+    sportcategory: "",
     gender: "",
   });
 
@@ -44,16 +54,16 @@ const SportPeopleSignUp = () => {
     if (name === "sportLevel") {
       if (value === "SportPeople") {
         navigate("/Signup");
-      } else {
+      } else if (value === "Clubs") {
         navigate("/Clubsignup");
       }
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Check if any required fields are missing
     if (
       !formData.firstName ||
       !formData.age ||
@@ -62,6 +72,7 @@ const SportPeopleSignUp = () => {
       !formData.confirmPassword ||
       !formData.email ||
       !formData.sportLevel ||
+      !formData.sportcategory ||
       !formData.gender
     ) {
       toast.error("All required fields must be filled.");
@@ -69,14 +80,12 @@ const SportPeopleSignUp = () => {
       return;
     }
 
-    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match!");
       setLoading(false);
       return;
     }
 
-    // Check if the password is at least 6 characters long
     if (formData.password.length < 6) {
       toast.error("Password must be at least 6 characters.");
       setLoading(false);
@@ -92,7 +101,7 @@ const SportPeopleSignUp = () => {
         setTimeout(() => navigate("/Signin"), 2000);
       } else {
         toast.error(
-          response?.error || "Sign in failed. Please check credentials.",
+          response?.error || "Sign up failed. Please check credentials.",
           {
             position: "top-center",
           }
@@ -101,7 +110,6 @@ const SportPeopleSignUp = () => {
     } catch (err) {
       console.error("Sign up error:", err);
 
-      // Special handling for network errors
       if (err.message === "Network Error") {
         toast.error(
           "Network error: Unable to connect to the server. Please check if the server is running.",
@@ -117,6 +125,7 @@ const SportPeopleSignUp = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="bg-blue-100 flex items-center justify-center min-h-screen overflow-hidden">
       <ToastContainer />
@@ -139,7 +148,7 @@ const SportPeopleSignUp = () => {
           {/* Sign-up Form */}
           <div className="flex-1 overflow-y-auto max-h-[80vh]">
             <form onSubmit={handleSubmit}>
-              {/* First Name */}
+              {/* ... (rest of your form fields remain the same) ... */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">
                   First Name
@@ -155,7 +164,6 @@ const SportPeopleSignUp = () => {
                 />
               </div>
 
-              {/* Age */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">Age</label>
                 <input
@@ -169,7 +177,6 @@ const SportPeopleSignUp = () => {
                 />
               </div>
 
-              {/* Username */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">Username</label>
                 <input
@@ -183,7 +190,6 @@ const SportPeopleSignUp = () => {
                 />
               </div>
 
-              {/* Password */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">Password</label>
                 <div className="relative">
@@ -206,7 +212,6 @@ const SportPeopleSignUp = () => {
                 </div>
               </div>
 
-              {/* Confirm Password */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">
                   Confirm Password
@@ -235,7 +240,6 @@ const SportPeopleSignUp = () => {
                 </div>
               </div>
 
-              {/* Mobile */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">Mobile</label>
                 <input
@@ -248,7 +252,6 @@ const SportPeopleSignUp = () => {
                 />
               </div>
 
-              {/* Email */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">Email</label>
                 <input
@@ -262,7 +265,6 @@ const SportPeopleSignUp = () => {
                 />
               </div>
 
-              {/* Address */}
               <div className="mb-3">
                 <label className="block text-gray-700 text-sm">Address</label>
                 <input
@@ -275,13 +277,16 @@ const SportPeopleSignUp = () => {
                 />
               </div>
 
-              {/* Sport Level */}
               <div className="mb-3">
+                <label className="block text-gray-700 text-sm">
+                  Sport Level
+                </label>
                 <select
                   name="sportLevel"
                   className="w-full bg-blue-900 text-white py-2 px-4 pr-8 rounded text-sm"
                   value={formData.sportLevel}
                   onChange={handleChange}
+                  required
                 >
                   <option value="" disabled>
                     Select Sport Level
@@ -291,7 +296,26 @@ const SportPeopleSignUp = () => {
                 </select>
               </div>
 
-              {/* Gender */}
+              <div className="mb-3">
+                <label className="block text-gray-700 text-sm">
+                  Sport Category
+                </label>
+                <select
+                  name="sportcategory"
+                  className="w-full bg-blue-900 text-white py-2 px-4 pr-8 rounded text-sm"
+                  value={formData.sportcategory}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Sport Category</option>
+                  {sportCategories.map((sport) => (
+                    <option key={sport} value={sport}>
+                      {sport}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="mb-2">
                 <label className="block text-gray-700 text-sm">Gender</label>
                 <div className="flex space-x-4">
@@ -301,6 +325,7 @@ const SportPeopleSignUp = () => {
                       name="gender"
                       value="Male"
                       onChange={handleChange}
+                      checked={formData.gender === "Male"}
                       required
                     />{" "}
                     Male
@@ -311,6 +336,7 @@ const SportPeopleSignUp = () => {
                       name="gender"
                       value="Female"
                       onChange={handleChange}
+                      checked={formData.gender === "Female"}
                       required
                     />{" "}
                     Female
@@ -318,7 +344,6 @@ const SportPeopleSignUp = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88] transition duration-300 col-span-2 text-sm"
@@ -336,4 +361,4 @@ const SportPeopleSignUp = () => {
   );
 };
 
-export default SportPeopleSignUp;
+export default SportSignUp;
