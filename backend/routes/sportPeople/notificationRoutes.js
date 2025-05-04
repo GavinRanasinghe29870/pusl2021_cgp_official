@@ -9,7 +9,8 @@ const getUserNotifications = async (req, res) => {
             const notifications = await Notification.find({ recipient: req.user._id })
                 .sort({ createdAt: -1 })
                 .populate('relatedUser', 'firstName username ClubName Clubusername profilePicture')
-                .populate('relatedPost', 'content image');
+                .populate('relatedPost', 'content image')
+                .populate('relatedRequest', '_id');
 
             res.status(200).json(notifications);
         } else if (req.club && req.club._id) {
