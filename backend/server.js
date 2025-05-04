@@ -45,9 +45,9 @@ const donationRoutes = require("./routes/sportPeople/donationRoutes");
 const memberRoutes = require("./routes/clubs/memberRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
-const donatingRoutes = require("./routes/sportPeople/donatingRoutes");//
-const checkoutRoutes = require("./routes/clubs/checkoutRoutes.js");
+// const donatingRoutes = require("./routes/sportPeople/donatingRoutes");
 const ClubRoutes = require("./routes/clubs/Clubs.js");
+const checkoutRoute = require("./routes/sportPeople/checkoutRoute.js");
 
 app.use("/api/club", ClubRoutes);
 
@@ -70,8 +70,9 @@ const adpostRoutes = require("./routes/clubs/adpostRoutes");
 
 
 
-const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
-const orderRoutes = require("./routes/sportPeople/orderRoutes.js")
+const friendRoutes= require("./routes/sportPeople/friendRoutes.js");
+const orderRoutes = require("./routes/sportPeople/orderRoutes.js");
+// const memberTestInsert = require("./routes/memberTestInsert");
 
 
 const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
@@ -96,11 +97,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
-app.use("/api/req", memberRoutes);
+app.use("/api/members", memberRoutes);
 app.use('/api/clubs', clubRoutes);
 app.use("/api/sportPeople", memRoutes); 
 app.use("/api/adposts", adpostRoutes);
-
+app.use('/api/checkout', checkoutRoute);
 
 
 app.use("/api/orders", orderRoutes);
@@ -116,6 +117,7 @@ app.use("/api/ClubAuth", ClubAuth);
 
 app.use("/api/messages", messageRoutes);
 app.use("/api/sales", salesRoutes);
+// app.use("/api", memberTestInsert);
 
 
 // Serve uploaded PDFs
@@ -126,7 +128,6 @@ app.use("/api/registrationApproval", registrationApprovalRoutes);
 
 // Middleware to serve product images (if using an "uploads" folder)
 app.use("/uploads", express.static("uploads"));
-app.use("/api/checkout", checkoutRoutes);
 
 // Fallback route for undefined API endpoints
 app.use((req, res, next) => {
