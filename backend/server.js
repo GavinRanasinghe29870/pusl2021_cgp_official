@@ -41,10 +41,24 @@ const productRoutes = require("./routes/sportPeople/productRoutes");
 const adminRoutes = require("./routes/admin/adminRoutes.js");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
 const donationRoutes = require("./routes/sportPeople/donationRoutes");
-
+const friendRequestRoutes = require("./routes/sportPeople/friendRequestRoutes.js");
 const memberRoutes = require("./routes/clubs/memberRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
+const donatingRoutes = require("./routes/sportPeople/donatingRoutes");//
+const checkoutRoutes = require("./routes/clubs/checkoutRoutes.js");
+const ClubRoutes = require("./routes/clubs/Clubs.js");
+
+app.use("/api/club", ClubRoutes);
+
+
+const jwt = require("jsonwebtoken");
+
+const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
+  expiresIn: "1h",
+});
+
+console.log("Generated Token:", token);
 const salesRoutes = require('./routes/admin/salesRoute.js');
 
 const clubRoutes = require('./routes/sportPeople/clubRoutes');
@@ -58,9 +72,6 @@ const adpostRoutes = require("./routes/clubs/adpostRoutes");
 
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
 const orderRoutes = require("./routes/sportPeople/orderRoutes.js")
-
-
-const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
 const notificationRoutes = require("./routes/sportPeople/notificationRoutes.js");
 
 app.post("/api/donation", (req, res) => {
@@ -91,7 +102,7 @@ app.use("/api/adposts", adpostRoutes);
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/message", messageRoutes);
-
+app.use("/api/friendRequest", friendRequestRoutes);
 app.use("/api/friendmsg",friendRoutes);
 
 app.use("/api/donating", donatingRoutes); //
@@ -112,6 +123,7 @@ app.use("/api/registrationApproval", registrationApprovalRoutes);
 
 // Middleware to serve product images (if using an "uploads" folder)
 app.use("/uploads", express.static("uploads"));
+app.use("/api/checkout", checkoutRoutes);
 
 // Fallback route for undefined API endpoints
 app.use((req, res, next) => {

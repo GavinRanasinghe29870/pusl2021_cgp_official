@@ -12,7 +12,10 @@ const getUsersForSidebar = async (req, res) => {
         if (req.user) {
             const loggedInUserId = req.user._id;
 
-            const users = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+            const loggedInUser = await User.findById(loggedInUserId).select("friends");
+            const friends = loggedInUser.friends;
+
+            const users = await User.find({ _id: { $in: friends } }).select("-password");
             const Clubusers = await Clubuser.find({ _id: { $ne: loggedInUserId } }).select("-password");
 
             const allUsers = [...users, ...Clubusers];
