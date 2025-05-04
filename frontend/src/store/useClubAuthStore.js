@@ -1,13 +1,14 @@
 import { create } from "zustand";
 import axios from "axios";
+import { io } from "socket.io-client";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const BASE_URL = "http://localhost:5000";
 
 export const useClubAuthStore = create((set, get) => ({
     club: null,
     isAuthenticated: false,
     isSigningUp: false,
-    onlineClubs: [],
+    onlineUsers: [],
     socket: null,
 
     handleError: (error) => {
@@ -41,6 +42,8 @@ export const useClubAuthStore = create((set, get) => ({
                     isAuthenticated: true,
                 });
 
+                get().connectSocket();
+
                 return { success: true, ...response.data };
             } else {
                 return { success: false, error: "Invalid response" };
@@ -64,6 +67,9 @@ export const useClubAuthStore = create((set, get) => ({
                     club: response.data.club,
                     isAuthenticated: true,
                 });
+
+                get().connectSocket();
+                
                 return { success: true, ...response.data };
             } else {
                 return { success: false, error: "Invalid response" };
@@ -88,6 +94,7 @@ export const useClubAuthStore = create((set, get) => ({
             }
 
             set({ club: null, isAuthenticated: false });
+            window.location.reload();
             return { success: true };
         } catch (error) {
             return get().handleError(error);
@@ -108,6 +115,8 @@ export const useClubAuthStore = create((set, get) => ({
                     isAuthenticated: true,
                 });
 
+                if (!get().socket) get().connectSocket();
+
                 return { success: true };
             }
 
@@ -118,6 +127,38 @@ export const useClubAuthStore = create((set, get) => ({
             return { success: false };
         }
     },
+
+    connectSocket: () => {
+        const { club, socket } = get();
+    
+        if (!club || (socket && socket.connected)) return;
+    
+        const newSocket = io(BASE_URL, {
+          query: {
+            userId: club._id,
+          },
+        });
+    
+        set({ socket: newSocket });
+    
+        newSocket.on("connect", () => {
+          console.log("🟢 Socket connected:", newSocket.id);
+        });
+    
+        newSocket.on("getOnlineUsers", (userIds) => {
+          set((state) => {
+            if (JSON.stringify(state.onlineUsers) !== JSON.stringify(userIds)) {
+              return { onlineUsers: userIds };
+            }
+            return state;
+          });
+        });
+    
+        newSocket.on("disconnect", () => {
+          console.log("🟡 Socket disconnected");
+          set({ socket: null });
+        });
+      },
 }));
 
 const validateFormData = (formData, requiredFields) => {

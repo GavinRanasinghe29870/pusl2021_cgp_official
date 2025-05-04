@@ -167,7 +167,7 @@ function App() {
 
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
         <Route path="/club-chat" element={<ClubChat />} />
-        <Route path="/club/chat" element={<ClubChat />} />
+        <Route path="/chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
         <Route path="/friend-chat" element={<FriendChat />} />
 
@@ -179,8 +179,7 @@ function App() {
         "/Clubsignin",
         "/Signup",
         "/Clubsignup",
-        "/club-chat",
-        "/club/chat",
+        "/chat",
       ].includes(location.pathname) ? null : [
         "/club/home",
         "/ClubPortfolio",
