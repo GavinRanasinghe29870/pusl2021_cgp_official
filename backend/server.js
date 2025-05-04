@@ -45,7 +45,7 @@ const friendRequestRoutes = require("./routes/sportPeople/friendRequestRoutes.js
 const memberRoutes = require("./routes/clubs/memberRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
-// const donatingRoutes = require("./routes/sportPeople/donatingRoutes");
+const donatingRoutes = require("./routes/sportPeople/donatingRoutes");
 const ClubRoutes = require("./routes/clubs/Clubs.js");
 const checkoutRoute = require("./routes/sportPeople/checkoutRoute.js");
 
@@ -70,11 +70,6 @@ const adpostRoutes = require("./routes/clubs/adpostRoutes");
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
 const orderRoutes = require("./routes/sportPeople/orderRoutes.js")
 
-
-
-
-const friendRoutes= require("./routes/sportPeople/friendRoutes.js");
-const orderRoutes = require("./routes/sportPeople/orderRoutes.js");
 // const memberTestInsert = require("./routes/memberTestInsert");
 
 //const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
