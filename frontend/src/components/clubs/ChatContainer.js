@@ -1,7 +1,7 @@
 import React from 'react';
 import { useChatStore } from '../../store/useChatStore';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, X, Paperclip, Smile, SendHorizonal } from "lucide-react";
+import { ChevronLeft, X, Paperclip, SendHorizonal } from "lucide-react";
 import { useAuthStore } from '../../store/useAuthStore';
 import { useClubAuthStore } from '../../store/useClubAuthStore';
 import { formatMessageTime } from '../../lib/utils';
@@ -120,7 +120,11 @@ const ChatContainer = () => {
                         {/* Avatar */}
                         <div className="avatar">
                             <div className="size-10 rounded-full relative">
-                                <img src={selectedUser.profilePhoto ? `${backendURL}${selectedUser.profilePhoto}` : '/defaultProfilePic.jpg'} className='rounded-full' />
+                                <img
+                                    src={selectedUser.profilePhoto ? `${backendURL}${selectedUser.profilePhoto}` : '/defaultProfilePic.jpg'}
+                                    className='rounded-full'
+                                    alt={selectedUser.firstName || selectedUser.ClubName || "User profile"}
+                                />
                             </div>
                         </div>
 
@@ -128,7 +132,10 @@ const ChatContainer = () => {
                         <div>
                             <h3 className="font-medium">{selectedUser.firstName || selectedUser.ClubName}</h3>
                             <p className="text-sm text-base-content/70">
-                                {authOnlineUsers && authOnlineUsers.includes(selectedUser._id) || clubOnlineUsers && clubOnlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
+                                {(authOnlineUsers && authOnlineUsers.includes(selectedUser._id)) ||
+                                    (clubOnlineUsers && clubOnlineUsers.includes(selectedUser._id))
+                                    ? "Online"
+                                    : "Offline"}
                             </p>
                         </div>
                     </div>
