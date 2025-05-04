@@ -1,100 +1,81 @@
-// routes/memberRoutes.js
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const Member = require("../../models/clubs/member");
-
 const router = express.Router();
+const Member = require("../../models/clubs/member");
+const User = require("../../models/sportPeople/User"); // Make sure the path is correct
 
-// Multer Storage Configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Store images in the 'uploads' folder
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filenames
-  },
-});
-
-const upload = multer({ storage });
-
-// POST: Add a new member with image upload
-router.post("/members", upload.single("image"), async (req, res) => {
+// Get member requests by sender ID
+router.get("/sender/:senderId", async (req, res) => {
   try {
-    const { name, location, experience, status } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : "";
-
-    const newMember = new Member({ name, location, experience, image, status });
-    await newMember.save();
-    res.status(201).json(newMember);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-// GET: Fetch all members
-router.get("/members", async (req, res) => {
-  try {
-    const members = await Member.find();
+    const members = await Member.find({ sender: req.params.senderId }).populate("recipient");
     res.status(200).json(members);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
-
-// Approve Member
-router.post("/members/:id/approve", async (req, res) => {
+// Get member requests by recipient ID
+router.get("/recipient/:recipientId", async (req, res) => {
   try {
-    const updatedMember = await Member.findByIdAndUpdate(
-      req.params.id,
-      { status: "Approved" }, // Update status to Approved
-      { new: true }
-    );
+    const members = await Member.find({ recipient: req.params.recipientId })
+      .populate("sender")
+      .populate("recipient");
+    res.status(200).json(members);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-    if (!updatedMember) {
-      return res.status(404).json({ message: "Member not found" });
+// Get member requests by status
+router.get("/status/:status", async (req, res) => {
+  try {
+    const members = await Member.find({ status: req.params.status }).populate("sender recipient");
+    res.status(200).json(members);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update a member request status
+router.put("/:id", async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    // Update the member status
+    const member = await Member.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    ).populate("sender recipient");
+
+    if (!member) {
+      return res.status(404).json({ message: "Member request not found" });
     }
 
-    res.status(200).json(updatedMember);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+    // If approved, add the club to the user's registeredClubs array
+    if (status === "accepted") {
+      const user = await User.findById(member.sender._id);
 
-// Reject Member
-router.post("/members/:id/reject", async (req, res) => {
-  try {
-    const updatedMember = await Member.findByIdAndUpdate(
-      req.params.id,
-      { status: "Rejected" }, // Update status to Rejected
-      { new: true }
-    );
+      if (user) {
+        if (!user.registeredClubs) {
+          user.registeredClubs = [];
+        }
 
-    if (!updatedMember) {
-      return res.status(404).json({ message: "Member not found" });
+        const clubId = member.recipient._id;
+        const alreadyExists = user.registeredClubs.some(
+          (id) => id.toString() === clubId.toString()
+        );
+
+        if (!alreadyExists) {
+          user.registeredClubs.push(clubId);
+          await user.save();
+        }
+      }
     }
 
-    res.status(200).json(updatedMember);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(200).json(member);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
-
-// Move member back to Pending
-router.post("/members/:id/pending", async (req, res) => {
-  try {
-    const member = await Member.findById(req.params.id);
-    if (!member) return res.status(404).json({ error: "Member not found" });
-
-    member.status = "Pending"; // Change status back to Pending
-    await member.save();
-    res.status(200).json({ message: "Member moved to pending", member });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
 
 module.exports = router;
