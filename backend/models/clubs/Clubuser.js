@@ -5,9 +5,25 @@ const ClubuserSchema = new mongoose.Schema({
   Clubusername: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   email: { type: String, unique: true, required: true },
-  mobile: { type: String, required: true },
-  address: { type: String, required: true },
+  mobile: { type: String, default: null },
+  address: { type: String, default: null },
   sportLevel: { type: String, required: true, enum: ["SportPeople", "Admin", "Clubs"] },
+  sportCategory: {
+    type: String,
+    required: true,
+    enum: [
+      "Cricket",
+      "Badminton",
+      "Volleyball",
+      "Basketball",
+      "Table Tennis",
+      "Tennis",
+      "Football",
+      "Chess",
+      "Netball",
+      "Swimming",
+    ]
+  },
 
   location: { type: String, default: null },
   description: { type: String, default: null },
