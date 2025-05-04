@@ -28,7 +28,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const newFile = new RegistrationApproval({
       fileName: req.file.filename,
       filePath: req.file.path,
-      uploadedBy: uploadedBy // Save the username
+      uploadedBy: uploadedBy, // Save the username
+      status: "pending" // Default status
     });
 
     await newFile.save();
@@ -52,7 +53,9 @@ router.get("/files", async (req, res) => {
       fileName: file.fileName,
       fileUrl: `http://localhost:5000/uploads/pdfs/${file.fileName}`,
       uploadedAt: file.uploadedAt,
-      uploadedBy: file.uploadedBy
+      uploadedBy: file.uploadedBy,
+      status: file.status || "pending",
+      remarks: file.remarks || ""
     }));
 
     res.status(200).json(formattedFiles);
@@ -62,7 +65,7 @@ router.get("/files", async (req, res) => {
   }
 });
 
-// NEW ENDPOINT: Get uploaded PDFs by username
+// Get uploaded PDFs by username
 router.get("/files/:username", async (req, res) => {
   try {
     const username = req.params.username;
@@ -76,7 +79,9 @@ router.get("/files/:username", async (req, res) => {
       fileName: file.fileName,
       fileUrl: `http://localhost:5000/uploads/pdfs/${file.fileName}`,
       uploadedAt: file.uploadedAt,
-      uploadedBy: file.uploadedBy
+      uploadedBy: file.uploadedBy,
+      status: file.status || "pending",
+      remarks: file.remarks || ""
     }));
 
     res.status(200).json(formattedFiles);
@@ -86,6 +91,7 @@ router.get("/files/:username", async (req, res) => {
   }
 });
 
+// Delete a file
 router.delete("/delete/:id", async (req, res) => {
   console.log("DELETE request received for ID:", req.params.id);
   try {
@@ -108,6 +114,40 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(200).json({ message: "File deleted successfully" });
   } catch (error) {
     console.error("Error deleting file:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// NEW ENDPOINT: Update document status (for admin use)
+router.put("/status/:id", async (req, res) => {
+  try {
+    const { status, remarks } = req.body;
+    
+    if (!["pending", "accepted", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status. Must be 'pending', 'accepted', or 'rejected'" });
+    }
+    
+    const updatedFile = await RegistrationApproval.findByIdAndUpdate(
+      req.params.id, 
+      { status, remarks },
+      { new: true }
+    );
+    
+    if (!updatedFile) {
+      return res.status(404).json({ message: "File not found" });
+    }
+    
+    res.status(200).json({
+      message: "Status updated successfully",
+      file: {
+        _id: updatedFile._id,
+        fileName: updatedFile.fileName,
+        status: updatedFile.status,
+        remarks: updatedFile.remarks
+      }
+    });
+  } catch (error) {
+    console.error("Error updating status:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
