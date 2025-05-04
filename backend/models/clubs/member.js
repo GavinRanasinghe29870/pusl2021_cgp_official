@@ -1,13 +1,24 @@
-// models/Member.js
 const mongoose = require("mongoose");
 
 const memberSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  location: { type: String, required: true },
-  experience: { type: String, required: true },
-  image: { type: String }, // Store the image path here
-  status: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" },
-});
+  sender: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  recipient: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Clubuser",
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
+},
+  { timeseries: true }
+);
 
 const Member = mongoose.model("Member", memberSchema);
 module.exports = Member;

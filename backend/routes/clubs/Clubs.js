@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const Club = require('../../models/clubs/Club.js');
+const Clubuser = require('../../models/clubs/Clubuser.js'); // Use Clubuser model
 
 // Multer config for file upload
 const storage = multer.diskStorage({
@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// POST a new club
+// POST a new club user
 router.post('/register', upload.fields([
   { name: 'logo', maxCount: 1 },
   { name: 'photos', maxCount: 4 },
@@ -18,12 +18,11 @@ router.post('/register', upload.fields([
   { name: 'headCoachImage', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    console.log('Request Body:', req.body); // Logs the form data
-    console.log('Uploaded Files:', req.files); // Logs the uploaded files
+    console.log('Request Body:', req.body);
+    console.log('Uploaded Files:', req.files);
 
     const {
-      clubName, location, description,
-      boardMembers, headCoach, facilities, events, matchHistory, registrationFee
+      _id,ClubName, location, description, boardMembers, headCoach, facilities, events, matchHistory, registrationFee
     } = req.body;
 
     const logoUrl = req.files?.logo?.[0]?.filename
@@ -41,8 +40,8 @@ router.post('/register', upload.fields([
       image: `/public/uploads/${file.filename}`,
     })) || [];
 
-    const newClub = new Club({
-      clubName,
+    const newClubUser = new Clubuser({
+      ClubName,
       location,
       description,
       logo: logoUrl,
@@ -58,76 +57,24 @@ router.post('/register', upload.fields([
       registrationFee
     });
 
-    console.log('New Club Object:', newClub);
-    await newClub.save();
-    console.log('Club saved successfully:', newClub); // Debugging saved club
-    res.status(201).json({ message: 'Club registered successfully', logoUrl, photoUrls, headCoachImageUrl });
+    console.log('New Club User Object:', newClubUser);
+    await newClubUser.updateOne({_id:_id});
+    console.log('Club user saved successfully:', newClubUser);
+    res.status(201).json({ message: 'Club user registered successfully', id: newClubUser._id });
   } catch (error) {
-    console.error('Error saving club:', error);
+    console.error('Error saving club user:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
+// GET a club user by ID
 router.get('/clubs/:id', async (req, res) => {
   try {
-    const club = await Club.findById(req.params.id);
-    res.json(club);
+    const clubUser = await Clubuser.findById(req.params.id);
+    res.json(clubUser);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
-
-// POST: Create a new club
-router.post('/create', async (req, res) => {
-  try {
-    const { clubName, description, boardMembers, headCoach, events } = req.body;
-
-    const newClub = new Club({
-      clubName,
-      description,
-      boardMembers: boardMembers || [{ name: '' }], // Default to an empty array with one member
-      headCoach: headCoach || { information: '' }, // Default to an empty object
-      events: events || [''], // Default to an array with one empty string
-    });
-
-    await newClub.save();
-    res.status(201).json({ message: 'Club created successfully', club: newClub });
-  } catch (error) {
-    console.error('Error creating club:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const formData = new FormData();
-  formData.append('clubName', clubData.clubName);
-  formData.append('description', clubData.description);
-
-  if (clubData.clubLogo) {
-    formData.append('logo', clubData.clubLogo);
-  }
-
-  clubData.images.forEach((image) => {
-    formData.append('photos', image);
-  });
-
-  try {
-    const response = await axios.post('http://localhost:5000/api/club/register', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    console.log('Club created successfully:', response.data);
-    if (response.data.photoUrls) {
-      setClubData({ ...clubData, images: response.data.photoUrls });
-    }
-  } catch (error) {
-    console.error('Error creating club:', error);
-  }
-};
 
 module.exports = router;

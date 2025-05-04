@@ -17,6 +17,15 @@ const registrationApprovalSchema = new mongoose.Schema({
     type: String,
     ref: 'Clubuser',
     required: true
+  },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
+  remarks: {
+    type: String,
+    default: ""
   }
 });
 
