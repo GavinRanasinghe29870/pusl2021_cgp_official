@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaBolt } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useAuthStore } from "../../store/useAuthStore"; // ✅ Import useAuthStore
+import { useAuthStore } from "../../store/useAuthStore"; 
 
 export default function SingleProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuthStore(); // ✅ Get user from store
+  const { user } = useAuthStore(); 
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -53,7 +53,7 @@ export default function SingleProduct() {
   }, [id]);
 
   const createOrder = async (navigateTo) => {
-    const userId = user?._id; // ✅ Use user ID from store
+    const userId = user?._id; 
     
     if (!product || !product.pd_price) {
       setOrderStatus({
