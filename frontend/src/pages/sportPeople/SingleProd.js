@@ -69,7 +69,8 @@ export default function SingleProduct() {
       quantity,
       selectedColor,
       selectedSize,
-      price: product.pd_price
+      price: product.pd_price,
+      imageUrl: mainImage // Include the selected main image
     });
 
     if (!userId) {
@@ -97,7 +98,8 @@ export default function SingleProduct() {
         quantity,
         selectedColor,
         selectedSize,
-        price: product.pd_price
+        price: product.pd_price,
+        imageUrl: mainImage // Include the selected main image in the API request
       };
 
       console.log("Order payload:", orderData);
