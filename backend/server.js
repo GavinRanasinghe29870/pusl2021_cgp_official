@@ -41,10 +41,21 @@ const productRoutes = require("./routes/sportPeople/productRoutes");
 const adminRoutes = require("./routes/admin/adminRoutes.js");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
 const donationRoutes = require("./routes/sportPeople/donationRoutes");
+
 const memberRoutes = require("./routes/clubs/memberRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
 const salesRoutes = require('./routes/admin/salesRoute.js');
+
+const clubRoutes = require('./routes/sportPeople/clubRoutes');
+const memRoutes = require("./routes/sportPeople/memRoutes");
+const adpostRoutes = require("./routes/clubs/adpostRoutes");
+
+
+
+
+
+
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
 const orderRoutes = require("./routes/sportPeople/orderRoutes.js")
 
@@ -72,6 +83,11 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/req", memberRoutes);
+app.use('/api/clubs', clubRoutes);
+app.use("/api/sportPeople", memRoutes); 
+app.use("/api/adposts", adpostRoutes);
+
+
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/message", messageRoutes);
@@ -81,6 +97,8 @@ app.use("/api/friendmsg",friendRoutes);
 app.use("/api/donating", donatingRoutes); //
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ClubAuth", ClubAuth);
+ 
+
 
 app.use("/api/messages", messageRoutes);
 app.use("/api/sales", salesRoutes);
