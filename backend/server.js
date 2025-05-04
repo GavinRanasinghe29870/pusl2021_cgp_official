@@ -48,10 +48,6 @@ const ClubAuth = require("./routes/clubs/ClubAuth.js");
 const salesRoutes = require('./routes/admin/salesRoute.js');
 
 const clubRoutes = require('./routes/sportPeople/clubRoutes');
-const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
-const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
-const ClubAuth = require("./routes/clubs/ClubAuth.js");
-const memberRoutes = require("./routes/clubs/memberRoutes");
 const memRoutes = require("./routes/sportPeople/memRoutes");
 
 
@@ -97,7 +93,6 @@ app.use("/api/friendmsg",friendRoutes);
 app.use("/api/donating", donatingRoutes); //
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ClubAuth", ClubAuth);
-app.use('/api/members', memberRoutes);
 app.use("/api/sportPeople", memRoutes);  
 
 
