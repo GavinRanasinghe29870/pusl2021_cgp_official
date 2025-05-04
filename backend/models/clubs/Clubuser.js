@@ -8,7 +8,22 @@ const ClubuserSchema = new mongoose.Schema({
     mobile: { type: String },
     address: { type: String },
     sportLevel: { type: String, required: true, enum: ["SportPeople", "Admin", "Clubs"] },
-   
+    sportCategory: {
+      type: String,
+      required: true,
+      enum: [
+        "Cricket",
+        "Badminton",
+        "Volleyball",
+        "Basketball",
+        "Table Tennis",
+        "Tennis",
+        "Football",
+        "Chess",
+        "Netball",
+        "Swimming",
+      ],
+    },
 });
 
 module.exports = mongoose.model('Clubuser', ClubuserSchema);
