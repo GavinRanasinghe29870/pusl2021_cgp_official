@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 // User Schema
 const userSchema = new mongoose.Schema(
@@ -38,7 +38,23 @@ const userSchema = new mongoose.Schema(
     sportLevel: {
       type: String,
       required: true,
-      enum: ['SportPeople', 'Admin', 'Clubs'], // Enforced values for sportLevel
+      enum: ["SportPeople", "Admin", "Clubs"], // Enforced values for sportLevel
+    },
+    sportcategory: {
+      type: String,
+      required: true,
+      enum: [
+        "Cricket",
+        "Badminton",
+        "Volleyball",
+        "Basketball",
+        "Table Tennis",
+        "Tennis",
+        "Football",
+        "Chess",
+        "Netball",
+        "Swimming",
+      ],
     },
     gender: {
       type: String,
@@ -80,7 +96,7 @@ const userSchema = new mongoose.Schema(
     otherAchievements: String,
 
     // 👫 Friends
-    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+
     
     // ✅ Registered Clubs
 registeredClubs: [
@@ -90,6 +106,9 @@ registeredClubs: [
   }
 ],
 
+
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+
   },
   {
     timestamps: true, // ✅ Automatically adds createdAt and updatedAt
@@ -97,8 +116,8 @@ registeredClubs: [
 );
 
 // Hash password before saving to the database
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -114,4 +133,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

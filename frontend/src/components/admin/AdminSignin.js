@@ -57,9 +57,13 @@ const AdminSignin = () => {
         toast.success("Admin Sign-in successful!", { position: "top-center" });
         setTimeout(() => navigate("/admin/home"), 2000); // Redirect after 2 seconds
       } else {
-        toast.error(res?.data?.message || "Admin Sign-in failed. Please check credentials.", {
-          position: "top-center",
-        });
+        toast.error(
+          res?.data?.message ||
+            "Admin Sign-in failed. Please check credentials.",
+          {
+            position: "top-center",
+          }
+        );
       }
     } catch (err) {
       console.error("Admin Sign in error:", err);
@@ -72,7 +76,8 @@ const AdminSignin = () => {
         );
       } else {
         toast.error(
-          err?.response?.data?.message || "Admin Sign-in failed. Please try again.",
+          err?.response?.data?.message ||
+            "Admin Sign-in failed. Please try again.",
           { position: "top-center" }
         );
       }
@@ -85,10 +90,16 @@ const AdminSignin = () => {
     <div className="bg-blue-100 flex items-center justify-center min-h-screen">
       <ToastContainer />
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
-        <h1 className="text-center text-2xl font-bold mb-8">Admin Sign In</h1>
+        <h1 className="text-center text-3xl font-bold mb-8 transition-all duration-800 ease-out transform hover:scale-110">
+          Welcome Back Admin!
+        </h1>
         <div className="flex md:flex-row">
           <div className="flex-1 flex items-center justify-center">
-            <img src="/logo512.png" alt="logo" className="h-16 w-16" />
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="h-70 w-auto object-contain"
+            />
           </div>
 
           <div className="w-px bg-blue-200 mx-8"></div>
@@ -110,7 +121,9 @@ const AdminSignin = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-1">Username</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Username
+                </label>
                 <input
                   type="text"
                   name="username"
@@ -123,7 +136,9 @@ const AdminSignin = () => {
               </div>
 
               <div className="mb-4 relative">
-                <label className="block text-gray-700 font-medium mb-1">Password</label>
+                <label className="block text-gray-700 font-medium mb-1">
+                  Password
+                </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -142,8 +157,11 @@ const AdminSignin = () => {
                 </button>
               </div>
 
-              <div className="mb-4 text-right">
-                <a href="/forgotPassword" className="text-blue-900 font-semibold hover:text-gray-800">
+              <div className="mb-4 text-right font-semibold">
+                <a
+                  href="/forgotPassword"
+                  className="text-blue-900 font-bold hover:text-gray-800"
+                >
                   Forgot Password?
                 </a>
               </div>
@@ -151,14 +169,14 @@ const AdminSignin = () => {
               <div className="mb-4">
                 <button
                   type="submit"
-                  className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88]"
+                  className="w-full bg-[#0D1271] text-white font-medium mb-1 py-2 px-4 rounded hover:bg-[#141a88] text-md"
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Sign In"}
                 </button>
               </div>
             </form>
-            </div>
+          </div>
         </div>
       </div>
     </div>

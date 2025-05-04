@@ -15,6 +15,7 @@ const ClubSignup = () => {
     address: "",
     email: "",
     sportLevel: "",
+    sportCategory: "",
   });
 
   const navigate = useNavigate();
@@ -37,6 +38,12 @@ const ClubSignup = () => {
 
     if (!formData.sportLevel) {
       toast.error("Please select a Sport Level.", { position: "top-center" });
+      setLoading(false);
+      return;
+    }
+    
+    if (!formData.sportCategory) {
+      toast.error("Please select a Sport Category.", { position: "top-center" });
       setLoading(false);
       return;
     }
@@ -256,6 +263,29 @@ const ClubSignup = () => {
                     <option value="SportPeople">Sports People</option>
                     <option value="Clubs">Clubs</option>
                     <option value="Admin">Admin</option>
+                  </select>
+                </div>
+                
+                {/* Sport Category */}
+                <div className="mb-5">
+                  <label className="block text-primary font-medium mb-2 text-header-06">Sport Category</label>
+                  <select
+                    name="sportCategory"
+                    className="w-full bg-primary text-white py-3 px-4 pr-8 rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                    value={formData.sportCategory}
+                    onChange={handleChange}
+                  >
+                    <option value="" disabled>Select Sport Category</option>
+                    <option value="Cricket">Cricket</option>
+                    <option value="Badminton">Badminton</option>
+                    <option value="Volleyball">Volleyball</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Table Tennis">Table Tennis</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Football">Football</option>
+                    <option value="Chess">Chess</option>
+                    <option value="Netball">Netball</option>
+                    <option value="Swimming">Swimming</option>
                   </select>
                 </div>
 

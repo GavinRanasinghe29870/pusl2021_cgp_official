@@ -23,7 +23,8 @@ import ClubHome from "./pages/clubs/ClubHome";
 import PersonPortfolio from "./pages/sportPeople/PersonPortfolio";
 import ProductPage from "./pages/sportPeople/ProductsPage.js";
 import AdPost from "./components/clubs/adposting";
-import SportPage from "./components/sportPeople/sportpage02";
+import SportPage02 from "./components/sportPeople/sportpage02";
+import SportPage01 from "./components/sportPeople/sportspage01";
 import AdminSignin from "./components/admin/AdminSignin.js";
 import RequestedMembers from "./components/clubs/ReqMemberView";//
 import Cart from "./components/sportPeople/cart";
@@ -112,15 +113,17 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/ClubPortfolio" element={<ClubPortfolio />} />
-        <Route path="/Clubmaker" element={<ClubMakerPage />} />
-        <Route path="/Checkout" element={<CheckoutPage />} />
+        {/* Dynamic Route for ClubPortfolio */}
+      <Route path="/ClubPortfolio/:id" element={<ClubPortfolio />} />
+        <Route path="/Clubmaker" element={<ClubMakerPage />}/>
+        <Route path="/Checkout" element={<CheckoutPage />}/>
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={<Signin />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/admin/signin" element={<AdminSignin />} />
-        <Route path="/sport" element={<SportPage />} />
+        <Route path="/sport02" element={<SportPage02 />} />
+        <Route path="/sport01" element={<SportPage01 />} />
         <Route path="/adpost" element={<AdPost />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
@@ -165,7 +168,7 @@ function App() {
 
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
         <Route path="/club-chat" element={<ClubChat />} />
-        <Route path="/club/chat" element={<ClubChat />} />
+        <Route path="/chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
         <Route path="/friend-chat" element={<FriendChat />} />
 
@@ -177,8 +180,7 @@ function App() {
         "/Clubsignin",
         "/Signup",
         "/Clubsignup",
-        "/club-chat",
-        "/club/chat",
+        "/chat",
       ].includes(location.pathname) ? null : [
         "/club/home",
         "/ClubPortfolio",

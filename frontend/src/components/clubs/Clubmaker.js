@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const ClubMakerPage = () => {
   const [clubData, setClubData] = useState({
@@ -6,15 +7,13 @@ const ClubMakerPage = () => {
     location: '',
     description: '',
     clubLogo: null,
+    clubLogoPreview: null,
     images: [],
-    boardMembers: [{ name: '', image: null }], // Initialize with one empty member
+    boardMembers: [{ name: '', image: null, imagePreview: null }],
     headCoach: { 
-      name: '', 
-      age: '', 
-      email: '', 
-      qualifications: '', 
-      sportHistory: '',
-      image: null 
+      information: '', 
+      image: null, 
+      imagePreview: null
     },
     facilities: '',
     events: [''],
@@ -30,8 +29,20 @@ const ClubMakerPage = () => {
   const handleClubLogoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setClubData({ ...clubData, clubLogo: URL.createObjectURL(file) });
+      const previewUrl = URL.createObjectURL(file);
+      setClubData({ ...clubData, clubLogo: file, clubLogoPreview: previewUrl });
     }
+  };
+
+  const handleImagesChange = (event) => {
+    const files = Array.from(event.target.files);
+
+    if (clubData.images.length + files.length > 4) {
+      alert('You can upload a maximum of 4 images.');
+      return;
+    }
+
+    setClubData({ ...clubData, images: [...clubData.images, ...files] });
   };
 
   const handleBoardMemberChange = (index, field, value) => {
@@ -40,10 +51,19 @@ const ClubMakerPage = () => {
     setClubData({ ...clubData, boardMembers: updatedMembers });
   };
 
+  const handleBoardMemberImageChange = (index, event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      handleBoardMemberChange(index, 'image', file);
+      handleBoardMemberChange(index, 'imagePreview', previewUrl);
+    }
+  };
+
   const handleAddBoardMember = () => {
     setClubData({
       ...clubData,
-      boardMembers: [...clubData.boardMembers, { name: '', image: null }]
+      boardMembers: [...clubData.boardMembers, { name: '', image: null, imagePreview: null }]
     });
   };
 
@@ -55,51 +75,70 @@ const ClubMakerPage = () => {
     }
   };
 
-  const handleHeadCoachChange = (field, value) => {
-    setClubData({
-      ...clubData,
-      headCoach: { ...clubData.headCoach, [field]: value }
-    });
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const handleHeadCoachImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setClubData({
-        ...clubData,
-        headCoach: { ...clubData.headCoach, image: URL.createObjectURL(file) }
-      });
+    const formData = new FormData();
+    formData.append('clubName', clubData.clubName);
+    formData.append('location', clubData.location);
+    formData.append('description', clubData.description);
+
+    if (clubData.clubLogo) {
+      formData.append('logo', clubData.clubLogo);
     }
-  };
 
-  const handleAddEvent = () => {
-    setClubData({ ...clubData, events: [...clubData.events, ''] });
-  };
+    clubData.images.forEach((image) => {
+      formData.append('photos', image);
+    });
 
-  const handleEventChange = (index, value) => {
-    const updatedEvents = [...clubData.events];
-    updatedEvents[index] = value;
-    setClubData({ ...clubData, events: updatedEvents });
-  };
+    clubData.boardMembers.forEach((member, index) => {
+      if (member.image) {
+        formData.append(`boardMemberImages`, member.image);
+      }
+    });
 
-  const handleRemoveEvent = (index) => {
-    if (clubData.events.length > 1) {
-      const updatedEvents = [...clubData.events];
-      updatedEvents.splice(index, 1);
-      setClubData({ ...clubData, events: updatedEvents });
+    if (clubData.headCoach.image) {
+      formData.append('headCoachImage', clubData.headCoach.image);
+    }
+
+    formData.append('boardMembers', JSON.stringify(clubData.boardMembers.map((member) => ({
+      name: member.name
+    }))));
+    formData.append('headCoach', JSON.stringify({ information: clubData.headCoach.information }));
+    formData.append('facilities', clubData.facilities);
+    formData.append('events', JSON.stringify(clubData.events));
+    formData.append('matchHistory', clubData.clubHistory);
+    formData.append('registrationFee', clubData.registrationFee);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/club/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Club created successfully:', response.data);
+      const clubId = response.data._id; // Assuming the backend returns the created club's ID
+      window.location.href = `/clubportfolio/${clubId}`; // Redirect to ClubPortfolio page
+    } catch (error) {
+      console.error('Error creating club:', error);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto bg-blue-100 p-6 rounded-lg shadow-md">
-      <h1 className="text-xl font-bold bg-yellow-300 p-2">Make Your Portfolio</h1>
-      
+      <h1 className="text-xl font-bold bg-yellow-300 p-2">Create Your Club</h1>
+
       {/* Club Logo */}
       <div className="flex flex-col items-center my-4">
         <label htmlFor="clubLogoInput" className="cursor-pointer">
           <div className="w-24 h-24 bg-gray-400 rounded-full flex items-center justify-center relative overflow-hidden">
-            {clubData.clubLogo ? (
-              <img src={clubData.clubLogo} alt="Club Logo" className="w-full h-full object-cover" />
+            {clubData.clubLogoPreview ? (
+              <img
+                src={clubData.clubLogoPreview}
+                alt="Club Logo"
+                style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+              />
             ) : (
               <>📷</>
             )}
@@ -107,14 +146,22 @@ const ClubMakerPage = () => {
         </label>
         <input id="clubLogoInput" type="file" className="hidden" onChange={handleClubLogoChange} />
       </div>
-      
+
       {/* Club Details */}
       <input 
         type="text" 
         name="clubName"
         placeholder="Club Name" 
-        className="w-full p-2 bg-yellow-200" 
+        className="w-full p-2 bg-yellow-200 mt-2" 
         value={clubData.clubName}
+        onChange={handleInputChange}
+      />
+      <input 
+        type="text" 
+        name="location"
+        placeholder="Location" 
+        className="w-full p-2 bg-yellow-200 mt-2" 
+        value={clubData.location}
         onChange={handleInputChange}
       />
       <textarea 
@@ -125,58 +172,49 @@ const ClubMakerPage = () => {
         value={clubData.description}
         onChange={handleInputChange}
       ></textarea>
-      
-      {/* Images and Videos */}
-      <h2 className="mt-4 font-bold">Images</h2>
-      <input 
-        type="file" 
-        className="w-full p-2 bg-yellow-200 mt-2" 
-        onChange={(e) => {
-          const files = Array.from(e.target.files);
-          const imageUrls = files.map(file => URL.createObjectURL(file));
-          setClubData({ ...clubData, images: [...clubData.images, ...imageUrls] });
-        }}
+
+      {/* Club Images */}
+      <h2 className="mt-4 font-bold">Club Images</h2>
+      <input
+        type="file"
         multiple
+        className="w-full p-2 bg-yellow-200 mt-2"
+        onChange={handleImagesChange}
       />
       <div className="grid grid-cols-2 gap-2 mt-2">
         {clubData.images.map((image, index) => (
           <div key={index} className="relative">
-            <img src={image} alt={`Club Image ${index}`} className="w-full h-32 object-cover rounded" />
-            <button 
-              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-              onClick={() => {
-                const updatedImages = [...clubData.images];
-                updatedImages.splice(index, 1);
-                setClubData({ ...clubData, images: updatedImages });
-              }}
-            >
-              ×
-            </button>
+            <img
+              src={URL.createObjectURL(image)}
+              alt={`Club Image ${index}`}
+              className="w-full h-32 object-cover rounded"
+            />
           </div>
         ))}
       </div>
-      
+
       {/* Board Members */}
       <h2 className="mt-4 font-bold">Board Members</h2>
       {clubData.boardMembers.map((member, index) => (
         <div key={index} className="flex items-center mt-2">
-          <label htmlFor={`boardMemberPhoto-${index}`} className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center mr-2 cursor-pointer overflow-hidden">
-            {member.image ? (
-              <img src={member.image} alt={`Board Member ${index}`} className="w-full h-full object-cover" />
-            ) : (
-              <span>📷</span>
-            )}
+          <label htmlFor={`boardMemberPhoto-${index}`} className="cursor-pointer">
+            <div className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center relative overflow-hidden">
+              {member.imagePreview ? (
+                <img
+                  src={member.imagePreview}
+                  alt={`Board Member ${index}`}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <>📷</>
+              )}
+            </div>
           </label>
           <input
             id={`boardMemberPhoto-${index}`}
             type="file"
             className="hidden"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                handleBoardMemberChange(index, 'image', URL.createObjectURL(file));
-              }
-            }}
+            onChange={(e) => handleBoardMemberImageChange(index, e)}
           />
           <input
             type="text"
@@ -205,69 +243,55 @@ const ClubMakerPage = () => {
           )}
         </div>
       ))}
-      
+
       {/* Head Coach */}
-      <h2 className="mt-4 font-bold">Head Coach Details</h2>
-      <div className="bg-yellow-200 p-4 rounded-lg">
-        <div className="flex flex-col md:flex-row items-start">
-          <label htmlFor="headCoachPhotoInput" className="w-20 h-20 bg-gray-400 rounded-full flex items-center justify-center mr-4 cursor-pointer overflow-hidden mb-4 md:mb-0">
-            {clubData.headCoach.image ? (
-              <img src={clubData.headCoach.image} alt="Head Coach" className="w-full h-full object-cover" />
+      <h2 className="mt-4 font-bold">Head Coach</h2>
+      <div className="flex items-center mt-2">
+        {/* Head Coach Image */}
+        <label htmlFor="headCoachPhotoInput" className="cursor-pointer">
+          <div className="w-16 h-16 bg-gray-400 rounded-full flex items-center justify-center relative overflow-hidden">
+            {clubData.headCoach.imagePreview ? (
+              <img
+                src={clubData.headCoach.imagePreview}
+                alt="Head Coach"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             ) : (
-              <span>📷</span>
+              <>📷</>
             )}
-          </label>
-          <input
-            id="headCoachPhotoInput"
-            type="file"
-            className="hidden"
-            onChange={handleHeadCoachImageChange}
-          />
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-2">
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              className="p-2 bg-white w-full"
-              value={clubData.headCoach.name}
-              onChange={(e) => handleHeadCoachChange('name', e.target.value)}
-            />
-            <input
-              type="text"
-              name="age"
-              placeholder="Age"
-              className="p-2 bg-white w-full"
-              value={clubData.headCoach.age}
-              onChange={(e) => handleHeadCoachChange('age', e.target.value)}
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              className="p-2 bg-white w-full"
-              value={clubData.headCoach.email}
-              onChange={(e) => handleHeadCoachChange('email', e.target.value)}
-            />
-            <input
-              type="text"
-              name="qualifications"
-              placeholder="Qualifications"
-              className="p-2 bg-white w-full"
-              value={clubData.headCoach.qualifications}
-              onChange={(e) => handleHeadCoachChange('qualifications', e.target.value)}
-            />
-            <textarea
-              name="sportHistory"
-              placeholder="Sport History"
-              className="p-2 bg-white w-full md:col-span-2"
-              rows="3"
-              value={clubData.headCoach.sportHistory}
-              onChange={(e) => handleHeadCoachChange('sportHistory', e.target.value)}
-            />
           </div>
-        </div>
+        </label>
+        <input
+          id="headCoachPhotoInput"
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const previewUrl = URL.createObjectURL(file);
+              setClubData({
+                ...clubData,
+                headCoach: { ...clubData.headCoach, image: file, imagePreview: previewUrl }
+              });
+            }
+          }}
+        />
       </div>
-      
+
+      {/* Head Coach Information */}
+      <textarea
+        placeholder="Enter head coach information here..."
+        className="w-full p-2 bg-yellow-200 mt-2"
+        rows="4"
+        value={clubData.headCoach.information}
+        onChange={(e) =>
+          setClubData({
+            ...clubData,
+            headCoach: { ...clubData.headCoach, information: e.target.value }
+          })
+        }
+      />
+
       {/* Facilities */}
       <h2 className="mt-4 font-bold">Facilities</h2>
       <textarea 
@@ -278,7 +302,7 @@ const ClubMakerPage = () => {
         value={clubData.facilities}
         onChange={handleInputChange}
       ></textarea>
-      
+
       {/* Events */}
       <h2 className="mt-4 font-bold">Events</h2>
       {clubData.events.map((event, index) => (
@@ -288,12 +312,20 @@ const ClubMakerPage = () => {
             className="w-full p-2 bg-yellow-200"
             rows="2"
             value={event}
-            onChange={(e) => handleEventChange(index, e.target.value)}
+            onChange={(e) => {
+              const updatedEvents = [...clubData.events];
+              updatedEvents[index] = e.target.value;
+              setClubData({ ...clubData, events: updatedEvents });
+            }}
           />
           {clubData.events.length > 1 && (
             <button
               className="bg-red-500 text-white p-2 ml-2"
-              onClick={() => handleRemoveEvent(index)}
+              onClick={() => {
+                const updatedEvents = [...clubData.events];
+                updatedEvents.splice(index, 1);
+                setClubData({ ...clubData, events: updatedEvents });
+              }}
             >
               Remove
             </button>
@@ -301,14 +333,14 @@ const ClubMakerPage = () => {
           {index === clubData.events.length - 1 && (
             <button
               className="bg-green-500 text-white p-2 ml-2"
-              onClick={handleAddEvent}
+              onClick={() => setClubData({ ...clubData, events: [...clubData.events, ''] })}
             >
               Add
             </button>
           )}
         </div>
       ))}
-      
+
       {/* Club History */}
       <h2 className="mt-4 font-bold">Club History</h2>
       <textarea 
@@ -319,10 +351,22 @@ const ClubMakerPage = () => {
         value={clubData.clubHistory}
         onChange={handleInputChange}
       ></textarea>
-      
+
+      {/* Registration Fee */}
+      <h2 className="mt-4 font-bold">Registration Fee</h2>
+      <input 
+        type="text" 
+        name="registrationFee"
+        placeholder="Enter registration fee..." 
+        className="w-full p-2 bg-yellow-200" 
+        value={clubData.registrationFee}
+        onChange={handleInputChange}
+      />
+
       {/* Submit Button */}
       <div className="flex justify-center mt-4">
-        <button className="bg-yellow-400 hover:bg-yellow-500 p-3 font-bold rounded transition-colors">
+        <button className="bg-yellow-400 hover:bg-yellow-500 p-3 font-bold rounded transition-colors"
+          onClick={handleSubmit}>
           SUBMIT
         </button>
       </div>

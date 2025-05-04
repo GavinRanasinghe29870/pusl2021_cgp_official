@@ -16,9 +16,9 @@ const allowedRoles = ["SportPeople", "Admin", "Clubs"];
 router.post("/Clubsignup", async (req, res) => {
     console.log("Received Signup Request:", req.body);
     try {
-        const { ClubName, Clubusername, password, confirmPassword, mobile, address, email, sportLevel } = req.body;
+        const { ClubName, Clubusername, password, confirmPassword, mobile, address, email, sportLevel, sportCategory } = req.body;
 
-        if (!ClubName || !Clubusername || !password || !confirmPassword || !email || !sportLevel) {
+        if (!ClubName || !Clubusername || !password || !confirmPassword || !email || !sportLevel || !sportCategory) {
             return res.status(400).json({ error: "All required fields must be filled" });
         }
 
@@ -52,6 +52,7 @@ router.post("/Clubsignup", async (req, res) => {
             address,
             email,
             sportLevel,
+            sportCategory,
         });
 
         await newClubuser.save();
@@ -98,6 +99,7 @@ router.post("/Clubsignin", async (req, res) => {
                 address: club.address,
                 email: club.email,
                 sportLevel: club.sportLevel,
+                sportCategory: club.sportCategory,
             },
             token,
         });
@@ -127,4 +129,3 @@ router.get("/check", protectRoute, checkClubAuth);
 
 
 module.exports = router;
-
