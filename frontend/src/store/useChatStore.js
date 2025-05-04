@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from '../lib/axios.js';
 import { useAuthStore } from "./useAuthStore.js";
+import { useClubAuthStore } from "./useClubAuthStore.js";
 
 export const useChatStore = create((set, get) => ({
     messages: [],
@@ -47,22 +48,30 @@ export const useChatStore = create((set, get) => ({
     },
 
     subscribeToMessages: () => {
+        const { user, socket: userSocket } = useAuthStore.getState();
+        const { club, socket: clubSocket } = useClubAuthStore.getState();
         const { selectedUser } = get();
+
         if (!selectedUser) return;
 
-        const socket = useAuthStore.getState().socket;
+        const socket = user ? userSocket : club ? clubSocket : null;
+        if (!socket) return;
 
-        //todo: optimize this one later
         socket.on("newMessage", (newMessage) => {
             if (newMessage.senderId !== selectedUser._id) return;
-            set({ 
-                messages: [...get().messages, newMessage], 
+            set({
+                messages: [...get().messages, newMessage],
             });
-        })
+        });
     },
 
     unsubscribeFromMessages: () => {
-        const socket = useAuthStore.getState().socket;
+        const { user, socket: userSocket } = useAuthStore.getState();
+        const { club, socket: clubSocket } = useClubAuthStore.getState();
+
+        const socket = user ? userSocket : club ? clubSocket : null;
+        if (!socket) return;
+
         socket.off("newMessage");
     },
 

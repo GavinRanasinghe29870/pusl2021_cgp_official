@@ -28,6 +28,7 @@ router.post(
       email,
       password,
       sportLevel,
+      sportcategory,
       mobile,
       address,
       gender,
@@ -62,15 +63,30 @@ router.post(
         email,
         password,
         sportLevel,
+        sportcategory,
         mobile,
         address,
         gender,
       });
 
       await newUser.save();
-      res
-        .status(201)
-        .json({ success: true, message: "User registered successfully!" });
+
+      res.status(201).json({
+        success: true,
+        message: "User registered successfully!",
+        user: {
+          _id: newUser._id,
+          firstName: newUser.firstName,
+          age: newUser.age,
+          username: newUser.username,
+          email: newUser.email,
+          sportLevel: newUser.sportLevel,
+          sportcategory: newUser.sportcategory,
+          mobile: newUser.mobile,
+          address: newUser.address,
+          gender: newUser.gender,
+        },
+      });
     } catch (err) {
       console.error("Signup Error:", err);
       res
@@ -119,6 +135,7 @@ router.post("/signin", async (req, res) => {
         address: user.address,
         email: user.email,
         sportLevel: user.sportLevel,
+        sportcategory: user.sportcategory,
         gender: user.gender,
         profilePhoto: user.profilePhoto,
       },
@@ -135,6 +152,7 @@ router.post("/signin", async (req, res) => {
         address: user.address,
         email: user.email,
         sportLevel: user.sportLevel,
+        sportcategory: user.sportcategory,
         gender: user.gender,
         profilePhoto: user.profilePhoto,
       },
@@ -159,7 +177,7 @@ const checkAuth = async (req, res) => {
     console.log("Error in checkAuth controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // CHECK LOGIN STATUS
 router.get("/check", protectRoute, checkAuth);

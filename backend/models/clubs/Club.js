@@ -1,3 +1,4 @@
+
 /*const mongoose = require('mongoose');
 
 const ClubSchema = new mongoose.Schema({
@@ -17,3 +18,4 @@ const ClubSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model('Club', ClubSchema);*/
+
