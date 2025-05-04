@@ -96,7 +96,19 @@ const userSchema = new mongoose.Schema(
     otherAchievements: String,
 
     // 👫 Friends
+
+    
+    // ✅ Registered Clubs
+registeredClubs: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }
+],
+
+
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+
   },
   {
     timestamps: true, // ✅ Automatically adds createdAt and updatedAt

@@ -103,10 +103,12 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/members", memberRoutes);
+
 app.use('/api/clubs', clubRoutes);
 app.use("/api/sportPeople", memRoutes); 
 app.use("/api/adposts", adpostRoutes);
 app.use('/api/checkout', checkoutRoute);
+
 
 
 app.use("/api/orders", orderRoutes);
