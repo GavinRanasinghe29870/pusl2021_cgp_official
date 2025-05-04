@@ -70,7 +70,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
-app.use("/api/req", memberRoutes);
+app.use("/api/members", memberRoutes);
 
 
 app.use("/api/message", messageRoutes);

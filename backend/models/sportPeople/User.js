@@ -81,6 +81,15 @@ const userSchema = new mongoose.Schema(
 
     // 👫 Friends
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    
+    // ✅ Registered Clubs
+registeredClubs: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }
+],
+
   },
   {
     timestamps: true, // ✅ Automatically adds createdAt and updatedAt
