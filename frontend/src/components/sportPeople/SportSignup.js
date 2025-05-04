@@ -97,7 +97,7 @@ const SportSignUp = () => {
       console.log("Signup response:", response);
 
       if (response?.success) {
-        toast.success("Sign up successful!", { position: "top-center" });
+        toast.success("Sign Up Successful!", { position: "top-center" });
         setTimeout(() => navigate("/Signin"), 2000);
       } else {
         toast.error(
@@ -130,7 +130,7 @@ const SportSignUp = () => {
     <div className="bg-blue-100 flex items-center justify-center min-h-screen overflow-hidden">
       <ToastContainer />
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl h-[96vh]">
-        <h1 className="text-center text-2xl font-bold mb-6">Sign Up</h1>
+        <h1 className="text-center text-3xl font-bold mb-8 transition-all duration-800 ease-out transform hover:scale-110">Create Account!</h1>
 
         <div className="flex md:flex-row">
           {/* Logo Section */}
@@ -138,7 +138,7 @@ const SportSignUp = () => {
             <img
               src="/logo.png"
               alt="logo"
-              className="h-40 w-auto object-contain"
+              className="h-70 w-auto object-contain"
             />
           </div>
 
@@ -150,7 +150,7 @@ const SportSignUp = () => {
             <form onSubmit={handleSubmit}>
               {/* ... (rest of your form fields remain the same) ... */}
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">
+                <label className="block text-gray-700 font-medium mb-1">
                   First Name
                 </label>
                 <input
@@ -165,7 +165,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">Age</label>
+                <label className="block text-gray-700 font-medium mb-1">Age</label>
                 <input
                   type="number"
                   name="age"
@@ -178,7 +178,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">Username</label>
+                <label className="block text-gray-700 font-medium mb-1">Username</label>
                 <input
                   type="text"
                   name="username"
@@ -191,7 +191,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">Password</label>
+                <label className="block text-gray-700 font-medium mb-1">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -213,7 +213,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">
+                <label className="block text-gray-700 font-medium mb-1">
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -241,7 +241,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">Mobile</label>
+                <label className="block text-gray-700 font-medium mb-1">Mobile</label>
                 <input
                   type="text"
                   name="mobile"
@@ -253,7 +253,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">Email</label>
+                <label className="block text-gray-700 font-medium mb-1">Email</label>
                 <input
                   type="email"
                   name="email"
@@ -266,7 +266,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">Address</label>
+                <label className="block text-gray-700 font-medium mb-1">Address</label>
                 <input
                   type="text"
                   name="address"
@@ -278,7 +278,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">
+                <label className="block text-gray-700 font-medium mb-1">
                   Sport Level
                 </label>
                 <select
@@ -297,7 +297,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-3">
-                <label className="block text-gray-700 text-sm">
+                <label className="block text-gray-700 font-medium mb-1">
                   Sport Category
                 </label>
                 <select
@@ -317,7 +317,7 @@ const SportSignUp = () => {
               </div>
 
               <div className="mb-2">
-                <label className="block text-gray-700 text-sm">Gender</label>
+                <label className="block text-gray-700 font-medium mb-1">Gender</label>
                 <div className="flex space-x-4">
                   <label>
                     <input
@@ -346,7 +346,7 @@ const SportSignUp = () => {
 
               <button
                 type="submit"
-                className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88] transition duration-300 col-span-2 text-sm"
+                className="w-full bg-[#0D1271] text-white font-medium mb-1 py-2 px-4 rounded hover:bg-[#141a88] transition duration-300 col-span-2 text-md"
                 disabled={loading || isSigningUp}
               >
                 {loading || isSigningUp ? "Signing up..." : "Sign Up"}
@@ -355,8 +355,9 @@ const SportSignUp = () => {
           </div>
         </div>
       </div>
+
       {/* Toast Container */}
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
+      {/* //<ToastContainer position="top-right" autoClose={2000} hideProgressBar /> */}
     </div>
   );
 };
