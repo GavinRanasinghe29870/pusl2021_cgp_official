@@ -8,11 +8,11 @@ router.post("/", async (req, res) => {
   try {
     console.log("Received order request:", req.body);
     
-    const { userId, productId, quantity, selectedColor, selectedSize, price } = req.body;
+    const { userId, productId, quantity, selectedColor, selectedSize, price, imageUrl } = req.body;
     
     // Validate required fields
-    if (!userId || !productId || !quantity || !selectedColor || !selectedSize || !price) {
-      console.log("Missing required fields:", { userId, productId, quantity, selectedColor, selectedSize, price });
+    if (!userId || !productId || !quantity || !selectedColor || !selectedSize || !price || !imageUrl) {
+      console.log("Missing required fields:", { userId, productId, quantity, selectedColor, selectedSize, price, imageUrl });
       return res.status(400).json({ message: "All fields are required" });
     }
     
@@ -37,7 +37,8 @@ router.post("/", async (req, res) => {
       selectedColor,
       selectedSize,
       price: parseFloat(price),
-      totalAmount
+      totalAmount,
+      imageUrl
     });
 
     console.log("Attempting to save order:", newOrder);
