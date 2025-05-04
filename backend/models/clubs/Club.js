@@ -1,7 +1,9 @@
-const mongoose = require('mongoose');
+
+/*const mongoose = require('mongoose');
 
 const ClubSchema = new mongoose.Schema({
   clubName: { type: String, required: true },
+  location: { type: String }, // Add the location field
   description: { type: String },
   logo: { type: String },
   photos: [{ type: String }],
@@ -15,4 +17,5 @@ const ClubSchema = new mongoose.Schema({
   registrationFee: { type: String },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Club', ClubSchema);
+module.exports = mongoose.model('Club', ClubSchema);*/
+
