@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
+import emailjs from "@emailjs/browser";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function HelpCenterPage() {
     const [message, setMessage] = useState("");
     const [openIndex, setOpenIndex] = useState(null);
+    const { user } = useAuthStore();
 
     const toggleFAQ = (index) => {
         setOpenIndex(openIndex === index ? null : index);
@@ -31,21 +33,34 @@ export default function HelpCenterPage() {
             answer: "Visit the billing section, click 'Request Refund' for the relevant payment, fill out the form, and submit. Our team will process your request within 5-7 business days."
         }
     ];
-
     async function submitHelp(e) {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/api/help", {
-                message,
-            });
-            console.log("Help request submitted", response.data);
+            const templateParams = {
+                from_user: user.username,
+                message: message,
+            };
+    
+            await emailjs.send(
+                "service_0rfopse",      
+                "template_jv43kbv",     
+                templateParams,
+                "kVB0utlxfeysWQyzE"     
+            );
+    
+            console.log("Help request email sent successfully");
+            alert("Your message has been sent!");
+            setMessage(""); 
         } catch (error) {
-            console.error("Error submitting help request", error);
+            console.error("Error sending email", error);
+            alert("There was an error sending your message. Please try again.");
         }
     }
+    
 
     return (
         <div className="min-h-screen bg-gray-100 p-4">
+            <h1>{user.username}</h1>
             <h2 className="text-2xl text-center font-bold mb-6">How Can We Help You?</h2>
 
             <div className="w-full p-4">
