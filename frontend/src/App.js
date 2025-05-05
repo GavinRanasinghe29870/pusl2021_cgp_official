@@ -26,10 +26,10 @@ import DonorPortfolio from "./components/sportPeople/Donorportfolio";
 import DoneePortfolio from "./components/sportPeople/Doneeportfolio.js";
 import SportPage01 from "./components/sportPeople/sportspage01";
 import SportPage02 from "./components/sportPeople/sportpage02";
-import SportsPage from "./pages/sportPeople/Sportpage03.js";
 import Cart from "./components/sportPeople/cart";
 import ProductPage from "./pages/sportPeople/ProductsPage.js";
 import Singleproduct from "./pages/sportPeople/SingleProd";
+import SportsPage from "./pages/sportPeople/Sportpage03.js";
 
 // Auth Pages
 import Signin from "./components/sportPeople/SportSignin.js";
@@ -87,7 +87,7 @@ function App() {
   const path = location.pathname;
 
   const noNavbarPaths = ["/Signin", "/admin/signin", "/Clubsignin", "/Signup", "/Clubsignup"];
-  const clubPaths = ["/registrationApproval", "/club/home", "/club/chat", "/ClubPortfolio", "/adpost", "/RequestMember", "/Clubmaker"];
+  const clubPaths = ["/registrationApproval", "/club/home", "/club-chat", "/ClubPortfolio", "/adpost", "/RequestMember", "/Clubmaker"];
   const adminPaths = ["/admin/home", "/admin/productManaging", "/salesManage", "/admin/club-requests", "/admin/club-approvals"];
 
   const renderNavbar = () => {
@@ -108,32 +108,21 @@ function App() {
     <div>
       {renderNavbar()}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={club ? <Navigate to="/club/home" /> : <Home />}
+        />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
-        <Route path="/RegisteredClubs" element={<RegisteredClub />} />
         <Route path="/friend-chat" element={<FriendChat />} />
         <Route path="/PersonPortfolio" element={<PersonPortfolio />} />
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
         <Route path="/donations/:id" element={<DoneePortfolio />} />
         <Route path="/sport01" element={<SportPage01 />} />
         <Route path="/sport02" element={<SportPage02 />} />
-        <Route path="/Signin" element={<Signin />} />
-        <Route path="/Signup" element={<Signup />} />
-        <Route path="/admin/signin" element={<AdminSignin />} />
-        <Route path="/Clubsignup" element={<Clubsignup />} />
-        <Route path="/Clubsignin" element={<ClubSignIn />} />
-        <Route path="/club/home" element={<ClubHome />} />
-        <Route path="/ClubPortfolio/:id" element={<ClubPortfolio />} /> {/* Updated Route */}
-        <Route path="/Clubmaker" element={<ClubMakerPage />} />
-        <Route path="/Checkout" element={<CheckoutPage />} />
-        <Route path="/RequestMember" element={<RequestedMembers />} />
-        <Route path="/adpost" element={<AdPost />} />
-        <Route path="/club-chat" element={<ClubChat />} />
-        <Route path="/chat" element={<ClubChat />} />
+        <Route path="/sportpage3" element={<SportsPage />} />
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/product/:id" element={<Singleproduct />} />
-        <Route path="/cart" element={<Cart />} />
         <Route path="/donationReq" element={<DonationRequestForm />} />
         <Route path="/donatingReq" element={<DonatingRequestForm />} />
         <Route path="/addProduct" element={<InsertProduct />} />
@@ -143,13 +132,48 @@ function App() {
         <Route path="/admin/club-requests" element={<ClubApprovingPage1 />} />
         <Route path="/admin/club-approvals" element={<ClubApprovingPage2 />} />
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
-        <Route path="/regclubs" element={<RegClubs />} />
-        <Route path="/sportpage3" element={<SportsPage />} />
         <Route
           path="/profile:id"
           element={user ? <Navigate to={`/profile/${user._id}`} /> : <Navigate to="/Signin" />}
         />
         <Route path="/profile/:id" element={<UserProfilePage />} />
+        {/* Club-only routes */}
+        {club ? (
+          <>
+            <Route path="/club-chat" element={<ClubChat />} />
+            <Route path="/RequestMember" element={<RequestedMembers />} />
+            <Route path="/ClubPortfolio/:id" element={<ClubPortfolio />} />
+            <Route path="/Clubmaker" element={<ClubMakerPage />} />
+            <Route path="/club/home" element={<ClubHome />} />
+            <Route path="/adpost" element={<AdPost />} />
+          </>
+        ) : (
+          <Route path="*" element={<Navigate to="/" />} />
+        )}
+
+        {/* User-only routes */}
+        {user ? (
+          <>
+            <Route path="/RegisteredClubs" element={<RegisteredClub />} />
+            <Route path="/Checkout" element={<CheckoutPage />} />
+            <Route path="/chat" element={<ClubChat />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/regclubs" element={<RegClubs />} />
+          </>
+        ) : (
+          <Route path="*" element={<Navigate to="/" />} />
+        )}
+
+        {/* Public routes */}
+        {!user && !club && (
+          <>
+            <Route path="/Signin" element={<Signin />} />
+            <Route path="/Signup" element={<Signup />} />
+            <Route path="/admin/signin" element={<AdminSignin />} />
+            <Route path="/Clubsignup" element={<Clubsignup />} />
+            <Route path="/Clubsignin" element={<ClubSignIn />} />
+          </>
+        )}
       </Routes>
       {renderFooter()}
     </div>
