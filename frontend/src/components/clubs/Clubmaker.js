@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useClubAuthStore } from '../../store/useClubAuthStore';
 
 const ClubMakerPage = () => {
   const [clubData, setClubData] = useState({
-    clubName: '',
+    ClubName: '',
     location: '',
     description: '',
     clubLogo: null,
@@ -25,6 +26,8 @@ const ClubMakerPage = () => {
     const { name, value } = e.target;
     setClubData({ ...clubData, [name]: value });
   };
+
+  const {club}=useClubAuthStore();
 
   const handleClubLogoChange = (event) => {
     const file = event.target.files[0];
@@ -79,9 +82,11 @@ const ClubMakerPage = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('clubName', clubData.clubName);
+    formData.append('ClubName', clubData.clubName);
     formData.append('location', clubData.location);
     formData.append('description', clubData.description);
+    formData.append('_id', club._id);
+    
 
     if (clubData.clubLogo) {
       formData.append('logo', clubData.clubLogo);
@@ -117,16 +122,18 @@ const ClubMakerPage = () => {
         },
       });
 
-      console.log('Club created successfully:', response.data);
-      const clubId = response.data._id; // Assuming the backend returns the created club's ID
+      console.log('Club user created successfully:', response.data);
+      const clubId = response.data.id; // Use the returned ID
       window.location.href = `/clubportfolio/${clubId}`; // Redirect to ClubPortfolio page
     } catch (error) {
-      console.error('Error creating club:', error);
+      console.error('Error creating club user:', error);
     }
   };
 
   return (
+    
     <div className="max-w-4xl mx-auto bg-blue-100 p-6 rounded-lg shadow-md">
+      <h1>{club._id}</h1>
       <h1 className="text-xl font-bold bg-yellow-300 p-2">Create Your Club</h1>
 
       {/* Club Logo */}
