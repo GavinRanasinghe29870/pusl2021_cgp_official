@@ -1,6 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-// Define the sports categories array
 const sportsCategories = [
   { name: "Cricket", img: "/Cricket.png" },
   { name: "Badminton", img: "/Badminton.jpg" },
@@ -15,18 +15,22 @@ const sportsCategories = [
 ];
 
 const ClubApprovingPage1 = () => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    navigate(`/admin/club-approvals`, { state: { category } });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero Section */}
       <div className="relative w-full mb-8 aspect-w-16 aspect-h-9">
         <img
-          src="/Site Banner.jpg" // Replace with the actual image path
+          src="/Site Banner.jpg"
           alt="Sports Banner"
           className="w-full h-85 object-cover"
         />
       </div>
 
-      {/* Sports Categories */}
       <div className="relative w-full pb-8">
         <div className="bg-[#0D1271] text-white py-12">
           <h2 className="text-center text-2xl font-bold mb-8">
@@ -37,6 +41,7 @@ const ClubApprovingPage1 = () => {
               <div
                 key={index}
                 className="text-center transition-transform duration-300 hover:scale-110 cursor-pointer"
+                onClick={() => handleCategoryClick(sport.name)}
               >
                 <img
                   src={sport.img}

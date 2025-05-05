@@ -1,23 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaFileUpload, FaTimes, FaCheck, FaTimes as FaReject, FaClock } from "react-icons/fa"; // Font Awesome icons
+import { FaFileUpload, FaTimes, FaCheck, FaTimes as FaReject, FaClock } from "react-icons/fa";
+import { useClubAuthStore } from "../../store/useClubAuthStore";
+
 
 const RegistrationApproval = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadedFiles, setUploadedFiles] = useState([]); // State for storing files
-  const [username, setUsername] = useState(""); // State for username
-  const fileInputRef = useRef(null); // Reference to the file input
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const fileInputRef = useRef(null);
+  
+  // Get club data from auth store
+  const { club } = useClubAuthStore();
 
   useEffect(() => {
-    // Only fetch files if username is provided
-    if (username) {
-      fetchUserFiles(username);
+    // Only fetch files if club is logged in
+    if (club && club._id) {
+      fetchClubFiles(club._id);
     }
-  }, [username]); // Re-fetch when username changes
+  }, [club]); // Re-fetch when club changes
 
-  // Function to fetch files for a specific user
-  const fetchUserFiles = async (username) => {
+  // Function to fetch files for a specific club
+  const fetchClubFiles = async (clubId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/registrationApproval/files/${username}`);
+      const response = await fetch(`http://localhost:5000/api/registrationApproval/files/club/${clubId}`);
       if (!response.ok) throw new Error("Failed to fetch files");
       const files = await response.json();
       setUploadedFiles(files);
@@ -46,10 +50,6 @@ const RegistrationApproval = () => {
     }
   };
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!selectedFile) {
@@ -57,14 +57,15 @@ const RegistrationApproval = () => {
       return;
     }
 
-    if (!username) {
-      alert("⚠️ Please enter your club username before submitting.");
+    if (!club || !club._id) {
+      alert("⚠️ You must be logged in to upload files.");
       return;
     }
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("uploadedBy", username); // Add username to form data
+    formData.append("uploadedBy", club.Clubusername); // Add username from club object
+    formData.append("clubId", club._id); // Add club ID
 
     try {
       const response = await fetch("http://localhost:5000/api/registrationApproval/upload", {
@@ -73,16 +74,16 @@ const RegistrationApproval = () => {
       });
 
       if (!response.ok) {
-        const errorText = await response.text(); // Read error message
-        alert("❌ Upload failed: " + errorText);
+        const errorData = await response.json();
+        alert("❌ Upload failed: " + (errorData.message || "Unknown error"));
         return;
       }
 
       const data = await response.json();
       alert("✅ File uploaded successfully!");
 
-      // Refresh the user's file list
-      fetchUserFiles(username);
+      // Refresh the club's file list
+      fetchClubFiles(club._id);
 
       // Reset file input
       setSelectedFile(null);
@@ -109,7 +110,7 @@ const RegistrationApproval = () => {
   
       alert("✅ File deleted successfully!");
       // Update file list after deletion
-      fetchUserFiles(username);
+      fetchClubFiles(club._id);
     } catch (error) {
       alert("❌ Deletion failed: " + error.message);
     }
@@ -170,26 +171,32 @@ const RegistrationApproval = () => {
         <h2 className="text-header-03 font-bold text-primary">Submit your Documents</h2>
         <p className="text-gray-600 text-sm mb-4">(Only PDF files are accepted)</p>
 
-        {/* Username Field */}
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Your Club Username"
-            value={username}
-            onChange={handleUsernameChange}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary w-full max-w-md"
-          />
-          <p className="text-gray-600 text-sm mt-1">
-            Enter your username to see your uploaded documents and to submit new ones
-          </p>
+        {/* Club Info Section */}
+        <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
+          {club ? (
+            <div>
+              <h3 className="font-semibold text-primary">Club Information</h3>
+              <p className="text-gray-700">Logged in as: <span className="font-medium">{club.Clubusername}</span></p>
+            </div>
+          ) : (
+            <div className="text-red-600">
+              <p>You must be logged in to upload documents.</p>
+            </div>
+          )}
         </div>
 
         {/* File Upload Section */}
         <div className="flex flex-col items-center space-y-4">
-          <label className="bg-primary text-white font-medium py-2 px-5 rounded-lg cursor-pointer shadow-md hover:bg-secondary transition flex items-center space-x-2">
+          <label className={`bg-primary text-white font-medium py-2 px-5 rounded-lg cursor-pointer shadow-md hover:bg-secondary transition flex items-center space-x-2 ${!club && 'opacity-50 cursor-not-allowed'}`}>
             <FaFileUpload className="text-lg" />
             <span>Choose File</span>
-            <input type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
+            <input 
+              type="file" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleFileChange}
+              disabled={!club} 
+            />
           </label>
 
           {selectedFile && (
@@ -209,7 +216,8 @@ const RegistrationApproval = () => {
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className="bg-secondary text-gray-900 font-semibold py-2 px-6 rounded-lg shadow-lg mt-4 hover:bg-secondary-light transition"
+          disabled={!club || !selectedFile}
+          className={`bg-secondary text-gray-900 font-semibold py-2 px-6 rounded-lg shadow-lg mt-4 hover:bg-secondary-light transition ${(!club || !selectedFile) && 'opacity-50 cursor-not-allowed'}`}
         >
           Submit
         </button>
@@ -217,8 +225,8 @@ const RegistrationApproval = () => {
         {/* Display Uploaded Files with Status */}
         <div className="mt-6">
           <h3 className="text-lg font-semibold">Your Uploaded Documents</h3>
-          {!username ? (
-            <p className="text-gray-600">Please enter your username to view your documents</p>
+          {!club ? (
+            <p className="text-gray-600">Please log in to view your documents</p>
           ) : uploadedFiles.length === 0 ? (
             <p>You haven't uploaded any files yet</p>
           ) : (
@@ -250,6 +258,9 @@ const RegistrationApproval = () => {
                           <StatusIcon status={file.status} className="mr-1" />
                           <span className="ml-1 capitalize">{file.status || "pending"}</span>
                         </span>
+                        {file.remarks && (
+                          <p className="text-xs text-gray-500 mt-1">{file.remarks}</p>
+                        )}
                       </td>
                       <td className="py-3 px-4 text-sm text-gray-500">
                         {new Date(file.uploadedAt).toLocaleDateString()}

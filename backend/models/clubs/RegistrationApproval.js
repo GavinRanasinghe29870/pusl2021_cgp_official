@@ -13,6 +13,12 @@ const registrationApprovalSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // Store both club ID and username
+  clubId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Clubuser',
+    required: true
+  },
   uploadedBy: {
     type: String,
     ref: 'Clubuser',
