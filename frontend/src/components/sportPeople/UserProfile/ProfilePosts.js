@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import PostCard from './PostCard';
+import { useAuthStore } from '../../../store/useAuthStore'; // ✅ Corrected import path
 
 function ProfilePosts({ user, isOwner }) {
   const [posts, setPosts] = useState([]);
   const [desc, setDesc] = useState('');
   const [image, setImage] = useState(null);
+  const { user: authUser } = useAuthStore();
   const backendURL = 'http://localhost:5000';
 
   const fetchPosts = useCallback(async () => {
@@ -26,7 +28,7 @@ function ProfilePosts({ user, isOwner }) {
     if (image) formData.append('image', image);
 
     try {
-      await axios.post(`${backendURL}/api/user/${user._id}/post`, formData);
+      await axios.post(`${backendURL}/api/user/${authUser._id}/post`, formData);
       setDesc('');
       setImage(null);
       fetchPosts(); // Refresh posts
@@ -78,7 +80,7 @@ function ProfilePosts({ user, isOwner }) {
             <PostCard
               key={post._id}
               post={post}
-              userId={user._id}
+              userId={authUser._id}
               isOwner={isOwner}
               onUpdate={fetchPosts}
             />

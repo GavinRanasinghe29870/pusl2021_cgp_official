@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { MdEdit } from "react-icons/md";
+import { MdCancel } from "react-icons/md";
 
 function ProfileAbout({ user, isOwner }) {
   const [editing, setEditing] = useState(false);
@@ -72,9 +74,29 @@ function ProfileAbout({ user, isOwner }) {
 
   return (
     <div className="w-full max-w-[1252px] mx-auto space-y-6">
-      <div className="bg-blue-100 p-6 rounded-md w-full">
-        <div className="bg-yellow-200 font-semibold text-gray-800 px-3 py-1 inline-block mb-4 rounded">
-          About
+      <div className="bg-primary-light p-6 rounded-md w-full">
+        <div className="flex justify-between items-center mb-4">
+          <div className="bg-secondary-light font-semibold text-gray-800 px-3 py-1 inline-block rounded">
+            About
+          </div>
+          {isOwner && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setEditing(!editing)}
+                className="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 text-sm rounded shadow hover:bg-gray-700"
+              >
+                {editing ? <MdCancel /> : <MdEdit />} {editing ? 'Cancel' : 'Edit Details'}
+              </button>
+              {editing && (
+                <button
+                  onClick={handleSave}
+                  className="bg-blue-500 text-white px-6 py-1 rounded hover:bg-blue-600"
+                >
+                  Save
+                </button>
+              )}
+            </div>
+          )}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {renderField('Name', 'firstName', userInfo.firstName || user.name, 'user')}
@@ -84,31 +106,26 @@ function ProfileAbout({ user, isOwner }) {
           {renderField('Birthday', 'birthday', profileInfo.birthday, 'profile')}
           {renderField('Job', 'job', profileInfo.job, 'profile')}
         </div>
-        {isOwner && (
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={() => setEditing(!editing)}
-              className="bg-gray-600 text-white px-4 py-2 text-sm rounded shadow hover:bg-gray-700"
-            >
-              ✏️ {editing ? 'Cancel' : 'Edit'}
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Sports Interests & History */}
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-blue-100 p-6 rounded-md w-full">
-          <div className="bg-yellow-200 font-semibold text-gray-800 px-3 py-1 inline-block mb-3 rounded">
+        <div className="bg-primary-light p-6 rounded-md w-full">
+          <div className="bg-secondary-light font-semibold text-gray-800 px-3 py-1 inline-block mb-3 rounded">
             Sports Interests and Skills
           </div>
           <div className="space-y-4">
-            {renderField('Favorite Sports', 'sports', profileInfo.sports?.join(', '), 'profile')}
+            {renderField(
+              'Favorite Sports',
+              'sports',
+              Array.isArray(profileInfo.sports) ? profileInfo.sports.join(', ') : profileInfo.sports || '—',
+              'profile'
+            )}
             {renderField('Skill level', 'skillLevel', profileInfo.skillLevel, 'profile')}
             {renderField('Preferred Positions/Disciplines', 'positions', profileInfo.positions, 'profile')}
           </div>
 
-          <div className="bg-yellow-200 font-semibold text-gray-800 px-3 py-1 inline-block mt-6 mb-3 rounded">
+          <div className="bg-secondary-light font-semibold text-gray-800 px-3 py-1 inline-block mt-6 mb-3 rounded">
             Sports History
           </div>
           <div className="space-y-4">
@@ -118,8 +135,8 @@ function ProfileAbout({ user, isOwner }) {
           </div>
         </div>
 
-        <div className="bg-blue-100 p-6 rounded-md w-full">
-          <div className="bg-yellow-200 font-semibold text-gray-800 px-3 py-1 inline-block mb-3 rounded">
+        <div className="bg-primary-light p-6 rounded-md w-full">
+          <div className="bg-secondary-light font-semibold text-gray-800 px-3 py-1 inline-block mb-3 rounded">
             Personal Achievements and Milestones
           </div>
           <div className="space-y-4">
@@ -127,7 +144,7 @@ function ProfileAbout({ user, isOwner }) {
             {renderField('Recent Highlights', 'recentHighlights', profileInfo.recentHighlights)}
           </div>
 
-          <div className="bg-yellow-200 font-semibold text-gray-800 px-3 py-1 inline-block mt-6 mb-3 rounded">
+          <div className="bg-secondary-light font-semibold text-gray-800 px-3 py-1 inline-block mt-6 mb-3 rounded">
             Goals and Motivations
           </div>
           <div className="space-y-4">
@@ -138,8 +155,8 @@ function ProfileAbout({ user, isOwner }) {
       </div>
 
       {/* Other Sports */}
-      <div className="bg-blue-100 p-6 rounded-md w-full">
-        <div className="bg-yellow-200 font-semibold text-gray-800 px-3 py-1 inline-block mb-4 rounded">
+      <div className="bg-primary-light p-6 rounded-md w-full">
+        <div className="bg-secondary-light font-semibold text-gray-800 px-3 py-1 inline-block mb-4 rounded">
           Other Sports that He Interesting
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -149,17 +166,6 @@ function ProfileAbout({ user, isOwner }) {
           {renderField('Achievements and Milestones', 'otherAchievements', profileInfo.otherAchievements)}
         </div>
       </div>
-
-      {editing && isOwner && (
-        <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 mt-4"
-          >
-            Save
-          </button>
-        </div>
-      )}
 
       {status && <p className="text-sm text-green-600 mt-2">{status}</p>}
     </div>

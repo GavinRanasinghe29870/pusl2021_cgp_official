@@ -13,10 +13,25 @@ const registrationApprovalSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // Store both club ID and username
+  clubId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Clubuser',
+    required: true
+  },
   uploadedBy: {
     type: String,
     ref: 'Clubuser',
     required: true
+  },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
+  remarks: {
+    type: String,
+    default: ""
   }
 });
 

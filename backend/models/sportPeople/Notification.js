@@ -11,7 +11,8 @@ const notificationSchema = new mongoose.Schema(
             type: String,
             enum: [
                 'like', 
-                'comment', 
+                'comment',
+                'newFriendRequest',
                 'friendRequestAccepted', 
                 'clubRequestAccepted',
                 'clubRequestRejected', 
@@ -22,6 +23,10 @@ const notificationSchema = new mongoose.Schema(
         relatedUser: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+        },
+        relatedRequest: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'FriendRequest',
         },
         relatedClub: {
             type: mongoose.Schema.Types.ObjectId,

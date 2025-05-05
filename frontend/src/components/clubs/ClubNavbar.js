@@ -1,25 +1,59 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { IoNotifications } from "react-icons/io5";
 import { FiMenu } from "react-icons/fi";
 import { FiUser } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
+import { IoIosArrowUp } from "react-icons/io";
 import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
+import { IoChatbubble } from "react-icons/io5";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { useClubAuthStore } from '../../store/useClubAuthStore';
+import NotificationBell from '../common/NotificationBell';
 const logo = '/logo.png';
 
 const ClubNavbar = () => {
+    const { club, logout } = useClubAuthStore();
+    const navigate = useNavigate();
     const [animationParent] = useAutoAnimate();
     const [isSideMenuOpen, setSideMenue] = useState(false);
+    const [searchOpen, setSearchOpen] = React.useState(false);
+    const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const profileDropdownRef = useRef(null);
+    const backendURL = 'http://localhost:5000';
+
     function openSideMenu() {
         setSideMenue(true);
     }
+
     function closeSideMenu() {
         setSideMenue(false);
     }
-    const [searchOpen, setSearchOpen] = React.useState(false);
+
+    const toggleDropdown = () => {
+        setProfileDropdownOpen(!profileDropdownOpen);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                (profileDropdownRef.current &&
+                    !profileDropdownRef.current.contains(event.target))
+            ) {
+                setProfileDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <nav className='sticky top-0 z-50 shadow-md'>
             <div className='hidden md:flex mb-1 px-6 bg-primary-light py-1 justify-end gap-6 rounded-b-2xl text-xs xl:text-base'>
@@ -41,7 +75,7 @@ const ClubNavbar = () => {
                     </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
-                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8 py-4'>
+                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-12 py-4'>
                             <li>
                                 <NavLink to="/club/home" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Home</NavLink>
                             </li>
@@ -51,9 +85,6 @@ const ClubNavbar = () => {
                             <li>
                                 <NavLink to="/RequestMember" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Requested Members</NavLink>
                             </li>
-                            <li>
-                                <NavLink to="/ClubPortfolio" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active">Club Portfolio</NavLink>
-                            </li>
                         </ul>
                     </div>
                     {/* Icon Section */}
@@ -61,14 +92,68 @@ const ClubNavbar = () => {
                         <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2' onClick={() => setSearchOpen(!searchOpen)}>
                             <LuSearch className='text-xl xl:text-2xl' />
                         </button>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                            <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                        </button>
-                        <NavLink to="/Signin">
+
+                        <NotificationBell />
+
+                        <NavLink to="/club/chat">
                             <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                                <FiUser className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                                <IoChatbubble className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
                             </button>
                         </NavLink>
+                        {club ? (
+                            <div className='relative'>
+                                <div
+                                    className='gap-2 flex items-center hover:bg-opacity-15 hover:bg-primary rounded-full p-2'
+                                    onClick={toggleDropdown}
+                                >
+                                    <div className="size-6 xl:size-8 rounded-full relative">
+                                        <img src={club.profilePhoto ? `${backendURL}${club.profilePhoto}` : '/defaultProfilePic.jpg'} alt={club.ClubName} className='rounded-full' />
+                                    </div>
+                                    <IoIosArrowUp
+                                        className={`text-md xl:text-xl transition-transform duration-200 ${profileDropdownOpen ? 'rotate-0' : 'rotate-180'
+                                            }`}
+                                    />
+                                </div>
+                                {profileDropdownOpen && (
+                                    <div
+                                        className='absolute right-0 mt-2 bg-white shadow-lg rounded-b-xl'
+                                        ref={profileDropdownRef}
+                                    >
+                                        <div className='flex flex-col items-center w-60 gap-3 px-6 py-4 text-sm text-gray-700 font-semibold border-b'>
+                                            <div className="size-12 xl:size-16 rounded-full relative">
+                                                <img src={club.profilePhoto ? `${backendURL}${club.profilePhoto}` : '/defaultProfilePic.jpg'} alt={club.ClubName} className='rounded-full' />
+                                            </div>
+                                            <div>Welcome, {club.ClubName}</div>
+                                        </div>
+                                        <div className='py-4'>
+                                            <button
+                                                className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
+                                                onClick={() => {
+                                                    if (club?._id) {
+                                                        navigate(`/club/${club._id}`);
+                                                    }
+                                                }}
+
+                                            >
+                                                Profile
+                                            </button>
+                                            <button
+                                                className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
+                                                onClick={logout}
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <NavLink to="/Signin">
+                                <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                                    <FiUser className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                                </button>
+                            </NavLink>
+                        )}
                     </div>
                 </div>
                 <div className='relative flex justify-center'>
@@ -119,9 +204,6 @@ function MobileNav({ closeSideMenu }) {
                     </li>
                     <li>
                         <NavLink to="/RequestMember" className='mobile-nav' activeClassName="active">Reegisted Members</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/ClubPortfolio" className='mobile-nav flex items-center' activeClassName="active">Club Portfolio</NavLink>
                     </li>
                 </ul>
             </div>
