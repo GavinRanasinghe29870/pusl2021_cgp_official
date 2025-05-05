@@ -1,23 +1,24 @@
 const mongoose = require("mongoose");
 
-const memberSchema = new mongoose.Schema({
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const memberSchema = new mongoose.Schema(
+  {
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    recipient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Clubuser",
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "accepted", "rejected"],
+      default: "pending",
+    },
   },
-  recipient: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Clubuser",
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ["pending", "accepted", "rejected"],
-    default: "pending",
-  },
-},
-  { timeseries: true }
+  { timestamps: true }
 );
 
 const Member = mongoose.model("Member", memberSchema);
