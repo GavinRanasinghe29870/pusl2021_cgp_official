@@ -52,18 +52,24 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 // Get all uploaded PDFs with file URL
 router.get("/files", async (req, res) => {
   try {
-    const files = await RegistrationApproval.find();
-    
-    // Construct file URLs
-    const formattedFiles = files.map((file) => ({
+    const files = await RegistrationApproval.find()
+      .populate("clubId", "ClubName sportCategory logo");
+
+    // Filter out files with missing clubId
+    const validFiles = files.filter(file => file.clubId);
+
+    const formattedFiles = validFiles.map((file) => ({
       _id: file._id,
       fileName: file.fileName,
       fileUrl: `http://localhost:5000/uploads/pdfs/${file.fileName}`,
       uploadedAt: file.uploadedAt,
       uploadedBy: file.uploadedBy,
-      clubId: file.clubId,
+      clubId: file.clubId._id,
+      clubName: file.clubId.ClubName,
+      sportCategory: file.clubId.sportCategory,
+      logo: file.clubId.logo,
       status: file.status || "pending",
-      remarks: file.remarks || ""
+      remarks: file.remarks || "",
     }));
 
     res.status(200).json(formattedFiles);

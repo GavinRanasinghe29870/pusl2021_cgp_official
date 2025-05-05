@@ -183,7 +183,7 @@ const NotificationBell = () => {
             </button>
             {notificationDropdownOpen && (
                 <div
-                    className='absolute right-0 mt-3 bg-white shadow-lg rounded-b-xl w-60 lg:w-96'
+                    className='absolute right-0 mt-3 bg-white shadow-lg rounded-b-xl'
                     ref={notificationDropdownRef}
                 >
                     <div className='flex flex-col items-start gap-3 px-4 py-3 text-sm text-gray-700 font-semibold'>
@@ -233,14 +233,20 @@ const NotificationBell = () => {
                                                     {notification.type === "newFriendRequest" && (
                                                         <>
                                                             <button
-                                                                onClick={() => handleAcceptFriendRequest(notification.relatedRequestId)}
+                                                                onClick={() => {
+                                                                    handleAcceptFriendRequest(notification.relatedRequestId);
+                                                                    markAsRead(notification._id);
+                                                                }}
                                                                 className='p-1 bg-green-100 text-green-600 rounded hover:bg-green-200 transition-colors'
                                                                 aria-label='Accept friend request'
                                                             >
                                                                 <Check size={24} className='text-green-600' />
                                                             </button>
                                                             <button
-                                                                onClick={() => handleRejectFriendRequest(notification.relatedRequestId)}
+                                                                onClick={() => {
+                                                                    handleRejectFriendRequest(notification.relatedRequestId)
+                                                                    markAsRead(notification._id);
+                                                                }}
                                                                 className='p-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors'
                                                                 aria-label='Reject friend request'
                                                             >
