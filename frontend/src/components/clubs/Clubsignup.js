@@ -5,6 +5,25 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Validation functions
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePassword = (password) => {
+  return password.length >= 6;
+};
+
+const validateUsername = (username) => {
+  return username.length >= 3;
+};
+
+const validateMobile = (mobile) => {
+  const mobileRegex = /^\d{10}$/;
+  return mobileRegex.test(mobile);
+};
+
 const ClubSignup = () => {
   const [formData, setFormData] = useState({
     ClubName: "",
@@ -18,6 +37,16 @@ const ClubSignup = () => {
     sportCategory: "",
   });
 
+  // Error states for form validation
+  const [errors, setErrors] = useState({
+    ClubName: "",
+    Clubusername: "",
+    password: "",
+    confirmPassword: "",
+    mobile: "",
+    email: "",
+  });
+
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -28,12 +57,107 @@ const ClubSignup = () => {
     console.log("Form Data Updated:", formData);
   }, [formData]);
 
+  const validateField = (name, value) => {
+    let errorMessage = "";
+    
+    switch (name) {
+      case "ClubName":
+        if (value.trim() === "") {
+          errorMessage = "Club Name is required";
+        }
+        break;
+      case "Clubusername":
+        if (value.trim() === "") {
+          errorMessage = "Username is required";
+        } else if (!validateUsername(value)) {
+          errorMessage = "Username must be at least 3 characters";
+        }
+        break;
+      case "password":
+        if (value.trim() === "") {
+          errorMessage = "Password is required";
+        } else if (!validatePassword(value)) {
+          errorMessage = "Password must be at least 6 characters";
+        }
+        break;
+      case "confirmPassword":
+        if (value.trim() === "") {
+          errorMessage = "Please confirm your password";
+        } else if (value !== formData.password) {
+          errorMessage = "Passwords do not match";
+        }
+        break;
+      case "mobile":
+        if (value.trim() === "") {
+          errorMessage = "Mobile number is required";
+        } else if (!validateMobile(value)) {
+          errorMessage = "Mobile number must be 10 digits";
+        }
+        break;
+      case "email":
+        if (value.trim() === "") {
+          errorMessage = "Email is required";
+        } else if (!validateEmail(value)) {
+          errorMessage = "Please enter a valid email address";
+        }
+        break;
+      default:
+        break;
+    }
+    
+    return errorMessage;
+  };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    // Validate the field and update errors
+    const errorMessage = validateField(name, value);
+    setErrors({ ...errors, [name]: errorMessage });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+    
+    // Validate each field
+    Object.keys(formData).forEach(key => {
+      if (key === "ClubName" || key === "Clubusername" || key === "password" || 
+          key === "confirmPassword" || key === "mobile" || key === "email") {
+        const errorMessage = validateField(key, formData[key]);
+        if (errorMessage) {
+          newErrors[key] = errorMessage;
+          isValid = false;
+        }
+      }
+    });
+    
+    // Additional validation for password confirmation
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+    
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate all fields first
+    if (!validateForm()) {
+      // Display the first error found
+      for (const key in errors) {
+        if (errors[key]) {
+          toast.error(errors[key], { position: "top-center" });
+          return;
+        }
+      }
+      return;
+    }
+    
     setLoading(true);
 
     if (!formData.sportLevel) {
@@ -44,25 +168,6 @@ const ClubSignup = () => {
     
     if (!formData.sportCategory) {
       toast.error("Please select a Sport Category.", { position: "top-center" });
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.ClubName || !formData.Clubusername || !formData.password ||
-      !formData.confirmPassword || !formData.mobile || !formData.email) {
-      toast.error("All required fields must be filled.", { position: "top-center" });
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters long.", { position: "top-center" });
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match!", { position: "top-center" });
       setLoading(false);
       return;
     }
@@ -135,11 +240,12 @@ const ClubSignup = () => {
                       type="text"
                       name="ClubName"
                       placeholder="Club Name"
-                      className="w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                      className={`w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary ${errors.ClubName ? "border-red-500" : ""}`}
                       value={formData.ClubName}
                       onChange={handleChange}
                       required
                     />
+                    {errors.ClubName && <p className="text-red-500 text-xs mt-1">{errors.ClubName}</p>}
                   </div>
 
                   <div className="mb-3">
@@ -147,12 +253,13 @@ const ClubSignup = () => {
                     <input
                       type="text"
                       name="Clubusername"
-                      placeholder="Club Username"
-                      className="w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                      placeholder="Club Username (min 3 characters)"
+                      className={`w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary ${errors.Clubusername ? "border-red-500" : ""}`}
                       value={formData.Clubusername}
                       onChange={handleChange}
                       required
                     />
+                    {errors.Clubusername && <p className="text-red-500 text-xs mt-1">{errors.Clubusername}</p>}
                   </div>
                 </div>
 
@@ -164,7 +271,7 @@ const ClubSignup = () => {
                         type={showPassword ? "text" : "password"}
                         name="password"
                         placeholder="Password (min 6 characters)"
-                        className="w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary ${errors.password ? "border-red-500" : ""}`}
                         value={formData.password}
                         onChange={handleChange}
                         required
@@ -177,9 +284,7 @@ const ClubSignup = () => {
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
-                    {formData.password && formData.password.length < 6 && (
-                      <p className="text-red-500 text-xs mt-1">Password must be at least 6 characters</p>
-                    )}
+                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                   </div>
 
                   {/* Confirm Password */}
@@ -190,7 +295,7 @@ const ClubSignup = () => {
                         type={showConfirmPassword ? "text" : "password"}
                         name="confirmPassword"
                         placeholder="Re-enter Password"
-                        className="w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                        className={`w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary ${errors.confirmPassword ? "border-red-500" : ""}`}
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         required
@@ -203,6 +308,7 @@ const ClubSignup = () => {
                         {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
+                    {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
                   </div>
                 </div>
 
@@ -213,12 +319,13 @@ const ClubSignup = () => {
                     <input
                       type="text"
                       name="mobile"
-                      placeholder="Mobile"
-                      className="w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                      placeholder="Mobile (10 digits)"
+                      className={`w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary ${errors.mobile ? "border-red-500" : ""}`}
                       value={formData.mobile}
                       onChange={handleChange}
                       required
                     />
+                    {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
                   </div>
 
                   {/* Email */}
@@ -228,11 +335,12 @@ const ClubSignup = () => {
                       type="email"
                       name="email"
                       placeholder="Email"
-                      className="w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                      className={`w-full px-4 py-3 border rounded bg-blue-50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary ${errors.email ? "border-red-500" : ""}`}
                       value={formData.email}
                       onChange={handleChange}
                       required
                     />
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                   </div>
                 </div>
 
