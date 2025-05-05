@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaFileUpload, FaTimes } from "react-icons/fa"; // Font Awesome icons
+import { FaFileUpload, FaTimes, FaCheck, FaTimes as FaReject, FaClock } from "react-icons/fa"; // Font Awesome icons
 
 const RegistrationApproval = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -114,6 +114,30 @@ const RegistrationApproval = () => {
       alert("❌ Deletion failed: " + error.message);
     }
   };
+
+  // Function to get appropriate badge color based on status
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "accepted":
+        return "bg-green-100 text-green-800 border-green-300";
+      case "rejected":
+        return "bg-red-100 text-red-800 border-red-300";
+      default: // pending
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+    }
+  };
+
+  // Function to get appropriate icon based on status
+  const StatusIcon = ({ status }) => {
+    switch (status) {
+      case "accepted":
+        return <FaCheck className="text-green-600" />;
+      case "rejected":
+        return <FaReject className="text-red-600" />;
+      default: // pending
+        return <FaClock className="text-yellow-600" />;
+    }
+  };
   
   return (
     <div className="w-full min-h-screen bg-primary-light flex flex-col items-center py-10 px-4 font-body">
@@ -190,7 +214,7 @@ const RegistrationApproval = () => {
           Submit
         </button>
 
-        {/* Display Uploaded Files */}
+        {/* Display Uploaded Files with Status */}
         <div className="mt-6">
           <h3 className="text-lg font-semibold">Your Uploaded Documents</h3>
           {!username ? (
@@ -198,26 +222,51 @@ const RegistrationApproval = () => {
           ) : uploadedFiles.length === 0 ? (
             <p>You haven't uploaded any files yet</p>
           ) : (
-            <ul className="list-disc list-inside">
-              {uploadedFiles.map((file) => (
-                <li key={file._id} className="flex justify-between items-center my-2">
-                  <a
-                    href={file.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline"
-                  >
-                    {file.fileName}
-                  </a>
-                  <button
-                    onClick={() => handleDeleteFile(file._id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded-lg ml-4 hover:bg-red-700 transition"
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-4">
+              <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document</th>
+                    <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded On</th>
+                    <th className="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {uploadedFiles.map((file) => (
+                    <tr key={file._id} className="hover:bg-gray-50">
+                      <td className="py-3 px-4">
+                        <a
+                          href={file.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {file.fileName}
+                        </a>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(file.status)}`}>
+                          <StatusIcon status={file.status} className="mr-1" />
+                          <span className="ml-1 capitalize">{file.status || "pending"}</span>
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-sm text-gray-500">
+                        {new Date(file.uploadedAt).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => handleDeleteFile(file._id)}
+                          className="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-700 transition"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

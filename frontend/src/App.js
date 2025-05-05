@@ -113,9 +113,10 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/ClubPortfolio" element={<ClubPortfolio />} />
-        <Route path="/Clubmaker" element={<ClubMakerPage />} />
-        <Route path="/Checkout" element={<CheckoutPage />} />
+        {/* Dynamic Route for ClubPortfolio */}
+      <Route path="/ClubPortfolio/:id" element={<ClubPortfolio />} />
+        <Route path="/Clubmaker" element={<ClubMakerPage />}/>
+        <Route path="/Checkout" element={<CheckoutPage />}/>
         <Route path="/shop" element={<ProductPage />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/Signin" element={<Signin />} />
@@ -167,7 +168,7 @@ function App() {
 
         <Route path="/Donorportfolio" element={<DonorPortfolio />} />
         <Route path="/club-chat" element={<ClubChat />} />
-        <Route path="/club/chat" element={<ClubChat />} />
+        <Route path="/chat" element={<ClubChat />} />
         <Route path="/helpcenter" element={<HelpCenterPage />} />
         <Route path="/friend-chat" element={<FriendChat />} />
 
@@ -179,8 +180,7 @@ function App() {
         "/Clubsignin",
         "/Signup",
         "/Clubsignup",
-        "/club-chat",
-        "/club/chat",
+        "/chat",
       ].includes(location.pathname) ? null : [
         "/club/home",
         "/ClubPortfolio",

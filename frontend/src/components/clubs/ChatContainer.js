@@ -1,8 +1,9 @@
 import React from 'react';
 import { useChatStore } from '../../store/useChatStore';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, X, Paperclip, Smile, SendHorizonal } from "lucide-react";
+import { ChevronLeft, X, Paperclip, SendHorizonal } from "lucide-react";
 import { useAuthStore } from '../../store/useAuthStore';
+import { useClubAuthStore } from '../../store/useClubAuthStore';
 import { formatMessageTime } from '../../lib/utils';
 import EmojiPicker from './EmojiPicker';
 import { format, isToday, isYesterday } from 'date-fns';
@@ -14,8 +15,11 @@ const ChatContainer = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
     const { user } = useAuthStore();
+    const { club } = useClubAuthStore();
+
     const messageEndRef = useRef(null);
-    const { onlineUsers } = useAuthStore();
+    const { onlineUsers: authOnlineUsers } = useAuthStore();
+    const { onlineUsers: clubOnlineUsers } = useClubAuthStore();
     const backendURL = 'http://localhost:5000';
 
     const handleImageChange = (e) => {
@@ -116,15 +120,22 @@ const ChatContainer = () => {
                         {/* Avatar */}
                         <div className="avatar">
                             <div className="size-10 rounded-full relative">
-                                <img src={selectedUser.profilePhoto? `${backendURL}${selectedUser.profilePhoto}` : '/defaultProfilePic.jpg'} alt={selectedUser.firstName} className='rounded-full' />
+                                <img
+                                    src={selectedUser.profilePhoto ? `${backendURL}${selectedUser.profilePhoto}` : '/defaultProfilePic.jpg'}
+                                    className='rounded-full'
+                                    alt={selectedUser.firstName || selectedUser.ClubName || "User profile"}
+                                />
                             </div>
                         </div>
 
                         {/* User info */}
                         <div>
-                            <h3 className="font-medium">{selectedUser.firstName}</h3>
+                            <h3 className="font-medium">{selectedUser.firstName || selectedUser.ClubName}</h3>
                             <p className="text-sm text-base-content/70">
-                                {onlineUsers && onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
+                                {(authOnlineUsers && authOnlineUsers.includes(selectedUser._id)) ||
+                                    (clubOnlineUsers && clubOnlineUsers.includes(selectedUser._id))
+                                    ? "Online"
+                                    : "Offline"}
                             </p>
                         </div>
                     </div>
@@ -143,40 +154,43 @@ const ChatContainer = () => {
                         </div>
 
                         {/* Messages for this date */}
-                        {messages.map((message) => (
-                            <div
-                                key={message._id}
-                                className={`flex items-end py-1 md:px-3 ${message.senderId === user._id ? "justify-end" : "justify-start"}`}
-                                ref={messageEndRef}
-                            >
-                                {/* Chat Bubble */}
+                        {messages.map((message) => {
+                            const isSender = user ? message.senderId === user._id : message.senderId === club._id;
+                            return (
                                 <div
-                                    className={`max-w-2xl px-4 py-2 rounded-xl shadow-md ${message.senderId === user._id
-                                        ? "bg-blue-600 text-white rounded-br-none"
-                                        : "bg-gray-300 text-black rounded-tl-none"
-                                        }`}
+                                    key={message._id}
+                                    className={`flex items-end py-1 md:px-3 ${isSender ? "justify-end" : "justify-start"}`}
+                                    ref={messageEndRef}
                                 >
-                                    {/* Image (if any) */}
-                                    {message.image && (
-                                        <img
-                                            src={message.image}
-                                            alt="Attachment"
-                                            className="max-w-[200px] rounded-md my-2"
-                                        />
-                                    )}
+                                    {/* Chat Bubble */}
+                                    <div
+                                        className={`max-w-2xl px-4 py-2 rounded-xl shadow-md ${isSender
+                                            ? "bg-blue-600 text-white rounded-br-none"
+                                            : "bg-gray-300 text-black rounded-tl-none"
+                                            }`}
+                                    >
+                                        {/* Image (if any) */}
+                                        {message.image && (
+                                            <img
+                                                src={message.image}
+                                                alt="Attachment"
+                                                className="max-w-[200px] rounded-md my-2"
+                                            />
+                                        )}
 
-                                    <div className='flex justify-between items-center'>
-                                        {/* Message Text */}
-                                        {message.text && <p className="text-sm max-w-lg">{message.text}</p>}
+                                        <div className='flex justify-between items-center'>
+                                            {/* Message Text */}
+                                            {message.text && <p className="text-sm max-w-lg">{message.text}</p>}
 
-                                        {/* Time */}
-                                        <time className="mt-3 text-xs w-16 opacity-50 block text-right">
-                                            {formatMessageTime(message.createdAt)}
-                                        </time>
+                                            {/* Time */}
+                                            <time className="mt-3 text-xs w-16 opacity-50 block text-right">
+                                                {formatMessageTime(message.createdAt)}
+                                            </time>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 ))}
             </div>
