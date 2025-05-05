@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Sale = require("../../models/admin/salesModel"); 
-
-// Stripe setup
-// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY); // Stripe setup
 
 router.post("/create-checkout-session", async (req, res) => {
   const { cartItems, user } = req.body;
@@ -14,7 +12,7 @@ router.post("/create-checkout-session", async (req, res) => {
     }
 
     // Insert sales into MongoDB
-    const insertions = await Promise.all(
+    await Promise.all(
       cartItems.map((item) => {
         const sale = new Sale({
           orderId: Math.floor(Math.random() * 1000000),
@@ -29,7 +27,6 @@ router.post("/create-checkout-session", async (req, res) => {
         return sale.save();
       })
     );
-    
 
     // Create line items for Stripe checkout
     const lineItems = cartItems.map((item) => ({
@@ -38,11 +35,12 @@ router.post("/create-checkout-session", async (req, res) => {
         product_data: {
           name: item.productId?.pd_name || "Unnamed Product",
         },
-        unit_amount: Math.round(item.price * 100), 
+        unit_amount: Math.round(item.price * 100), // Stripe expects amount in cents
       },
       quantity: item.quantity,
     }));
 
+    // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
