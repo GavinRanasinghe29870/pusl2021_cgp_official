@@ -102,9 +102,10 @@ const userSchema = new mongoose.Schema(
 registeredClubs: [
   {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Clubuser',
   }
 ],
+
 
 
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
