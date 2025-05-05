@@ -79,11 +79,11 @@ const acceptFriendRequest = async (req, res) => {
         await User.findByIdAndUpdate(userId, { $addToSet: { friends: request.sender._id } });
 
         const notification = new Notification({
-            recipient: userId,
-            type: "newFriendRequest",
-            relatedUser: senderId,
-            relatedRequest: newRequest._id,
-          });
+            recipient: request.sender._id,
+            type: "friendRequestAccepted",
+            relatedUser: userId,
+            relatedRequest: request._id,
+        });
 
         await notification.save();
 

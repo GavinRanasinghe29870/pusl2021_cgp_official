@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { NavLink,  useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
-import { IoNotifications } from "react-icons/io5";
+import { IoChatbubble } from "react-icons/io5";
 import { MdOutlineShoppingBag } from "react-icons/md";
-import { FiMenu } from "react-icons/fi";
-import { FiUser } from "react-icons/fi";
+import { FiMenu, FiUser } from "react-icons/fi";
 import { FaShoppingCart } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoLogOut } from "react-icons/io5";
+import { FaUserFriends, FaRegBuilding } from "react-icons/fa";
 import { IoIosArrowUp } from "react-icons/io";
+import { CgProfile } from "react-icons/cg";
 import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useAuthStore } from '../../store/useAuthStore';
+import NotificationBell from '../common/NotificationBell';
+// import { useClubAuthStore } from '../../store/useClubAuthStore';
 const logo = '/logo.png';
 
 const SportPeopleNavbar = () => {
     const { user, logout } = useAuthStore();
+    // const { club } = useClubAuthStore();
     const navigate = useNavigate();
     const [animationParent] = useAutoAnimate();
     const [isSideMenuOpen, setSideMenu] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-    const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
-    const [notifications, setNotifications] = useState([]);
-    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const profileDropdownRef = useRef(null);
+
+    const backendURL = 'http://localhost:5000';
 
     const openSideMenu = () => {
         setSideMenu(true);
@@ -38,24 +43,20 @@ const SportPeopleNavbar = () => {
         setProfileDropdownOpen(!profileDropdownOpen);
     };
 
-    const toggleNotificationDropdown = () => {
-        setNotificationDropdownOpen(!notificationDropdownOpen);
-    };
-
-    const fetchNotifications = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/api/notifications');
-            const notifications = response.data;
-            const unreadNotificationCount = notifications.filter((notif) => !notif.read).length || 0;
-            setNotifications(notifications);
-            setUnreadNotificationCount(unreadNotificationCount);
-        } catch (error) {
-            console.error('Error fetching notifications:', error);
-        }
-    };
-
     useEffect(() => {
-        fetchNotifications();
+        const handleClickOutside = (event) => {
+            if (
+                (profileDropdownRef.current &&
+                    !profileDropdownRef.current.contains(event.target))
+            ) {
+                setProfileDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, []);
 
     return (
@@ -79,22 +80,12 @@ const SportPeopleNavbar = () => {
                     </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
-                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8'>
+                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8 py-4'>
                             <li>
                                 <NavLink to="/" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Home</NavLink>
                             </li>
-                            <li className="relative group">
-                                <a className="relative cursor-pointer flex items-center gap-2 font-body text-sm xl:text-base py-5 px-3 text-gray-700 group-hover:text-primary font-semibold">
-                                    Club Center <IoIosArrowUp className="text-xl rotate-180 transition-all group-hover:rotate-0" />
-                                </a>
-                                <div className="absolute top-full left-0 hidden w-44 xl:w-64 flex-col rounded-b-xl bg-white py-4 shadow-lg transition-all group-hover:flex">
-                                    <NavLink to="/RegisteredClubs" className="flex items-center font-body text-sm xl:text-base gap-3 px-5 py-3 text-gray-700 hover:text-primary hover:bg-primary-light font-semibold" activeClassName="active">
-                                        Registered Clubs
-                                    </NavLink>
-                                    <NavLink to="/club-chat" className="flex items-center font-body text-sm xl:text-base gap-3 px-5 py-3 text-gray-700 hover:text-primary font-semibold hover:bg-primary-light" activeClassName="active">
-                                        Club Chat
-                                    </NavLink>
-                                </div>
+                            <li>
+                                <NavLink to="/aa" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Club Center</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/aa" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Friend Zone</NavLink>
@@ -112,29 +103,14 @@ const SportPeopleNavbar = () => {
                         <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2' onClick={() => setSearchOpen(!searchOpen)}>
                             <LuSearch className='text-xl xl:text-2xl' />
                         </button>
-                        <div className='relative' ref={animationParent}>
-                            <button
-                                className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'
-                                onClick={toggleNotificationDropdown}
-                            >
-                                <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                                {unreadNotificationCount > 0 && (
-                                    <span
-                                        className='absolute top-1 right-1 bg-red-600 text-white text-xs 
-										rounded-full size-3 md:size-4 flex items-center justify-center'
-                                    >
-                                        {unreadNotificationCount}
-                                    </span>
-                                )}
+
+                        <NotificationBell />
+
+                        <NavLink to="/chat">
+                            <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                                <IoChatbubble className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
                             </button>
-                            {notificationDropdownOpen && (
-                                <div className='absolute right-0 mt-3 bg-white shadow-lg rounded-b-xl w-60 lg:w-80'>
-                                    <div className='flex flex-col items-start gap-3 px-4 py-3 text-sm text-gray-700 font-semibold'>
-                                        // Notification List
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                        </NavLink>
                         <NavLink to="/cart">
                             <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
                                 <FaShoppingCart className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
@@ -147,7 +123,7 @@ const SportPeopleNavbar = () => {
                                     onClick={toggleDropdown}
                                 >
                                     <div className="size-6 xl:size-8 rounded-full relative">
-                                        <img src={user.profilePic || "/defaultProfilePic.jpg"} alt={user.firstName} className='rounded-full' />
+                                        <img src={user.profilePhoto ? `${backendURL}${user.profilePhoto}` : '/defaultProfilePic.jpg'} alt={user.firstName} className='rounded-full' />
                                     </div>
                                     <IoIosArrowUp
                                         className={`text-md xl:text-xl transition-transform duration-200 ${profileDropdownOpen ? 'rotate-0' : 'rotate-180'
@@ -155,29 +131,46 @@ const SportPeopleNavbar = () => {
                                     />
                                 </div>
                                 {profileDropdownOpen && (
-                                    <div className='absolute right-0 mt-2 bg-white shadow-lg rounded-b-xl'>
+                                    <div
+                                        className='absolute right-0 mt-2 bg-white shadow-lg rounded-b-xl'
+                                        ref={profileDropdownRef}
+                                    >
                                         <div className='flex flex-col items-center w-60 gap-3 px-6 py-4 text-sm text-gray-700 font-semibold border-b'>
                                             <div className="size-12 xl:size-16 rounded-full relative">
-                                                <img src={user.profilePic || "/defaultProfilePic.jpg"} alt={user.firstName} className='rounded-full' />
+                                                <img src={user.profilePhoto ? `${backendURL}${user.profilePhoto}` : '/defaultProfilePic.jpg'} alt={user.firstName} className='rounded-full' />
                                             </div>
                                             <div>{user.username}</div>
                                         </div>
                                         <div className='py-4'>
                                             <button
                                                 className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
+                                            >
+                                                <FaRegBuilding className='text-2xl inline-block mr-3' />
+                                                Registered Clubs
+                                            </button>
+                                            <button
+                                                className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
+                                            >
+                                                <FaUserFriends className='text-2xl inline-block mr-3' />
+                                                Friends
+                                            </button>
+                                            <button
+                                                className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
                                                 onClick={() => {
                                                     if (user?._id) {
-                                                      navigate(`/profile/${user._id}`);
+                                                        navigate(`/profile/${user._id}`);
                                                     }
-                                                  }}
-                                                  
+                                                }}
+
                                             >
+                                                <CgProfile className='text-2xl inline-block mr-3' />
                                                 Profile
                                             </button>
                                             <button
                                                 className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
                                                 onClick={logout}
                                             >
+                                                <IoLogOut className='text-2xl inline-block mr-3' />
                                                 Logout
                                             </button>
                                         </div>
@@ -236,14 +229,8 @@ function MobileNav({ closeSideMenu }) {
                     <li>
                         <NavLink to="/" className='mobile-nav' activeClassName="active">Home</NavLink>
                     </li>
-                    <li className='relative group' ref={animationParent}>
-                        <a onClick={toggleDropdown} className='relative flex items-center gap-2 font-body text-base py-1 px-1 text-gray-700 group-hover:text-primary font-semibold cursor-pointer'>
-                            Club Center <IoIosArrowUp className={`text-xl transition-transform ${isDropdownOpen ? 'rotate-0' : 'rotate-180'}`} />
-                        </a>
-                        <div className={`right-0 top-10 flex-col gap-4 px-5 transition-all ${isDropdownOpen ? 'flex' : 'hidden'}`}>
-                            <NavLink to="/RegisteredClubs" className='font-body text-base inline-block pt-5 pb-3 px-3 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Registered Clubs</NavLink>
-                            <NavLink to="/club-chat" className='font-body text-base inline-block px-3 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Club Chat</NavLink>
-                        </div>
+                    <li>
+                        <NavLink to="" className='mobile-nav' activeClassName="active">Club Center</NavLink>
                     </li>
                     <li>
                         <NavLink to="/friend-zone" className='mobile-nav' activeClassName="active">Friend Zone</NavLink>
