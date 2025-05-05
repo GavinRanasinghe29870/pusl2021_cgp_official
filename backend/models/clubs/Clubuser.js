@@ -24,6 +24,11 @@ const ClubuserSchema = new mongoose.Schema({
       "Swimming",
     ]
   },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
 
   location: { type: String, default: null },
   description: { type: String, default: null },

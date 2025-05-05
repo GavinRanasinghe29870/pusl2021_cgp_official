@@ -12,11 +12,15 @@ const getUsersForSidebar = async (req, res) => {
         if (req.user) {
             const loggedInUserId = req.user._id;
 
-            const loggedInUser = await User.findById(loggedInUserId).select("friends");
+            const loggedInUser = await User.findById(loggedInUserId)
+                .populate('friends', '-password')
+                .populate('registeredClubs', '-password');
+
             const friends = loggedInUser.friends;
+            const registeredClubs = loggedInUser.registeredClubs;
 
             const users = await User.find({ _id: { $in: friends } }).select("-password");
-            const Clubusers = await Clubuser.find({ _id: { $ne: loggedInUserId } }).select("-password");
+            const Clubusers = await Clubuser.find({ _id: { $in: registeredClubs } }).select("-password");
 
             const allUsers = [...users, ...Clubusers];
 
@@ -76,6 +80,15 @@ const getMessages = async (req, res) => {
             const { id: userToChatId } = req.params;
             const myId = req.user._id;
 
+            await Message.updateMany(
+                {
+                    senderId: userToChatId,
+                    receiverId: myId,
+                    read: false
+                },
+                { $set: { read: true } }
+            );
+
             const messages = await Message.find({
                 $or: [
                     { senderId: myId, receiverId: userToChatId },
@@ -87,6 +100,15 @@ const getMessages = async (req, res) => {
         } else if (req.club) {
             const { id: userToChatId } = req.params;
             const myId = req.club._id;
+
+            await Message.updateMany(
+                {
+                    senderId: userToChatId,
+                    receiverId: myId,
+                    read: false
+                },
+                { $set: { read: true } }
+            );
 
             const messages = await Message.find({
                 $or: [
@@ -117,13 +139,27 @@ const sendMessages = async (req, res) => {
 
             await newMessage.save();
 
-            const newNotification = new Notification({
-                recipient: receiverId,
-                type: "message",
-                relatedUser: senderId,
-            });
-
-            await newNotification.save();
+            if (senderId === req.user._id) {
+                const newNotification = new Notification({
+                    recipient: receiverId,
+                    recipientModel: "User", 
+                    type: "message", 
+                    relatedUser: senderId,
+                    relatedUserModel: "User",
+                });
+    
+                await newNotification.save();
+            } else if (senderId === req.club._id) {
+                const newNotification = new Notification({
+                    recipient: receiverId,
+                    recipientModel: "User", 
+                    type: "message", 
+                    relatedUser: senderId,
+                    relatedUserModel: "Clubuser",
+                });
+    
+                await newNotification.save();
+            }
 
             const receiverSocketId = getReceiverSocketId(receiverId);
             if (receiverSocketId) {
@@ -145,8 +181,10 @@ const sendMessages = async (req, res) => {
 
             const newNotification = new Notification({
                 recipient: receiverId,
-                type: "message",
+                recipientModel: "Clubuser", 
+                type: "message", 
                 relatedUser: senderId,
+                relatedUserModel: "User",
             });
 
             await newNotification.save();
@@ -164,6 +202,25 @@ const sendMessages = async (req, res) => {
     }
 };
 
+const getUnreadCount = async (req, res) => {
+    try {
+        const { id: otherUserId } = req.params;
+        const myId = req.user?._id || req.club?._id;
+
+        const count = await Message.countDocuments({
+            senderId: otherUserId,
+            receiverId: myId,
+            read: false
+        });
+
+        res.status(200).json(count);
+    } catch (error) {
+        console.log("Error in getUnreadCount:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+router.get('/unread-count/:id', protectRoute, getUnreadCount);
 router.get('/users', protectRoute, getUsersForSidebar);
 router.get('/:id', protectRoute, getMessages);
 router.post('/send/:id', protectRoute, sendMessages);
