@@ -3,7 +3,7 @@ const router = express.Router();
 const Sale = require("../../models/admin/salesModel"); 
 
 // Stripe setup
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 router.post("/create-checkout-session", async (req, res) => {
   const { cartItems, user } = req.body;
