@@ -26,6 +26,7 @@ import DonorPortfolio from "./components/sportPeople/Donorportfolio";
 import DoneePortfolio from "./components/sportPeople/Doneeportfolio.js";
 import SportPage01 from "./components/sportPeople/sportspage01";
 import SportPage02 from "./components/sportPeople/sportpage02";
+import SportsPage from "./pages/sportPeople/Sportpage03.js";
 import Cart from "./components/sportPeople/cart";
 import ProductPage from "./pages/sportPeople/ProductsPage.js";
 import Singleproduct from "./pages/sportPeople/SingleProd";
@@ -143,6 +144,7 @@ function App() {
         <Route path="/admin/club-approvals" element={<ClubApprovingPage2 />} />
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route path="/regclubs" element={<RegClubs />} />
+        <Route path="/sportpage3" element={<SportsPage />} />
         <Route
           path="/profile:id"
           element={user ? <Navigate to={`/profile/${user._id}`} /> : <Navigate to="/Signin" />}
