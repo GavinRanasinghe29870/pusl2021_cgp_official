@@ -86,7 +86,7 @@ function App() {
 
   const noNavbarPaths = ["/Signin", "/admin/signin", "/Clubsignin", "/Signup", "/Clubsignup"];
   const clubPaths = ["/registrationApproval", "/club/home", "/club/chat", "/ClubPortfolio", "/adpost", "/RequestMember", "/Clubmaker"];
-  const adminPaths = ["/admin/home", "/admin/productManaging", "/salesManage", "/ClubApprovingPage1", "/ClubApprovingPage2"];
+  const adminPaths = ["/admin/home", "/admin/productManaging", "/salesManage", "/admin/club-requests", "/admin/club-approvals"];
 
   const renderNavbar = () => {
     if (noNavbarPaths.includes(path)) return null;
@@ -138,8 +138,8 @@ function App() {
         <Route path="/admin/home" element={<AdminHome />} />
         <Route path="/admin/productManaging" element={<ProductManage />} />
         <Route path="/salesManage" element={<SalesManage />} />
-        <Route path="/ClubApprovingPage1" element={<ClubApprovingPage1 />} />
-        <Route path="/ClubApprovingPage2" element={<ClubApprovingPage2 />} />
+        <Route path="/admin/club-requests" element={<ClubApprovingPage1 />} />
+        <Route path="/admin/club-approvals" element={<ClubApprovingPage2 />} />
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
         <Route
           path="/profile:id"
