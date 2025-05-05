@@ -82,11 +82,10 @@ const ClubMakerPage = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('ClubName', clubData.clubName);
+    formData.append('ClubName', clubData.ClubName);
+    formData.append('_id', club._id);
     formData.append('location', clubData.location);
     formData.append('description', clubData.description);
-    formData.append('_id', club._id);
-    
 
     if (clubData.clubLogo) {
       formData.append('logo', clubData.clubLogo);
@@ -110,10 +109,10 @@ const ClubMakerPage = () => {
       name: member.name
     }))));
     formData.append('headCoach', JSON.stringify({ information: clubData.headCoach.information }));
-    formData.append('facilities', clubData.facilities);
-    formData.append('events', JSON.stringify(clubData.events));
-    formData.append('matchHistory', clubData.clubHistory);
-    formData.append('registrationFee', clubData.registrationFee);
+    formData.append('facilities', JSON.stringify(clubData.facilities || [])); // Ensure facilities is sent as an array
+    formData.append('events', JSON.stringify(clubData.events || [])); // Ensure events is sent as an array
+    formData.append('matchHistory', clubData.clubHistory || ''); // Default to empty string
+    formData.append('registrationFee', clubData.registrationFee || ''); // Default to empty string
 
     try {
       const response = await axios.post('http://localhost:5000/api/club/register', formData, {
@@ -123,8 +122,8 @@ const ClubMakerPage = () => {
       });
 
       console.log('Club user created successfully:', response.data);
-      const clubId = response.data.id; // Use the returned ID
-      window.location.href = `/clubportfolio/${clubId}`; // Redirect to ClubPortfolio page
+      const clubId = response.data.id;
+      window.location.href = `/clubportfolio/${clubId}`;
     } catch (error) {
       console.error('Error creating club user:', error);
     }
