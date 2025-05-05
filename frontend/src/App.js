@@ -58,6 +58,7 @@ import ClubApprovingPage2 from "./components/admin/ClubApprovingPage2.js";
 // Donation Pages
 import DonationRequestForm from "./components/sportPeople/donation";
 import DonatingRequestForm from "./components/sportPeople/donating.js";
+import RegClubs from "./pages/sportPeople/RegisteredClubs.js";
 
 function App() {
   const { user, checkAuth, onlineUsers } = useAuthStore();
@@ -141,6 +142,7 @@ function App() {
         <Route path="/admin/club-requests" element={<ClubApprovingPage1 />} />
         <Route path="/admin/club-approvals" element={<ClubApprovingPage2 />} />
         <Route path="/registrationApproval" element={<RegistrationApproval />} />
+        <Route path="/regclubs" element={<RegClubs />} />
         <Route
           path="/profile:id"
           element={user ? <Navigate to={`/profile/${user._id}`} /> : <Navigate to="/Signin" />}
