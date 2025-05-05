@@ -18,8 +18,8 @@ router.post('/register', upload.fields([
   { name: 'headCoachImage', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    console.log('Request Body:', req.body);
-    console.log('Uploaded Files:', req.files);
+    console.log('Request Body:', req.body); // Logs the form data
+    console.log('Uploaded Files:', req.files); // Logs the uploaded files
 
     const {
       _id,ClubName, location, description, boardMembers, headCoach, facilities, events, matchHistory, registrationFee
@@ -36,29 +36,43 @@ router.post('/register', upload.fields([
       : null;
 
     const boardMemberImages = req.files?.boardMemberImages?.map((file, index) => ({
-      name: JSON.parse(boardMembers)[index]?.name || '',
+      name: JSON.parse(boardMembers || '[]')[index]?.name || '',
       image: `/public/uploads/${file.filename}`,
     })) || [];
 
     const newClubUser = new Clubuser({
       ClubName,
-      location,
-      description,
+      location: location || '', // Default to empty string if not provided
+      description: description || '', // Default to empty string if not provided
       logo: logoUrl,
       photos: photoUrls,
       boardMembers: boardMemberImages,
       headCoach: {
-        information: JSON.parse(headCoach).information,
-        image: headCoachImageUrl
+        information: JSON.parse(headCoach || '{}').information || '', // Default to empty string
+        image: headCoachImageUrl || '' // Default to empty string
       },
-      facilities,
-      events: JSON.parse(events),
-      matchHistory,
-      registrationFee
+      facilities: JSON.parse(facilities || '[]'), // Default to empty array
+      events: JSON.parse(events || '[]'), // Default to empty array
+      matchHistory: matchHistory || '', // Default to empty string
+      registrationFee: registrationFee || '' // Default to empty string
     });
 
-    console.log('New Club User Object:', newClubUser);
-    await newClubUser.updateOne({_id:_id});
+    console.log('New Club User Object:', newClubUser); // Debugging saved object
+    //await newClubUser.save({_id:_id});
+    Clubuser.findById(_id).then((existingUser) => {
+      existingUser.location = location;
+      existingUser.description = description;
+      existingUser.logo = logoUrl;
+      existingUser.photos = photoUrls;
+      existingUser.boardMembers = boardMemberImages;
+      existingUser.headCoach.information = JSON.parse(headCoach || '{}').information || '';
+      existingUser.headCoach.image = headCoachImageUrl || '';
+      existingUser.facilities = JSON.parse(facilities || '[]');
+      existingUser.events = JSON.parse(events || '[]');
+      existingUser.matchHistory = matchHistory || '';
+      existingUser.registrationFee = registrationFee || '';
+      existingUser.save();
+    })
     console.log('Club user saved successfully:', newClubUser);
     res.status(201).json({ message: 'Club user registered successfully', id: newClubUser._id });
   } catch (error) {
