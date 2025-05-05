@@ -4,6 +4,8 @@ import Sidebar from './Sidebar';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import '../../App.css';
+import { useNavigate } from "react-router-dom";
+
 
 const responsive = {
   desktop: { breakpoint: { max: 3000, min: 1024 }, items: 2 },
@@ -15,6 +17,7 @@ const SportPage01 = () => {
   const [clubs, setClubs] = useState([]);
   const [ads, setAds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   // Fetch clubs
   useEffect(() => {
@@ -46,6 +49,11 @@ const SportPage01 = () => {
     club.clubName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Handle club click and navigate to ClubPortfolio
+  const handleClubClick = (clubId) => {
+    navigate(`/ClubPortfolio/${clubId}`);
+  };
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-10 px-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -58,24 +66,23 @@ const SportPage01 = () => {
             {/* 🟡 Advertisement Carousel inside container but above search bar */}
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Sponsored Ads</h3>
             {ads.length > 0 ? (
-  <Carousel responsive={responsive} autoPlay infinite autoPlaySpeed={4000}>
-    {ads.map((ad, index) => (
-      <div key={index} className="bg-white rounded-xl shadow-md p-4 mx-2 h-full">
-        <img
-          src={`http://localhost:5000/uploads/post_images/${ad.image}`}
-          alt={ad.title}
-          className="w-full h-40 object-cover rounded-md mb-3"
-        />
-        <h4 className="font-bold text-lg text-gray-700 mb-1">{ad.title}</h4>
-        <p className="text-sm text-gray-600 mb-1">{ad.content}</p>
-        <p className="text-xs text-gray-400 italic">📧 {ad.email}</p>
-      </div>
-    ))}
-  </Carousel>
-) : (
-  <p className="text-gray-500">No advertisements available.</p>
-)}
-
+              <Carousel responsive={responsive} autoPlay infinite autoPlaySpeed={4000}>
+                {ads.map((ad, index) => (
+                  <div key={index} className="bg-white rounded-xl shadow-md p-4 mx-2 h-full">
+                    <img
+                      src={`http://localhost:5000/uploads/post_images/${ad.image}`}
+                      alt={ad.title}
+                      className="w-full h-40 object-cover rounded-md mb-3"
+                    />
+                    <h4 className="font-bold text-lg text-gray-700 mb-1">{ad.title}</h4>
+                    <p className="text-sm text-gray-600 mb-1">{ad.content}</p>
+                    <p className="text-xs text-gray-400 italic">📧 {ad.email}</p>
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <p className="text-gray-500">No advertisements available.</p>
+            )}
 
             {/* Add some space between ads and club details */}
             <div className="mb-6"></div>
@@ -98,6 +105,7 @@ const SportPage01 = () => {
                   <div
                     key={idx}
                     className="flex items-center bg-yellow-200 rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-300"
+                    onClick={() => handleClubClick(club._id)} // Add onClick handler
                   >
                     <img
                       src={club.logo || "https://via.placeholder.com/80"}
