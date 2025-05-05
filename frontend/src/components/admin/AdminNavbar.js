@@ -42,7 +42,7 @@ const AdminNavbar = () => {
                     </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
-                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8 py-4'>
+                        <ul className='flex items-center gap-2 lg:gap-6 xl:gap-10 py-4'>
                             <li>
                                 <NavLink to="/admin/home" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Home</NavLink>
                             </li>
@@ -53,18 +53,12 @@ const AdminNavbar = () => {
                                 <NavLink to="/salesManage" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Sales Manage</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/ClubApprovingPage1" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active">Club Requests</NavLink>
+                                <NavLink to="/admin/club-requests" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active">Club Requests</NavLink>
                             </li>
                         </ul>
                     </div>
                     {/* Icon Section */}
                     <div className='flex items-center gap-1 lg:gap-3'>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2' onClick={() => setSearchOpen(!searchOpen)}>
-                            <LuSearch className='text-xl xl:text-2xl' />
-                        </button>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                            <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                        </button>
                         <NavLink to="/Signin">
                             <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
                                 <FiUser className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
@@ -122,7 +116,7 @@ function MobileNav({ closeSideMenu }) {
                         <NavLink to="/salesManage" className='mobile-nav' activeClassName="active">Sales Manage</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/ClubApprovingPage1" className='mobile-nav flex items-center' activeClassName="active">Club Requests</NavLink>
+                        <NavLink to="/admin/club-requests" className='mobile-nav flex items-center' activeClassName="active">Club Requests</NavLink>
                     </li>
                 </ul>
             </div>

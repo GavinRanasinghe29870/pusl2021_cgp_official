@@ -64,9 +64,12 @@ const SportSignin = () => {
         toast.success("Sign in successful!", { position: "top-center" });
         setTimeout(() => navigate("/"), 2000);
       } else {
-        toast.error(response?.error || "Sign in failed. Please check credentials.", {
-          position: "top-center",
-        });
+        toast.error(
+          response?.error || "Sign in failed. Please check credentials.",
+          {
+            position: "top-center",
+          }
+        );
       }
     } catch (err) {
       console.error("Sign in error:", err);
@@ -92,10 +95,14 @@ const SportSignin = () => {
     <div className="bg-blue-100 flex items-center justify-center min-h-screen">
       <ToastContainer />
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
-        <h1 className="text-center text-2xl font-bold mb-8">Sign In</h1>
+        <h1 className="text-center text-3xl font-bold mb-8 transition-all duration-800 ease-out transform hover:scale-110">Welcome to SportNest!</h1>
         <div className="flex md:flex-row">
           <div className="flex-1 flex items-center justify-center">
-            <img src="/logo512.png" alt="logo" className="h-16 w-16" />
+            <img
+              src="/logo.png"
+              alt="logo"
+              className="h-70 w-auto object-contain"
+            />
           </div>
 
           <div className="w-px bg-blue-200 mx-8"></div>
@@ -110,7 +117,8 @@ const SportSignin = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Sport Level</option> {/* No default selection */}
+                  <option value="">Select Sport Level</option>{" "}
+                  {/* No default selection */}
                   <option value="SportPeople">SportPeople</option>
                   <option value="Clubs">Clubs</option>
                   <option value="Admin">Admin</option>
@@ -118,7 +126,7 @@ const SportSignin = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700">Username</label>
+                <label className="block text-gray-700 font-medium mb-1">Username</label>
                 <input
                   type="text"
                   name="username"
@@ -131,7 +139,7 @@ const SportSignin = () => {
               </div>
 
               <div className="mb-4 relative">
-                <label className="block text-gray-700">Password</label>
+                <label className="block text-gray-700 font-medium mb-1">Password</label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -162,7 +170,7 @@ const SportSignin = () => {
               <div className="mb-4">
                 <button
                   type="submit"
-                  className="w-full bg-[#0D1271] text-white py-2 px-4 rounded hover:bg-[#141a88] transition duration-300"
+                  className="w-full bg-[#0D1271] text-white font-medium mb-1 py-2 px-4 rounded hover:bg-[#141a88] transition duration-300 text-md"
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Sign In"}

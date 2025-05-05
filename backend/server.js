@@ -41,14 +41,45 @@ const productRoutes = require("./routes/sportPeople/productRoutes");
 const adminRoutes = require("./routes/admin/adminRoutes.js");
 const messageRoutes = require("./routes/clubs/messageRoutes.js");
 const donationRoutes = require("./routes/sportPeople/donationRoutes");
+const friendRequestRoutes = require("./routes/sportPeople/friendRequestRoutes.js");
 const memberRoutes = require("./routes/clubs/memberRoutes");
-const SingleProductRoutes = require("./routes/sportPeople/SingleProductRoutes");
 const registrationApprovalRoutes = require("./routes/clubs/registrationApprovalRoutes");
 const ClubAuth = require("./routes/clubs/ClubAuth.js");
-const salesRoutes = require('./routes/admin/salesRoute.js');
-const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
+const donatingRoutes = require("./routes/sportPeople/donatingRoutes");
+const ClubRoutes = require("./routes/clubs/Clubs.js");
+const checkoutRoute = require("./routes/sportPeople/checkoutRoute.js");
+const userRoutes = require('./routes/sportPeople/userRoutes');
+const registeredClubsRoutes = require('./routes/sportPeople/RegisteredClubsRoutes.js');
 
-const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
+
+
+app.use("/api/club", ClubRoutes);
+
+
+const jwt = require("jsonwebtoken");
+
+const token = jwt.sign({ userId: "12345" }, process.env.JWT_SECRET, {
+  expiresIn: "1h",
+});
+
+console.log("Generated Token:", token);
+const salesRoutes = require('./routes/admin/salesRoute.js');
+
+const clubRoutes = require('./routes/sportPeople/clubRoutes');
+const memRoutes = require("./routes/sportPeople/memRoutes");
+const adpostRoutes = require("./routes/clubs/adpostRoutes");
+
+
+
+const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
+const orderRoutes = require("./routes/sportPeople/orderRoutes.js")
+
+// const memberTestInsert = require("./routes/memberTestInsert");
+
+//const donatingRoutes = require("./routes/sportPeople/donatingRoutes"); //
+
+
+
 const notificationRoutes = require("./routes/sportPeople/notificationRoutes.js");
 
 app.post("/api/donation", (req, res) => {
@@ -70,20 +101,30 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
-app.use("/api/req", memberRoutes);
+app.use("/api/members", memberRoutes);
+
+app.use('/api/clubs', clubRoutes);
+app.use("/api/sportPeople", memRoutes);
+app.use('/api/user', userRoutes); 
+app.use("/api/adposts", adpostRoutes);
+app.use('/api/checkout', checkoutRoute);
+app.use("/api/regclubs", registeredClubsRoutes);
 
 
+app.use("/api/orders", orderRoutes);
 app.use("/api/message", messageRoutes);
-
+app.use("/api/friendRequest", friendRequestRoutes);
 app.use("/api/friendmsg",friendRoutes);
 
 app.use("/api/donating", donatingRoutes); //
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ClubAuth", ClubAuth);
+ 
 
-app.use("/api/messages", messageRoutes);
+
 app.use("/api/sales", salesRoutes);
-app.use("/api/singleproduct", SingleProductRoutes);
+// app.use("/api", memberTestInsert);
+
 
 // Serve uploaded PDFs
 app.use("/uploads/pdfs", express.static("uploads/pdfs"));

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from '../lib/axios.js';
 import { useAuthStore } from "./useAuthStore.js";
+import { useClubAuthStore } from "./useClubAuthStore.js";
 
 export const useChatStore = create((set, get) => ({
     messages: [],
@@ -8,12 +9,25 @@ export const useChatStore = create((set, get) => ({
     selectedUser: null,
     isUsersLoading: false,
     isMessagesLoading: false,
+    unreadCounts: {},
 
     getUsers: async () => {
         set({ isUsersLoading: true });
         try {
             const res = await axiosInstance.get('/messages/users');
-            set({ users: res.data });
+            const loggedInUserId = useAuthStore.getState().user?._id || 
+                                 useClubAuthStore.getState().club?._id;
+            
+            // Get unread counts for each user
+            const unreadCounts = {};
+            await Promise.all(
+                res.data.map(async (user) => {
+                    const count = await axiosInstance.get(`/messages/unread-count/${user._id}`);
+                    unreadCounts[user._id] = count.data;
+                })
+            );
+            
+            set({ users: res.data, unreadCounts });
         } catch (error) {
             console.error("Error getting users:", error);
         } finally {
@@ -46,23 +60,39 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
+    getTotalUnreadCount: () => {
+        const { unreadCounts } = get();
+        return Object.values(unreadCounts).reduce((sum, count) => sum + count, 0);
+    },
+
     subscribeToMessages: () => {
-        const { selectedUser } = get();
+        const { user, socket: userSocket } = useAuthStore.getState();
+        const { club, socket: clubSocket } = useClubAuthStore.getState();
+        const { selectedUser, getUsers } = get();
+    
         if (!selectedUser) return;
-
-        const socket = useAuthStore.getState().socket;
-
-        //todo: optimize this one later
+    
+        const socket = user ? userSocket : club ? clubSocket : null;
+        if (!socket) return;
+    
         socket.on("newMessage", (newMessage) => {
-            if (newMessage.senderId !== selectedUser._id) return;
-            set({ 
-                messages: [...get().messages, newMessage], 
+            if (newMessage.senderId !== selectedUser._id) {
+                // Refresh unread counts when receiving a new message
+                getUsers();
+            }
+            set({
+                messages: [...get().messages, newMessage],
             });
-        })
+        });
     },
 
     unsubscribeFromMessages: () => {
-        const socket = useAuthStore.getState().socket;
+        const { user, socket: userSocket } = useAuthStore.getState();
+        const { club, socket: clubSocket } = useClubAuthStore.getState();
+
+        const socket = user ? userSocket : club ? clubSocket : null;
+        if (!socket) return;
+
         socket.off("newMessage");
     },
 

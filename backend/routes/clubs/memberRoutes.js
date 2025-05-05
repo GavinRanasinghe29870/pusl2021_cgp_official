@@ -1,100 +1,81 @@
-// routes/memberRoutes.js
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const Member = require("../../models/clubs/member");
-
 const router = express.Router();
+const Member = require("../../models/clubs/member");
+const User = require("../../models/sportPeople/User");
 
-// Multer Storage Configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Store images in the 'uploads' folder
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filenames
-  },
-});
-
-const upload = multer({ storage });
-
-// POST: Add a new member with image upload
-router.post("/members", upload.single("image"), async (req, res) => {
+// Fetch member requests by recipient club (clubUserId)
+router.get("/recipient/:clubUserId", async (req, res) => {
   try {
-    const { name, location, experience, status } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : "";
+    const { clubUserId } = req.params;
 
-    const newMember = new Member({ name, location, experience, image, status });
-    await newMember.save();
-    res.status(201).json(newMember);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+    // Find all member requests where the recipient is the given club
+    const members = await Member.find({ recipient: clubUserId })
+      .populate("sender")  // Populate sender (User)
+      .populate("recipient");  // Populate recipient (Club)
+    
+    if (!members.length) {
+      return res.status(404).json({ message: "No member requests found" });
+    }
 
-// GET: Fetch all members
-router.get("/members", async (req, res) => {
-  try {
-    const members = await Member.find();
     res.status(200).json(members);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error("Error fetching member requests:", error);
+    res.status(500).json({ error: "An error occurred while fetching member requests." });
   }
 });
 
-
-// Approve Member
-router.post("/members/:id/approve", async (req, res) => {
+// Update a member request status
+router.put("/:id", async (req, res) => {
   try {
-    const updatedMember = await Member.findByIdAndUpdate(
-      req.params.id,
-      { status: "Approved" }, // Update status to Approved
-      { new: true }
-    );
+    const { status } = req.body;
 
-    if (!updatedMember) {
-      return res.status(404).json({ message: "Member not found" });
+    // Fetch member and populate sender and recipient
+    const member = await Member.findById(req.params.id)
+      .populate("sender")
+      .populate("recipient");
+
+    if (!member) {
+      return res.status(404).json({ message: "Member request not found" });
     }
 
-    res.status(200).json(updatedMember);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Reject Member
-router.post("/members/:id/reject", async (req, res) => {
-  try {
-    const updatedMember = await Member.findByIdAndUpdate(
-      req.params.id,
-      { status: "Rejected" }, // Update status to Rejected
-      { new: true }
-    );
-
-    if (!updatedMember) {
-      return res.status(404).json({ message: "Member not found" });
-    }
-
-    res.status(200).json(updatedMember);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Move member back to Pending
-router.post("/members/:id/pending", async (req, res) => {
-  try {
-    const member = await Member.findById(req.params.id);
-    if (!member) return res.status(404).json({ error: "Member not found" });
-
-    member.status = "Pending"; // Change status back to Pending
+    // Update the member's status
+    member.status = status;
     await member.save();
-    res.status(200).json({ message: "Member moved to pending", member });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    // If the status is "accepted", add the recipient (club) to the sender's registeredClubs
+    if (status === "accepted") {
+      const user = await User.findById(member.sender._id);
+
+      if (user) {
+        const clubId = member.recipient._id.toString();
+
+        // Check if the club is already in the user's registeredClubs array
+        if (!user.registeredClubs) {
+          user.registeredClubs = [];
+        }
+
+        const alreadyExists = user.registeredClubs.some(
+          (id) => id.toString() === clubId
+        );
+
+        // If the club is not in the array, add it
+        if (!alreadyExists) {
+          user.registeredClubs.push(clubId);
+          await user.save();  // Ensure that changes are saved
+        }
+      }
+    }
+
+    // Fetch and return the updated member with sender and recipient populated
+    const updatedMember = await Member.findById(member._id)
+      .populate("sender")
+      .populate("recipient");
+
+    res.status(200).json(updatedMember);
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ error: error.message });
   }
 });
-
-
 
 module.exports = router;

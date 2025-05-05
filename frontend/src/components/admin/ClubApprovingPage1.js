@@ -1,13 +1,11 @@
-import React from "react"; 
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-
-
-// Define the sports categories array
 const sportsCategories = [
   { name: "Cricket", img: "/Cricket.png" },
   { name: "Badminton", img: "/Badminton.jpg" },
   { name: "Volleyball", img: "/Vollyball.jpg" },
-  { name: "Basket Ball", img: "/basketball.jpeg" },
+  { name: "Basketball", img: "/basketball.jpeg" },
   { name: "Table Tennis", img: "/tabletennis.jpg" },
   { name: "Tennis", img: "/Tennis.jpg" },
   { name: "Football", img: "/football.jpg" },
@@ -17,38 +15,45 @@ const sportsCategories = [
 ];
 
 const ClubApprovingPage1 = () => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    navigate(`/admin/club-approvals`, { state: { category } });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      
-
-      {/* Hero Section */}
       <div className="relative w-full mb-8 aspect-w-16 aspect-h-9">
         <img
-          src="/Site Banner.jpg" // Replace with the actual image path
+          src="/Site Banner.jpg"
           alt="Sports Banner"
           className="w-full h-85 object-cover"
         />
       </div>
 
-      {/* Sports Categories */}
       <div className="relative w-full pb-8">
-      <div className="bg-[#0D1271] text-white py-12">
-        <h2 className="text-center text-2xl font-bold mb-8">Sports Categories</h2>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-5xl mx-auto px-4">
-          {sportsCategories.map((sport, index) => (
-            <div key={index} className="text-center transition-transform duration-300 hover:scale-110 cursor-pointer">
-              <img
-                src={sport.img}
-                alt={sport.name}
-                className="w-24 h-24 rounded-full mx-auto border-4 border-white"
-              />
-              <p className="mt-2 font-semibold">{sport.name}</p>
-            </div>
-          ))}
+        <div className="bg-[#0D1271] text-white py-12">
+          <h2 className="text-center text-2xl font-bold mb-8">
+            Sports Categories
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-5xl mx-auto px-4">
+            {sportsCategories.map((sport, index) => (
+              <div
+                key={index}
+                className="text-center transition-transform duration-300 hover:scale-110 cursor-pointer"
+                onClick={() => handleCategoryClick(sport.name)}
+              >
+                <img
+                  src={sport.img}
+                  alt={sport.name}
+                  className="w-24 h-24 rounded-full mx-auto border-4 border-white"
+                />
+                <p className="mt-2 font-semibold">{sport.name}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      </div>
-
     </div>
   );
 };
