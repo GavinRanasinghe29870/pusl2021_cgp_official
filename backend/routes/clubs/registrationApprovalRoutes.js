@@ -160,32 +160,41 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 // Update document status (for admin use)
+// Update document status (for admin use)
 router.put("/status/:id", async (req, res) => {
   try {
     const { status, remarks } = req.body;
-    
+
     if (!["pending", "accepted", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status. Must be 'pending', 'accepted', or 'rejected'" });
     }
-    
+
+    // First update the registration approval status
     const updatedFile = await RegistrationApproval.findByIdAndUpdate(
-      req.params.id, 
+      req.params.id,
       { status, remarks },
       { new: true }
     );
-    
+
     if (!updatedFile) {
       return res.status(404).json({ message: "File not found" });
     }
-    
+
+    // Then update the corresponding club's status
+    await Clubuser.findByIdAndUpdate(
+      updatedFile.clubId,
+      { status: status },
+      { new: true }
+    );
+
     res.status(200).json({
       message: "Status updated successfully",
       file: {
         _id: updatedFile._id,
         fileName: updatedFile.fileName,
         status: updatedFile.status,
-        remarks: updatedFile.remarks
-      }
+        remarks: updatedFile.remarks,
+      },
     });
   } catch (error) {
     console.error("Error updating status:", error);
