@@ -188,8 +188,10 @@ exports.likePost = async (req, res) => {
     if (req.body.userId.toString() !== post.userId.toString()) {
       const notification = new Notification({
         recipient: post.userId,
+        recipientModel: "User",
         type: 'like',
         relatedUser: req.body.userId,
+        relatedUserModel: "User",
         relatedPost: post._id,
       });
       await notification.save();
@@ -221,8 +223,10 @@ exports.commentPost = async (req, res) => {
     if (req.body.userId !== post.userId.toString()) {
       const notification = new Notification({
         recipient: post.userId,
+        recipientModel: "User",
         type: 'comment',
         relatedUser: req.body.userId,
+        relatedUserModel: "User",
         relatedPost: post._id,
       });
       await notification.save();

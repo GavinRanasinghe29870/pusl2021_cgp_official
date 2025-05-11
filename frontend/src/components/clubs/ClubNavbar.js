@@ -95,7 +95,7 @@ const ClubNavbar = () => {
 
                         <NotificationBell />
 
-                        <NavLink to="/club/chat">
+                        <NavLink to="/club-chat">
                             <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
                                 <IoChatbubble className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
                             </button>

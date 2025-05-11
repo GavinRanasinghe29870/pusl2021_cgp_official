@@ -7,7 +7,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useClubAuthStore } from '../../store/useClubAuthStore';
 
 const ChatSidebar = () => {
-    const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+    const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, unreadCounts } = useChatStore();
     const { onlineUsers: authOnlineUsers } = useAuthStore();
     const { onlineUsers: clubOnlineUsers } = useClubAuthStore();
 
@@ -49,7 +49,7 @@ const ChatSidebar = () => {
                     />
                 </div>
             </div>
-    
+
             {/* Skeleton Contacts */}
             <div className="overflow-y-auto w-full py-3">
                 {skeletonContacts.map((_, idx) => (
@@ -98,7 +98,10 @@ const ChatSidebar = () => {
                 {filteredUsers.map((user) => (
                     <button
                         key={user._id}
-                        onClick={() => setSelectedUser(user)}
+                        onClick={() => {
+                            setSelectedUser(user);
+                            useChatStore.getState().getMessages(user._id);
+                        }}
                         className={`w-full p-3 pl-8 flex items-center gap-3 border-b hover:bg-primary-light transition-colors ${selectedUser?._id === user._id ? "bg-primary-light ring-1 ring-base-300" : ""
                             }`}
                     >
@@ -115,8 +118,15 @@ const ChatSidebar = () => {
                             )}
                         </div>
 
-                        <div className="block text-left min-w-0">
-                            <div className="font-medium truncate">{user.firstName || user.ClubName}</div>
+                        <div className="block text-left min-w-0 flex-1">
+                            <div className="font-medium truncate flex justify-between">
+                                <span>{user.firstName || user.ClubName}</span>
+                                {unreadCounts[user._id] > 0 && (
+                                    <span className="bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                        {unreadCounts[user._id]}
+                                    </span>
+                                )}
+                            </div>
                             <div className="text-sm text-zinc-500 truncate">
                                 {user.lastMessage ? user.lastMessage.text : "No messages"}
                             </div>
