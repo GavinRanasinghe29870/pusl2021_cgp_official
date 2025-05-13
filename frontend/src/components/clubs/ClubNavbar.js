@@ -9,8 +9,10 @@ import { IoClose } from "react-icons/io5";
 import { IoIosArrowUp } from "react-icons/io";
 import { AnimatePresence, motion } from 'framer-motion';
 import { AiOutlineClose } from "react-icons/ai";
+import { IoChatbubble } from "react-icons/io5";
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useClubAuthStore } from '../../store/useClubAuthStore';
+import NotificationBell from '../common/NotificationBell';
 const logo = '/logo.png';
 
 const ClubNavbar = () => {
@@ -37,20 +39,20 @@ const ClubNavbar = () => {
     };
 
     useEffect(() => {
-            const handleClickOutside = (event) => {
-                if (
-                    (profileDropdownRef.current &&
-                        !profileDropdownRef.current.contains(event.target))
-                ) {
-                    setProfileDropdownOpen(false);
-                }
-            };
-        
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => {
-                document.removeEventListener('mousedown', handleClickOutside);
-            };
-        }, []);
+        const handleClickOutside = (event) => {
+            if (
+                (profileDropdownRef.current &&
+                    !profileDropdownRef.current.contains(event.target))
+            ) {
+                setProfileDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <nav className='sticky top-0 z-50 shadow-md'>
@@ -73,7 +75,7 @@ const ClubNavbar = () => {
                     </NavLink>
                     {/* Menu Section */}
                     <div className='hidden md:block'>
-                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-8 py-4'>
+                        <ul className='flex items-center gap-2 lg:gap-5 xl:gap-12 py-4'>
                             <li>
                                 <NavLink to="/club/home" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Home</NavLink>
                             </li>
@@ -83,9 +85,6 @@ const ClubNavbar = () => {
                             <li>
                                 <NavLink to="/RequestMember" className='nav-line font-body text-sm xl:text-base inline-block py-1 px-1 text-gray-700 hover:text-primary font-semibold' activeClassName="active">Requested Members</NavLink>
                             </li>
-                            <li>
-                                <NavLink to="/ClubPortfolio" className='nav-line font-body text-sm xl:text-base py-1 px-1 text-gray-700 hover:text-primary font-semibold flex items-center' activeClassName="active">Club Portfolio</NavLink>
-                            </li>
                         </ul>
                     </div>
                     {/* Icon Section */}
@@ -93,9 +92,14 @@ const ClubNavbar = () => {
                         <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2' onClick={() => setSearchOpen(!searchOpen)}>
                             <LuSearch className='text-xl xl:text-2xl' />
                         </button>
-                        <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
-                            <IoNotifications className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
-                        </button>
+
+                        <NotificationBell />
+
+                        <NavLink to="/club-chat">
+                            <button className='hover:bg-opacity-15 hover:bg-primary rounded-full p-2'>
+                                <IoChatbubble className='text-xl xl:text-2xl text-gray-700 hover:text-primary duration-200' />
+                            </button>
+                        </NavLink>
                         {club ? (
                             <div className='relative'>
                                 <div
@@ -122,17 +126,17 @@ const ClubNavbar = () => {
                                             <div>Welcome, {club.ClubName}</div>
                                         </div>
                                         <div className='py-4'>
-                                            {/* <button
+                                            <button
                                                 className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
                                                 onClick={() => {
-                                                    if (user?._id) {
-                                                        navigate(`/profile/${user._id}`);
+                                                    if (club?._id) {
+                                                        navigate(`/club/${club._id}`);
                                                     }
                                                 }}
 
                                             >
                                                 Profile
-                                            </button> */}
+                                            </button>
                                             <button
                                                 className='w-full text-left px-6 py-3 text-sm text-gray-700 hover:text-primary font-semibold hover:bg-primary-light'
                                                 onClick={logout}
@@ -200,9 +204,6 @@ function MobileNav({ closeSideMenu }) {
                     </li>
                     <li>
                         <NavLink to="/RequestMember" className='mobile-nav' activeClassName="active">Reegisted Members</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/ClubPortfolio" className='mobile-nav flex items-center' activeClassName="active">Club Portfolio</NavLink>
                     </li>
                 </ul>
             </div>

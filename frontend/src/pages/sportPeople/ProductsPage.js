@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import MobileSidebar from "../../components/sportPeople/MobileSidebarDropDown";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export default function ProductsPage() {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [isOpen, setIsOpen] = useState(false);
+    const { user } = useAuthStore();
 
     useEffect(() => {
         fetchProducts();
@@ -86,21 +89,29 @@ export default function ProductsPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {products.length > 0 ? (
                             products.map((product) => (
-                                <div
+                                <Link
+                                    to={`/product/${product._id}`}
                                     key={product._id}
-                                    className="bg-white shadow-md rounded-lg overflow-hidden transition-transform hover:scale-105 duration-200"
+                                    className="group"
                                 >
-                                    <img
-                                        src={`/uploads/${product.pd_image}`}
-                                        alt={product.pd_name}
-                                        className="w-full h-48 object-cover"
-                                    />
-                                    <div className="p-4">
-                                        <h3 className="text-lg font-semibold text-gray-800">{product.pd_name}</h3>
-                                        <p className="text-sm text-gray-600">{product.pd_category}</p>
-                                        <p className="text-blue-600 font-bold mt-1">${product.pd_price}</p>
+                                    <div className="relative bg-white rounded-xl overflow-hidden shadow-lg transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+                                        <div className="overflow-hidden">
+                                            <img
+                                                src={`/uploads/${product.pd_image}`}
+                                                alt={product.pd_name}
+                                                className="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-105"
+                                            />
+                                            <div className="absolute inset-0 group-hover:bg-opacity-10 transition duration-300"></div>
+                                        </div>
+                                        <div className="p-4 transition-colors duration-300 group-hover:bg-blue-50">
+                                            <h3 className="text-lg font-semibold text-gray-800 group-hover:text-blue-700">
+                                                {product.pd_name}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 group-hover:text-gray-800">{product.pd_category}</p>
+                                            <p className="text-blue-600 font-bold mt-1">${product.pd_price}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))
                         ) : (
                             <p className="text-center col-span-3 text-gray-600">No products available</p>

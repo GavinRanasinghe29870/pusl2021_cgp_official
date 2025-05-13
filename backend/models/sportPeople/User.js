@@ -97,14 +97,18 @@ const userSchema = new mongoose.Schema(
 
     // 👫 Friends
 
-    
+
     // ✅ Registered Clubs
-registeredClubs: [
-  {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  }
-],
+
+
+    registeredClubs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Clubuser',
+      }
+    ],
+
+
 
 
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

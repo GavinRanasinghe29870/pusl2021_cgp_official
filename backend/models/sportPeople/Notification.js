@@ -4,8 +4,13 @@ const notificationSchema = new mongoose.Schema(
     {
         recipient: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
             required: true,
+            refPath: 'recipientModel'
+        },
+        recipientModel: {
+            type: String,
+            required: true,
+            enum: ['User', 'Clubuser']
         },
         type: {
             type: String,
@@ -22,15 +27,15 @@ const notificationSchema = new mongoose.Schema(
         },
         relatedUser: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            refPath: 'relatedUserModel',
+        },
+        relatedUserModel: {
+            type: String,
+            enum: ['User', 'Clubuser']
         },
         relatedRequest: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'FriendRequest',
-        },
-        relatedClub: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Clubuser',
         },
         relatedPost: {
             type: mongoose.Schema.Types.ObjectId,
