@@ -1,13 +1,13 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const DonationRequest = require('../models/DonationRequest');
+const DonationRequest = require("../../models/sportPeople/DonationRequest");
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const donations = await DonationRequest.find();
     res.json(donations);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch donations' });
+    res.status(500).json({ error: "Failed to fetch donations" });
   }
 });
 

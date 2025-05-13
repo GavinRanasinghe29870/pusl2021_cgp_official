@@ -32,6 +32,7 @@ import Singleproduct from "./pages/sportPeople/SingleProd";
 import SportsPage from "./pages/sportPeople/Sportpage03.js";
 
 // Auth Pages
+import MyFriends from "./pages/sportPeople/MyFriends.js";
 import Signin from "./components/sportPeople/SportSignin.js";
 import Signup from "./components/sportPeople/SportSignup.js";
 import AdminSignin from "./components/admin/AdminSignin.js";
@@ -161,8 +162,8 @@ function App() {
             <Route path="/regclubs" element={<RegClubs />} />
           </>
         ) : (
-          <Route path="*" element={<Navigate to="/" />} />
-        )}
+          <Route path="*" element={<Navigate to="/" />} />)}
+          <Route path="/myfriends" element={<MyFriends />} />
 
         {/* Public routes */}
         {!user && !club && (

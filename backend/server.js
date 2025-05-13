@@ -69,7 +69,7 @@ const salesRoutes = require('./routes/admin/salesRoute.js');
 const clubRoutes = require('./routes/sportPeople/clubRoutes');
 const memRoutes = require("./routes/sportPeople/memRoutes");
 const adpostRoutes = require("./routes/clubs/adpostRoutes");
-
+const myFriendsRoutes = require("./routes/sportPeople/myFriendsRoutes.js");
 
 
 const friendRoutes= require("./routes/sportPeople/friendRoutes.js")
@@ -103,6 +103,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/members", memberRoutes);
+app.use("/api/myfrnd", myFriendsRoutes);
 
 app.use('/api/clubs', clubRoutes);
 app.use("/api/sportPeople", memRoutes);
